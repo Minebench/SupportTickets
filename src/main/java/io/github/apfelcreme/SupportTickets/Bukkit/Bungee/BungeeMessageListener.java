@@ -47,6 +47,13 @@ public class BungeeMessageListener implements PluginMessageListener {
                     if ((ticket != null)) {
                         teleportPlayer(uuid, ticket);
                     }
+                } else if (subChannel.equals("STATUSCHANGE")) {
+                    UUID uuid = UUID.fromString(in.readUTF());
+                    if (in.readBoolean()) {
+                        SupportTickets.getInstance().setPlayerOnline(uuid);
+                    } else {
+                        SupportTickets.getInstance().setPlayerOffline(uuid);
+                    }
                 }
             }
         });

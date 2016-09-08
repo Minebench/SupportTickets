@@ -11,6 +11,7 @@ import io.github.apfelcreme.SupportTickets.Bukkit.Task.ReminderTask;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,6 +22,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -44,9 +47,15 @@ import java.util.regex.Pattern;
  */
 public class SupportTickets extends JavaPlugin {
 
-
+    /**
+     * the database controller
+     */
     private static DatabaseController databaseController = null;
 
+    /**
+     * a list with online players
+     */
+    private List<UUID> onlinePlayers = null;
 
     /**
      * returns the plugin instance
@@ -72,6 +81,9 @@ public class SupportTickets extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+
+            // init a list
+            onlinePlayers = new ArrayList<UUID>();
 
             // init the config
             SupportTicketsConfig.load();
@@ -135,6 +147,37 @@ public class SupportTickets extends JavaPlugin {
      */
     public static String getPrefix() {
         return SupportTicketsConfig.getText("prefix");
+    }
+
+    /**
+     * adds a player to the online list
+     *
+     * @param uuid a players uuid
+     */
+    public void setPlayerOnline(UUID uuid) {
+        if (onlinePlayers.contains(uuid)) {
+            onlinePlayers.remove(uuid);
+        }
+        onlinePlayers.add(uuid);
+    }
+
+    /**
+     * removes a player from the online list
+     *
+     * @param uuid a players uuid
+     */
+    public void setPlayerOffline(UUID uuid) {
+        onlinePlayers.remove(uuid);
+    }
+
+    /**
+     * returns whether a player is online or not
+     *
+     * @param uuid a players uuid
+     * @return true or false
+     */
+    public boolean isPlayerOnline(UUID uuid) {
+        return onlinePlayers.contains(uuid);
     }
 
     /**
@@ -247,4 +290,5 @@ public class SupportTickets extends JavaPlugin {
     public static boolean isNumeric(String string) {
         return Pattern.matches("([0-9])*", string);
     }
+
 }

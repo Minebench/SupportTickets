@@ -7,7 +7,10 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
+import net.md_5.bungee.api.event.LoginEvent;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
 import net.md_5.bungee.api.event.PluginMessageEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.md_5.bungee.event.EventHandler;
@@ -45,20 +48,23 @@ public class SupportTickets extends Plugin implements Listener {
     }
 
     @EventHandler
-    public void onPluginMessageReceived(PluginMessageEvent e) throws IOException {
-        if (!e.getTag().equals("SupportTickets")) {
+    public void onPluginMessageReceived(PluginMessageEvent event) throws IOException {
+        if (!event.getTag().equals("SupportTickets")) {
             return;
         }
-        if (!(e.getSender() instanceof Server)) {
+        if (!(event.getSender() instanceof Server)) {
             return;
         }
 
-        ByteArrayInputStream stream = new ByteArrayInputStream(e.getData());
+        ByteArrayInputStream stream = new ByteArrayInputStream(event.getData());
         DataInputStream in = new DataInputStream(stream);
         Operation operation = Operation.valueOf(in.readUTF());
         switch (operation) {
             case MESSAGE:
                 sendPlayerMessage(UUID.fromString(in.readUTF()), in.readUTF());
+                break;
+            case STATUSCHANGE:
+                sendPlayerStatusChange(UUID.fromString(in.readUTF()), in.readBoolean());
                 break;
             case TEAMMESSAGE:
                 sendTeamMessage(in.readUTF());
@@ -67,6 +73,24 @@ public class SupportTickets extends Plugin implements Listener {
                 sendPlayerToTicket(UUID.fromString(in.readUTF()), in.readInt(), in.readUTF());
                 break;
         }
+    }
+
+    /**
+     * sends a message to all servers that a player has come online
+     * @param event an event
+     */
+    @EventHandler
+    public void onPlayerJoin(PostLoginEvent event) {
+        sendPlayerStatusChange(event.getPlayer().getUniqueId(), true);
+    }
+
+    /**
+     * sends a message to all servers that a player has went offline
+     * @param event an event
+     */
+    @EventHandler
+    public void onPlayerQuit(PlayerDisconnectEvent event) {
+        sendPlayerStatusChange(event.getPlayer().getUniqueId(), false);
     }
 
     /**
@@ -121,6 +145,21 @@ public class SupportTickets extends Plugin implements Listener {
     }
 
     /**
+     * sends a message to all servers that a player is online or offline
+     * @param uuid the players uuid
+     * @param online true or false
+     */
+    private void sendPlayerStatusChange(UUID uuid, boolean online) {
+        for (ServerInfo serverInfo : ProxyServer.getInstance().getServers().values()) {
+            ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            out.writeUTF("STATUSCHANGE");
+            out.writeUTF(uuid.toString());
+            out.writeBoolean(online);
+            serverInfo.sendData("SupportTickets", out.toByteArray());
+        }
+    }
+
+    /**
      * returns the server info with the given ip (xxx.xxx.xxx.xxx:PORT)
      *
      * @param serverIp the ip:port
@@ -136,7 +175,10 @@ public class SupportTickets extends Plugin implements Listener {
         return null;
     }
 
+    /**
+     * a
+     */
     public enum Operation {
-        MESSAGE, TEAMMESSAGE, WARP
+        MESSAGE, STATUSCHANGE, TEAMMESSAGE, WARP
     }
 }

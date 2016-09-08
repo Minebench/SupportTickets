@@ -39,7 +39,9 @@ texts:
         view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
         warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
     list:
-      element: '&e  #{0} &6{1}&8 -> &e{2}&7{3} &8[&7{4}&8]'
+      element: '&e  #{0} {1} &6{2}&8 -> &e{3}&7{4} &8[&7{5}&8]'
+      online: '&2+'
+      offline: '&c-'
       footer: '&6 Für andere Seiten: &e/pe list <#>'
       header: '&6 Offene Tickets: (&e{0}&6/&e{1}&6)'
     login:

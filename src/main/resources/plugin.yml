@@ -1,5 +1,5 @@
 name: SupportTickets
-version: 1.0-SNAPSHOT
+version: 1.0.1
 main: io.github.apfelcreme.SupportTickets.Bukkit.SupportTickets
 author: Lord36
 commands:
@@ -20,6 +20,7 @@ permissions:
       SupportTickets.closeOthers: true
       SupportTickets.list: true
       SupportTickets.opened: true
+      SupportTickets.receiveBukkitTeamMessage: true
       SupportTickets.reload: true
       SupportTickets.reopen: true
       SupportTickets.unassign: true
@@ -50,6 +51,8 @@ permissions:
     description: list all ticket
   SupportTickets.opened:
     description: show a list of tickets a player has opened
+  SupportTickets.receiveBukkitTeamMessage:
+    description: receive the message that open tickets are available
   SupportTickets.reload:
     description: reload the config
   SupportTickets.reopen:
