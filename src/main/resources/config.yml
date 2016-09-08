@@ -1,0 +1,20 @@
+db: 'mongodb' #mongdb or mysql
+pageSize: 10
+reminderTaskDelay: 72000 #60 minutes
+teleportDelay: 30 #ticks
+apiUrlName: 'https://api.mojang.com/user/profiles/{0}/names'
+apiUrlUUID: 'https://api.mojang.com/users/profiles/minecraft/{0}'
+sql:
+  user: ''
+  password: ''
+  database: ''
+  url: ''
+  tables:
+    tickets: 'st_tickets'
+    comments: 'st_comments'
+    players: 'st_players'
+mongo:
+  host: 'localhost'
+  port: 27017
+  database: 'SupportTickets'
+  collection: 'SupportTickets'

@@ -1,0 +1,4 @@
+name: SupportTickets
+version: 1.0-SNAPSHOT
+main: io.github.apfelcreme.SupportTickets.Bungee.SupportTickets
+author: Lord36

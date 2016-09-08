@@ -1,0 +1,76 @@
+texts:
+  prefix: '&7[&8PE&7]'
+  error:
+    noPermission: '&c Du hast nicht die benötigte Berechtigung!'
+    notYourTicket: '&c Dieses Ticket wurde nicht von dir geöffnet!'
+    ticketAlreadyClosed: '&c Das Ticket wurde bereits geschlossen'
+    unknownCommand: '&c Die Funktion {0} existiert nicht!'
+    unknownPlayer: '&c Der angegebene Spieler existiert nicht!'
+    unknownTicket: '&c Es existiert kein Ticket mit der angegebenen Nummer!'
+    wrongUsage: '&c Falsche Eingabe! Probiere {0}!'
+  info:
+    assign:
+      assigned: '&6 Das Ticket &e#{0}&6 wurde an &e{1}&6 weitergeleitet'
+      assignedComment: '&7Das Ticket wurde an &e{0}&7 weitergeleitet'
+      yourTicketGotAssigned: '&6 Dein Ticket &e#{0}&6 wurde an &e{1}&6 weitergeleitet'
+    close:
+      closed: '&6 Das Ticket &e#{0}&6 wurde von &e{1}&6 geschlossen: &7{2}'
+      closeComment: '&7Das Ticket wurde von &e{0}&7 geschlossen: {1}'
+      yourTicketGotClosed: '&6 Dein Ticket &e#{0}&6 wurde von &e{1}&6 geschlossen: &7{2}'
+    closed:
+      footer: '&6 Für andere Seiten: &e/pe closed <Spieler> <#>'
+      header: '&6 Von {0} geschlossene Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
+    comment:
+      commented: '&e {0}&6 hat das Ticket &e#{1}&6 kommentiert: &7{2}'
+      yourTicketGotCommented: '&6 Dein Ticket &e#{0}&6 wurde von &e{1}&6 kommentiert: &7{2}'
+    help:
+      header: '&6 Folgende Funktionen stehen dir zur Verfügung'
+      commands:
+        assign: '&8 - &6assign <#> <Ziel>:&e Weise das &6Ticket&e einem &6Ziel&e zu'
+        close: '&8 - &6close <#> <Grund>:&e Schließe das &6Ticket&e mit einem &6Grund'
+        closed: '&8 - &6closed <Spieler>:&e Zeige Tickets, die &6Spieler&e geschlossen hat'
+        comment: '&8 - &6comment <#> <Text>:&6 Kommentiere&e ein &6Ticket'
+        help: '&8 - &6help:&e Zeige eine Ansicht aller Funktionen an'
+        list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
+        new: '&8 - &6new <Text>:&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
+        opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
+        reopen: '&8 - &6reopen <#>:&e Öffne ein &6Ticket&e erneut'
+        show: '&8 - &6show:&e Zeige eine Liste der von dir erstellen Tickets an'
+        view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
+        warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
+    list:
+      element: '&e  #{0} &6{1}&8 -> &e{2}&7{3} &8[&7{4}&8]'
+      footer: '&6 Für andere Seiten: &e/pe list <#>'
+      header: '&6 Offene Tickets: (&e{0}&6/&e{1}&6)'
+    login:
+      newCommentsPlural: '&6 Während du abwesend warst, wurden einige deiner Tickets kommentiert: &e{0}&6. Schau sie dir mit &e/pe view #&6 an!'
+      newCommentsSingular: '&6 Während du abwesend warst, wurde dein Ticket &e#{0}&6 kommentiert. Schau es dir mit &e/pe view {0}&6 an!'
+    new:
+      created: '&6 Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! Mit &e/pe show&6 kannst du deine Tickets einsehen.'
+      newTicket: '&e Neues Ticket: #{0} &6{1} &8-> &7{2}'
+    opened:
+      footer: '&6 Für andere Seiten: &e/pe opened <Spieler> <#>'
+      header: '&6 Von {0} geöffnete Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
+    reload:
+      reloaded: '&6 Die Config wurde neu geladen'
+    reminderTask:
+      infoPlural: '&7 Es sind derzeit {0} Tickets geöffnet'
+      infoSingular: '&7 Es ist derzeit ein Ticket geöffnet'
+    reopen:
+      reopened: '&6 Das Ticket &e#{0}&6 wurde wieder geöffnet'
+      reopenComment: '&7Das Ticket wurde von &e{0}&7 wieder geöffnet'
+      yourTicketGotReopened: '&6 Dein Ticket &e#{0}&6 wurde wieder geöffnet'
+    show:
+      footer: '&6 Für andere Seiten: &e/pe show <#>'
+      header: '&6 Von dir geöffnete Tickets: (&e{0}&6/&e{1}&6)'
+    unassign:
+      unassigned: '&6 Die Weiterleitung von Ticket &e#{0}&6 wurde aufgehoben'
+      unassignedComment: '&7Die Weiterleitung dieses Tickets wurde aufgehoben'
+      yourTicketGotUnassigned: '&6 Die Weiterleitung deines Tickets &e#{0}&6 wurde aufgehoben'
+    view:
+      comment: '&8 [&e{0}&8]{1} &6{2}: &7{3}'
+      header: '&6 Du schaust das Ticket mit der Nummer &e{0}&6 an:'
+      new: ' &2Neu'
+      ticket: '&6 Ticket &e#{0}&6, erstellt am &e{1}&6 von &e{2}'
+    warp:
+      youGotWarped: '&6 Du wurdest zu Ticket &e#{0}&6 teleportiert'

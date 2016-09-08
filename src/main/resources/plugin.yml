@@ -1,0 +1,66 @@
+name: SupportTickets
+version: 1.0-SNAPSHOT
+main: io.github.apfelcreme.SupportTickets.Bukkit.SupportTickets
+author: Lord36
+commands:
+   ticket:
+      aliases: [pe]
+      description: 'Create and manage support tickets'
+      usage:
+      permission:
+      permission-message:
+permissions:
+  SupportTickets.*:
+    description: everything
+  SupportTickets.mod:
+    description: all mod related commands
+    children:
+      SupportTickets.assign: true
+      SupportTickets.closed: true
+      SupportTickets.closeOthers: true
+      SupportTickets.list: true
+      SupportTickets.opened: true
+      SupportTickets.reload: true
+      SupportTickets.reopen: true
+      SupportTickets.unassign: true
+      SupportTickets.warp: true
+      SupportTickets.viewOthers: true
+  SupportTickets.user:
+    description: all user related commands
+    children:
+      SupportTickets.close: true
+      SupportTickets.comment: true
+      SupportTickets.help: true
+      SupportTickets.new: true
+      SupportTickets.show: true
+      SupportTickets.view: true
+  SupportTickets.assign:
+    description: assign a ticket
+  SupportTickets.close:
+    description: close your own ticket
+  SupportTickets.closed:
+    description: show a list of tickets a player has closed
+  SupportTickets.closeOthers:
+    description: close all ticket
+  SupportTickets.comment:
+    description: comment on a ticket
+  SupportTickets.help:
+    description: assign a ticket
+  SupportTickets.list:
+    description: list all ticket
+  SupportTickets.opened:
+    description: show a list of tickets a player has opened
+  SupportTickets.reload:
+    description: reload the config
+  SupportTickets.reopen:
+    description: reopen a ticket
+  SupportTickets.show:
+    description: show all tickets a user has currently opened
+  SupportTickets.unassign:
+    description: unassign a ticket
+  SupportTickets.view:
+    description: view your own tickets
+  SupportTickets.viewOthers:
+    description: view all tickets
+  SupportTickets.warp:
+    description: warp to a ticket
