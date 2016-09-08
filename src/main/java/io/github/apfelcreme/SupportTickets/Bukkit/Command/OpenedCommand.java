@@ -69,10 +69,13 @@ public class OpenedCommand implements SubCommand {
                         if (i < tickets.size() && tickets.size() > 0) {
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.list.element")
                                     .replace("{0}", tickets.get(i).getTicketId().toString())
-                                    .replace("{1}", SupportTickets.getNameByUUID(tickets.get(i).getSender()))
-                                    .replace("{2}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() + ": " : "")
-                                    .replace("{3}", tickets.get(i).getMessage())
-                                    .replace("{4}", Integer.toString(tickets.get(i).getComments().size())));
+                                    .replace("{1}", SupportTickets.getInstance().isPlayerOnline(tickets.get(i).getSender())
+                                            ? SupportTicketsConfig.getText("info.list.online")
+                                            : SupportTicketsConfig.getText("info.list.offline"))
+                                    .replace("{2}", SupportTickets.getNameByUUID(tickets.get(i).getSender()))
+                                    .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() + ": " : "")
+                                    .replace("{4}", tickets.get(i).getMessage())
+                                    .replace("{5}", Integer.toString(tickets.get(i).getComments().size())));
                         }
                     }
                     SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.opened.footer"));

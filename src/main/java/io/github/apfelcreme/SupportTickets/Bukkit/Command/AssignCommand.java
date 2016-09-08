@@ -38,16 +38,20 @@ public class AssignCommand implements SubCommand {
     public void execute(CommandSender sender, final String[] args) {
         final Player player = (Player) sender;
         if (player.hasPermission("SupportTickets.assign")) {
-            if (args.length > 2) {
+            if (args.length > 1) {
                 if (SupportTickets.isNumeric(args[1])) {
                     Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
                     if (ticket != null) {
                         if (ticket.getTicketStatus() != Ticket.TicketStatus.CLOSED) {
                             String to = "";
-                            for (int i = 2; i < args.length; i++) {
-                                to += args[i] + " ";
+                            if (args.length > 2) {
+                                for (int i = 2; i < args.length; i++) {
+                                    to += args[i] + " ";
+                                }
+                                to = to.trim();
+                            } else {
+                                to = player.getName();
                             }
-                            to = to.trim();
                             SupportTickets.getDatabaseController().assignTicket(ticket, to);
 
                             Comment comment = new Comment(
