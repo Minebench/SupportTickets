@@ -44,10 +44,10 @@ public class ReminderTask implements Runnable {
         Integer anz = tickets.size();
         if (anz > 0) {
             if (anz == 1) {
-                BungeeMessenger.sendTeamMessage(SupportTicketsConfig
+                SupportTickets.sendTeamMessage(SupportTicketsConfig
                         .getText("info.reminderTask.infoSingular"));
             } else {
-                BungeeMessenger.sendTeamMessage(SupportTicketsConfig.getText("info.reminderTask.infoPlural")
+                SupportTickets.sendTeamMessage(SupportTicketsConfig.getText("info.reminderTask.infoPlural")
                         .replace("{0}", anz.toString()));
             }
         }

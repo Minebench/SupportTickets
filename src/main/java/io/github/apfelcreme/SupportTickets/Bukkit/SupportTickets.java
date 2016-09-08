@@ -141,6 +141,19 @@ public class SupportTickets extends JavaPlugin {
     }
 
     /**
+     * sends a message to all players with the permission "SupportTickets.receiveBukkitTeamMessage"
+     *
+     * @param message a text
+     */
+    public static void sendTeamMessage(String message) {
+        for (Player receiver : Bukkit.getServer().getOnlinePlayers()) {
+            if (receiver.hasPermission("SupportTickets.receiveBukkitTeamMessage")) {
+                sendMessage(receiver, message);
+            }
+        }
+    }
+
+    /**
      * returns the prefix for messages
      *
      * @return the prefix for messages
