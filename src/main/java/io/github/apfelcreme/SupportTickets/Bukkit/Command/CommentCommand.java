@@ -44,25 +44,30 @@ public class CommentCommand implements SubCommand {
                             SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
                     if (ticket != null) {
                         if (ticket.getTicketStatus() != Ticket.TicketStatus.CLOSED) {
-                            String message = "";
-                            for (int i = 2; i < args.length; i++) {
-                                message += args[i] + " ";
+                            if (ticket.getSender().equals(player.getUniqueId()) ||
+                                    player.hasPermission("SupportTickets.commentOthers")) {
+                                String message = "";
+                                for (int i = 2; i < args.length; i++) {
+                                    message += args[i] + " ";
+                                }
+                                message = message.trim();
+                                Comment comment = new Comment(ticket.getTicketId(), player.getUniqueId(), message, new Date());
+
+                                SupportTickets.getDatabaseController().saveComment(comment);
+
+                                BungeeMessenger.sendTeamMessage(SupportTicketsConfig.getText("info.comment.commented")
+                                        .replace("{0}", player.getName())
+                                        .replace("{1}", ticket.getTicketId().toString())
+                                        .replace("{2}", message));
+
+                                BungeeMessenger.sendMessage(ticket.getSender(),
+                                        SupportTicketsConfig.getText("info.comment.yourTicketGotCommented")
+                                                .replace("{0}", ticket.getTicketId().toString())
+                                                .replace("{1}", player.getName())
+                                                .replace("{2}", message));
+                            } else {
+                                SupportTickets.sendMessage(player, SupportTicketsConfig.getText("error.notYourTicket"));
                             }
-                            message = message.trim();
-                            Comment comment = new Comment(ticket.getTicketId(), player.getUniqueId(), message, new Date());
-
-                            SupportTickets.getDatabaseController().saveComment(comment);
-
-                            BungeeMessenger.sendTeamMessage(SupportTicketsConfig.getText("info.comment.commented")
-                                    .replace("{0}", player.getName())
-                                    .replace("{1}", ticket.getTicketId().toString())
-                                    .replace("{2}", message));
-
-                            BungeeMessenger.sendMessage(ticket.getSender(),
-                                    SupportTicketsConfig.getText("info.comment.yourTicketGotCommented")
-                                            .replace("{0}", ticket.getTicketId().toString())
-                                            .replace("{1}", player.getName())
-                                            .replace("{2}", message));
                         } else {
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getText("error.ticketAlreadyClosed"));
                         }
