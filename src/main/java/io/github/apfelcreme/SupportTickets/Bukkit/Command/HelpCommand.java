@@ -2,11 +2,11 @@ package io.github.apfelcreme.SupportTickets.Bukkit.Command;
 
 import io.github.apfelcreme.SupportTickets.Bukkit.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bukkit.SupportTicketsConfig;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -25,7 +25,7 @@ import java.util.List;
  * this program; if not, see <http://www.gnu.org/licenses/>.
  *
  * @author Lord36 aka Apfelcreme
-*/
+ */
 public class HelpCommand implements SubCommand {
 
     /**
@@ -37,10 +37,21 @@ public class HelpCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         ConfigurationSection configurationSection =
                 SupportTicketsConfig.getLanguageConfig().getConfigurationSection("texts.info.help.commands");
-        List<Object> keys = new ArrayList<Object>(configurationSection.getKeys(true));
+        List<Object> values = null;
+        List<String> strings = new ArrayList<String>();
+        if (sender.hasPermission("SupportTickets.mod")) {
+            values = new ArrayList<Object>(configurationSection.getConfigurationSection("mod").getValues(true).values());
+            values.addAll(configurationSection.getConfigurationSection("user").getValues(true).values());
+        } else {
+            values = new ArrayList<Object>(configurationSection.getConfigurationSection("user").getValues(true).values());
+        }
+        for (Object o : values) {
+            strings.add(o.toString());
+        }
+        Collections.sort(strings);
         SupportTickets.sendMessage(sender, SupportTicketsConfig.getText("info.help.header"));
-        for (Object key : keys) {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getText("info.help.commands." + key.toString()));
+        for (Object s : strings) {
+            SupportTickets.sendMessage(sender, ChatColor.translateAlternateColorCodes('&', s.toString()));
         }
     }
 }

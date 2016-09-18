@@ -56,25 +56,25 @@ public class MongoController implements DatabaseController {
      * @return the ticket id
      */
     @Override
-    public int saveTicket(Ticket ticket) {
-        DBCollection collection = MongoConnector.getInstance().getCollection();
-        BasicDBObject ticketObject = new BasicDBObject();
-        ticketObject.put("ticket_id", (int) collection.count());
-        ticketObject.put("sender", ticket.getSender().toString());
-        ticketObject.put("message", ticket.getMessage());
-        ticketObject.put("status", Ticket.TicketStatus.OPEN.toInt());
-        ticketObject.put("time_stamp", ticket.getDate().getTime());
-        ticketObject.put("server", ticket.getLocation().getServer());
-        ticketObject.put("world", ticket.getLocation().getWorldName());
-        ticketObject.put("loc_X", ticket.getLocation().getLocationX());
-        ticketObject.put("loc_Y", ticket.getLocation().getLocationY());
-        ticketObject.put("loc_Z", ticket.getLocation().getLocationZ());
-        ticketObject.put("yaw", ticket.getLocation().getYaw());
-        ticketObject.put("pitch", ticket.getLocation().getPitch());
+        public int saveTicket(Ticket ticket) {
+            DBCollection collection = MongoConnector.getInstance().getCollection();
+            BasicDBObject ticketObject = new BasicDBObject();
+            ticketObject.put("ticket_id", (int) collection.count());
+            ticketObject.put("sender", ticket.getSender().toString());
+            ticketObject.put("message", ticket.getMessage());
+            ticketObject.put("status", Ticket.TicketStatus.OPEN.toInt());
+            ticketObject.put("time_stamp", ticket.getDate().getTime());
+            ticketObject.put("server", ticket.getLocation().getServer());
+            ticketObject.put("world", ticket.getLocation().getWorldName());
+            ticketObject.put("loc_X", ticket.getLocation().getLocationX());
+            ticketObject.put("loc_Y", ticket.getLocation().getLocationY());
+            ticketObject.put("loc_Z", ticket.getLocation().getLocationZ());
+            ticketObject.put("yaw", ticket.getLocation().getYaw());
+            ticketObject.put("pitch", ticket.getLocation().getPitch());
 
-        collection.insert(ticketObject);
+            collection.insert(ticketObject);
 
-        return ticketObject.getInt("ticket_id");
+            return ticketObject.getInt("ticket_id");
     }
 
     /**

@@ -26,18 +26,21 @@ texts:
     help:
       header: '&6 Folgende Funktionen stehen dir zur Verfügung'
       commands:
-        assign: '&8 - &6assign <#> <Ziel>:&e Weise das &6Ticket&e einem &6Ziel&e zu'
-        close: '&8 - &6close <#> <Grund>:&e Schließe das &6Ticket&e mit einem &6Grund'
-        closed: '&8 - &6closed <Spieler>:&e Zeige Tickets, die &6Spieler&e geschlossen hat'
-        comment: '&8 - &6comment <#> <Text>:&6 Kommentiere&e ein &6Ticket'
-        help: '&8 - &6help:&e Zeige eine Ansicht aller Funktionen an'
-        list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
-        new: '&8 - &6new <Text>:&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
-        opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
-        reopen: '&8 - &6reopen <#>:&e Öffne ein &6Ticket&e erneut'
-        show: '&8 - &6show:&e Zeige eine Liste der von dir erstellen Tickets an'
-        view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
-        warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
+        mod:
+          assign: '&8 - &6assign <#> <Ziel>:&e Weise das &6Ticket&e einem &6Ziel&e zu'
+          closed: '&8 - &6closed <Spieler>:&e Zeige Tickets, die &6Spieler&e geschlossen hat'
+          list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
+          opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
+          reopen: '&8 - &6reopen <#>:&e Öffne ein &6Ticket&e erneut'
+          unassign: '&8 - &6unassign <#>:&e Entfernt die Weiterleitung eines Tickets'
+          warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
+        user:
+          close: '&8 - &6close <#> <Grund>:&e Schließe das &6Ticket&e mit einem &6Grund'
+          comment: '&8 - &6comment <#> <Text>:&6 Kommentiere&e ein &6Ticket'
+          help: '&8 - &6help:&e Zeige eine Ansicht aller Funktionen an'
+          new: '&8 - &6new <Text>:&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
+          show: '&8 - &6show:&e Zeige eine Liste der von dir erstellen Tickets an'
+          view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
     list:
       element: '&e  #{0} {1} &6{2}&8 -> &e{3}&7{4} &8[&7{5}&8]'
       online: '&2+'
