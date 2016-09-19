@@ -53,6 +53,9 @@ public class TicketCommandExecutor implements CommandExecutor {
                         case HELP:
                             subCommand = new HelpCommand();
                             break;
+                        case INFO:
+                            subCommand = new InfoCommand();
+                            break;
                         case LIST:
                             subCommand = new ListCommand();
                             break;
@@ -110,6 +113,7 @@ public class TicketCommandExecutor implements CommandExecutor {
      */
     public enum Operation {
         ASSIGN, CLOSE, CLOSED, COMMENT, GOTO, HELP, LIST, LOG, NEW, OPENED, RELOAD, REOPEN, SHOW, UNASSIGN, VIEW, WARP;
+        ASSIGN, CLOSE, CLOSED, COMMENT, GOTO, HELP, INFO, LIST, LOG, NEW, OPENED, RELOAD, REOPEN, SHOW, TOP, UNASSIGN, VIEW, WARP;
 
         /**
          * returns the matching operation

@@ -29,6 +29,7 @@ texts:
         mod:
           assign: '&8 - &6assign <#> <Ziel>:&e Weise das &6Ticket&e einem &6Ziel&e zu'
           closed: '&8 - &6closed <Spieler>:&e Zeige Tickets, die &6Spieler&e geschlossen hat'
+          info: '&8 - &6info <#>:&e Zeige Informationen zu dem Ticket an'
           list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
           opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
           reopen: '&8 - &6reopen <#>:&e Öffne ein &6Ticket&e erneut'
@@ -41,6 +42,11 @@ texts:
           new: '&8 - &6new <Text>:&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
           show: '&8 - &6show:&e Zeige eine Liste der von dir erstellen Tickets an'
           view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
+    info:
+      info: '&6 Ticket &e#{0}&6, geöffnet von &e{1}&6'
+      date: '&6 Geöffnet: &e{0}'
+      comments: '&6 Kommentare: &e{0} &7&o/pe view {1}'
+      location: '&6 Server: &e{0}&6, [&e{1}&6,&e{2}&6,&e{3}&6], Welt: &e{4}'
     list:
       element: '&e  #{0} {1} &6{2}&8 -> &e{3}&7{4} &8[&7{5}&8]'
       online: '&2+'

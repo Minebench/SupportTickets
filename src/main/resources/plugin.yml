@@ -20,6 +20,7 @@ permissions:
       SupportTickets.closed: true
       SupportTickets.closeOthers: true
       SupportTickets.commentOthers: true
+      SupportTickets.info: true
       SupportTickets.list: true
       SupportTickets.opened: true
       SupportTickets.receiveBukkitTeamMessage: true
@@ -51,6 +52,8 @@ permissions:
     description: comment all tickets
   SupportTickets.help:
     description: assign a ticket
+  SupportTickets.info:
+    description: show infos on a ticket
   SupportTickets.list:
     description: list all ticket
   SupportTickets.opened:
