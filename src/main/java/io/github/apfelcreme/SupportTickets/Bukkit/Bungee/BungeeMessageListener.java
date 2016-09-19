@@ -85,7 +85,7 @@ public class BungeeMessageListener implements PluginMessageListener {
 
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.list.element")
                                 .replace("{0}", ticket.getTicketId().toString())
-                                .replace("{1}", SupportTickets.getNameByUUID(ticket.getSender()))
+                                .replace("{1}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
                                 .replace("{2}", ticket.getAssigned() != null ? ticket.getAssigned() + ": " : "")
                                 .replace("{3}", ticket.getMessage())
                                 .replace("{4}", Integer.toString(ticket.getComments().size())));

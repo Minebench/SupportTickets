@@ -44,7 +44,7 @@ public class ClosedCommand implements SubCommand {
         final Player player = (Player) sender;
         if (player.hasPermission("SupportTickets.closed")) {
             if (args.length > 1) {
-                UUID target = SupportTickets.getUUIDByName(args[1]);
+                UUID target = SupportTickets.getInstance().getUUIDByName(args[1]);
                 if (target != null) {
                     int page = 0;
                     if ((args.length > 2) && SupportTickets.isNumeric(args[2])) {
@@ -74,7 +74,7 @@ public class ClosedCommand implements SubCommand {
                                     .replace("{1}", SupportTickets.getInstance().isPlayerOnline(tickets.get(i).getSender())
                                             ? SupportTicketsConfig.getText("info.list.online")
                                             : SupportTicketsConfig.getText("info.list.offline"))
-                                    .replace("{2}", SupportTickets.getNameByUUID(tickets.get(i).getSender()))
+                                    .replace("{2}", SupportTickets.getInstance().getNameByUUID(tickets.get(i).getSender()))
                                     .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() + ": " : "")
                                     .replace("{4}", tickets.get(i).getMessage())
                                     .replace("{5}", Integer.toString(tickets.get(i).getComments().size())));

@@ -45,18 +45,18 @@ public class ViewCommand implements SubCommand {
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.view.ticket")
                                     .replace("{0}", ticket.getTicketId().toString())
                                     .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                                    .replace("{2}", SupportTickets.getNameByUUID(ticket.getSender())));
+                                    .replace("{2}", SupportTickets.getInstance().getNameByUUID(ticket.getSender())));
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.view.comment")
                                     .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
                                     .replace("{1}", "")
-                                    .replace("{2}", SupportTickets.getNameByUUID(ticket.getSender()))
+                                    .replace("{2}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
                                     .replace("{3}", ticket.getMessage()));
                             for (Comment comment : ticket.getComments()) {
                                 SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.view.comment")
                                         .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()))
                                         .replace("{1}", comment.getSenderHasNoticed() ?
                                                 "" : SupportTicketsConfig.getText("info.view.new"))
-                                        .replace("{2}", SupportTickets.getNameByUUID(comment.getSender()))
+                                        .replace("{2}", SupportTickets.getInstance().getNameByUUID(comment.getSender()))
                                         .replace("{3}", comment.getComment()));
                                 if (!comment.getSenderHasNoticed() && player.getUniqueId().equals(ticket.getSender())) {
                                     SupportTickets.getDatabaseController().setCommentRead(comment);

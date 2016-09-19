@@ -78,8 +78,8 @@ public class SQLController implements DatabaseController {
                 PreparedStatement preparedStatement = connection.prepareStatement(
                         "INSERT INTO " + SupportTicketsConfig.getPlayerTable() + " (uuid, name) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = ?");
                 preparedStatement.setString(1, ticket.getSender().toString());
-                preparedStatement.setString(2, SupportTickets.getNameByUUID(ticket.getSender()));
-                preparedStatement.setString(3, SupportTickets.getNameByUUID(ticket.getSender()));
+                preparedStatement.setString(2, SupportTickets.getInstance().getNameByUUID(ticket.getSender()));
+                preparedStatement.setString(3, SupportTickets.getInstance().getNameByUUID(ticket.getSender()));
                 preparedStatement.executeUpdate();
                 preparedStatement.close();
 
@@ -191,8 +191,8 @@ public class SQLController implements DatabaseController {
                         PreparedStatement preparedStatement = connection.prepareStatement(
                                 "INSERT INTO " + SupportTicketsConfig.getPlayerTable() + " (uuid, name) VALUES (?, ?) ON DUPLICATE KEY UPDATE name = ?");
                         preparedStatement.setString(1, ticket.getSender().toString());
-                        preparedStatement.setString(2, SupportTickets.getNameByUUID(ticket.getSender()));
-                        preparedStatement.setString(3, SupportTickets.getNameByUUID(ticket.getSender()));
+                        preparedStatement.setString(2, SupportTickets.getInstance().getNameByUUID(ticket.getSender()));
+                        preparedStatement.setString(3, SupportTickets.getInstance().getNameByUUID(ticket.getSender()));
                         preparedStatement.executeUpdate();
                         preparedStatement.close();
 
@@ -407,8 +407,8 @@ public class SQLController implements DatabaseController {
                                 "INSERT INTO " + SupportTicketsConfig.getPlayerTable() + " (uuid, name) " +
                                         "VALUES (?, ?) ON DUPLICATE KEY UPDATE name = ?");
                         preparedStatement.setString(1, comment.getSender().toString());
-                        preparedStatement.setString(2, SupportTickets.getNameByUUID(comment.getSender()));
-                        preparedStatement.setString(3, SupportTickets.getNameByUUID(comment.getSender()));
+                        preparedStatement.setString(2, SupportTickets.getInstance().getNameByUUID(comment.getSender()));
+                        preparedStatement.setString(3, SupportTickets.getInstance().getNameByUUID(comment.getSender()));
                         preparedStatement.executeUpdate();
                         preparedStatement.close();
 

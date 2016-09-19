@@ -8,6 +8,7 @@ import io.github.apfelcreme.SupportTickets.Bukkit.Database.Controller.MongoContr
 import io.github.apfelcreme.SupportTickets.Bukkit.Database.Controller.SQLController;
 import io.github.apfelcreme.SupportTickets.Bukkit.Listener.PlayerLoginListener;
 import io.github.apfelcreme.SupportTickets.Bukkit.Task.ReminderTask;
+import net.zaiyers.UUIDDB.bukkit.UUIDDB;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -22,9 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -51,6 +50,11 @@ public class SupportTickets extends JavaPlugin {
      * the database controller
      */
     private static DatabaseController databaseController = null;
+
+    /**
+     * a cache for name -> uuid
+     */
+    private Map<String, UUID> uuidCache = null;
 
     /**
      * a list with online players
@@ -81,6 +85,8 @@ public class SupportTickets extends JavaPlugin {
     @Override
     public void onEnable() {
         try {
+            // initialize the uuid cache
+            uuidCache = new HashMap<String, UUID>();
 
             // init a list
             onlinePlayers = new ArrayList<UUID>();
@@ -199,10 +205,20 @@ public class SupportTickets extends JavaPlugin {
      * @param uuid a players uuid
      * @return his name
      */
-    public static String getNameByUUID(UUID uuid) {
+    public String getNameByUUID(UUID uuid) {
         OfflinePlayer offlinePlayer = getInstance().getServer().getOfflinePlayer(uuid);
         if (offlinePlayer.getName() != null) {
             return offlinePlayer.getName();
+        } else if (uuidCache.containsValue(uuid)) {
+            for (Map.Entry<String, UUID> entry : uuidCache.entrySet()) {
+                if (entry.getValue().equals(uuid)) {
+                    return entry.getKey();
+                }
+            }
+        } else if (getServer().getPluginManager().getPlugin("UUIDDB") != null) {
+            String name = net.zaiyers.UUIDDB.bungee.UUIDDB.getInstance().getStorage().getNameByUUID(uuid);
+            uuidCache.put(name.toUpperCase(), uuid);
+            return name;
         } else {
             //this should only occur if the player has never joined this particular server.
             try {
@@ -229,24 +245,33 @@ public class SupportTickets extends JavaPlugin {
      * @param name a players name
      * @return his uuid
      */
-    public static UUID getUUIDByName(String name) {
-        try {
-            URL url = new URL(SupportTicketsConfig.getAPIUUIDUrl().replace("{0}", name));
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            StringBuilder json = new StringBuilder();
-            int read;
-            while ((read = in.read()) != -1) {
-                json.append((char) read);
+    public UUID getUUIDByName(String name) {
+        name = name.toUpperCase();
+        if (uuidCache.containsKey(name)) {
+            return uuidCache.get(name);
+        } else if (getServer().getPluginManager().getPlugin("UUIDDB") != null) {
+            UUID uuid = UUID.fromString(UUIDDB.getInstance().getStorage().getUUIDByName(name, false));
+            uuidCache.put(name, uuid);
+            return uuid;
+        } else {
+            try {
+                URL url = new URL(SupportTicketsConfig.getAPIUUIDUrl().replace("{0}", name));
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                StringBuilder json = new StringBuilder();
+                int read;
+                while ((read = in.read()) != -1) {
+                    json.append((char) read);
+                }
+                if (json.length() == 0) {
+                    return null;
+                }
+                JSONObject jsonObject = (JSONObject) (new JSONParser().parse(json.toString()));
+                String id = jsonObject.get("id").toString();
+                return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                        "$1-$2-$3-$4-$5"));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            if (json.length() == 0) {
-                return null;
-            }
-            JSONObject jsonObject = (JSONObject) (new JSONParser().parse(json.toString()));
-            String id = jsonObject.get("id").toString();
-            return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
-                    "$1-$2-$3-$4-$5"));
-        } catch (Exception e) {
-            e.printStackTrace();
         }
         return null;
     }
