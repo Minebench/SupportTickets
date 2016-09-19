@@ -169,6 +169,15 @@ public class SupportTicketsConfig {
     }
 
     /**
+     * returns the size of the top list
+     *
+     * @return the size of the top list
+     */
+    public static Integer getTopListSize() {
+        return plugin.getConfig().getInt("topListSize");
+    }
+
+    /**
      * returns the delay of the reminder task
      *
      * @return the delay of the reminder task

@@ -1,5 +1,6 @@
 db: 'mongodb'
 pageSize: 10
+topListSize: 5
 reminderTaskDelay: 36000 #30 minutes
 teleportDelay: 30 #ticks
 apiUrlName: 'https://api.mojang.com/user/profiles/{0}/names'

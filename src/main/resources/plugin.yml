@@ -26,6 +26,7 @@ permissions:
       SupportTickets.receiveBukkitTeamMessage: true
       SupportTickets.reload: true
       SupportTickets.reopen: true
+      SupportTickets.top: true
       SupportTickets.unassign: true
       SupportTickets.warp: true
       SupportTickets.viewOthers: true
@@ -66,6 +67,8 @@ permissions:
     description: reopen a ticket
   SupportTickets.show:
     description: show all tickets a user has currently opened
+  SupportTickets.top:
+    description: shows a top list of who closed the most tickets
   SupportTickets.unassign:
     description: unassign a ticket
   SupportTickets.view:

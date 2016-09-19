@@ -74,6 +74,9 @@ public class TicketCommandExecutor implements CommandExecutor {
                         case SHOW:
                             subCommand = new ShowCommand();
                             break;
+                        case TOP:
+                            subCommand = new TopCommand();
+                            break;
                         case UNASSIGN:
                             subCommand = new UnassignCommand();
                             break;
