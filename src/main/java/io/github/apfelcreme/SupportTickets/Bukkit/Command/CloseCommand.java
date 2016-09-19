@@ -82,11 +82,11 @@ public class CloseCommand implements SubCommand {
                     }
                 } else {
                     SupportTickets.sendMessage(player, SupportTicketsConfig.getText("error.wrongUsage")
-                            .replace("{0}", "/pe comment <#> <Kommentar>"));
+                            .replace("{0}", "/pe close <#> <Kommentar>"));
                 }
             } else {
                 SupportTickets.sendMessage(player, SupportTicketsConfig.getText("error.wrongUsage")
-                        .replace("{0}", "/pe comment <#> <Kommentar>"));
+                        .replace("{0}", "/pe close <#> <Kommentar>"));
             }
         } else {
             SupportTickets.sendMessage(sender, SupportTicketsConfig.getText("error.noPermission"));

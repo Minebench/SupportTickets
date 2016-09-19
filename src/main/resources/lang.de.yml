@@ -59,7 +59,7 @@ texts:
       newCommentsSingular: '&6 Während du abwesend warst, wurde dein Ticket &e#{0}&6 kommentiert. Schau es dir mit &e/pe view {0}&6 an!'
     new:
       created: '&6 Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! Mit &e/pe show&6 kannst du deine Tickets einsehen.'
-      newTicket: '&e Neues Ticket: #{0} &6{1} &8-> &7{2}'
+      newTicket: '&6 Neues Ticket: &e#{0} &6{1} &8-> &7{2}'
     opened:
       footer: '&6 Für andere Seiten: &e/pe opened <Spieler> <#>'
       header: '&6 Von {0} geöffnete Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'

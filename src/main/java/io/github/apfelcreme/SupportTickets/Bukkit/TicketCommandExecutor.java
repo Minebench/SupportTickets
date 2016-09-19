@@ -115,7 +115,6 @@ public class TicketCommandExecutor implements CommandExecutor {
      * a list of available subcommands
      */
     public enum Operation {
-        ASSIGN, CLOSE, CLOSED, COMMENT, GOTO, HELP, LIST, LOG, NEW, OPENED, RELOAD, REOPEN, SHOW, UNASSIGN, VIEW, WARP;
         ASSIGN, CLOSE, CLOSED, COMMENT, GOTO, HELP, INFO, LIST, LOG, NEW, OPENED, RELOAD, REOPEN, SHOW, TOP, UNASSIGN, VIEW, WARP;
 
         /**

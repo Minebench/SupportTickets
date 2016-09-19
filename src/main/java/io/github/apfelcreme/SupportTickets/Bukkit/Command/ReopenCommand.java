@@ -63,11 +63,11 @@ public class ReopenCommand implements SubCommand {
                     }
                 } else {
                     SupportTickets.sendMessage(player, SupportTicketsConfig.getText("error.wrongUsage")
-                            .replace("{0}", "/pe comment <#> <Kommentar>"));
+                            .replace("{0}", "/pe reopen <#>"));
                 }
             } else {
                 SupportTickets.sendMessage(player, SupportTicketsConfig.getText("error.wrongUsage")
-                        .replace("{0}", "/pe comment <#> <Kommentar>"));
+                        .replace("{0}", "/pe reopen <#>"));
             }
         } else {
             SupportTickets.sendMessage(sender, SupportTicketsConfig.getText("error.noPermission"));

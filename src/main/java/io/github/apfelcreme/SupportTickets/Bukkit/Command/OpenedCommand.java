@@ -84,7 +84,7 @@ public class OpenedCommand implements SubCommand {
                 }
             } else {
                 SupportTickets.sendMessage(sender, SupportTicketsConfig.getText("error.wrongUsage")
-                        .replace("{0}", "/pe closed <Spieler>"));
+                        .replace("{0}", "/pe opened <Spieler>"));
             }
         } else {
             SupportTickets.sendMessage(sender, SupportTicketsConfig.getText("error.noPermission"));
