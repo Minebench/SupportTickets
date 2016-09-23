@@ -1,25 +1,29 @@
 package io.github.apfelcreme.SupportTickets.Bungee;
 
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
+import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
+import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MySQLConnector;
+import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.DatabaseController;
+import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.MongoController;
+import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.SQLController;
+import io.github.apfelcreme.SupportTickets.Bungee.Listener.PlayerLoginListener;
+import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessageListener;
+import io.github.apfelcreme.SupportTickets.Bungee.Task.ReminderTask;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import net.md_5.bungee.api.connection.Server;
-import net.md_5.bungee.api.event.LoginEvent;
-import net.md_5.bungee.api.event.PlayerDisconnectEvent;
-import net.md_5.bungee.api.event.PluginMessageEvent;
-import net.md_5.bungee.api.event.PostLoginEvent;
-import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.md_5.bungee.event.EventHandler;
+import net.zaiyers.UUIDDB.bukkit.UUIDDB;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.util.UUID;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -39,146 +43,270 @@ import java.util.UUID;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class SupportTickets extends Plugin implements Listener {
+public class SupportTickets extends Plugin {
 
+    /**
+     * the database controller
+     */
+    private static DatabaseController databaseController = null;
+
+    /**
+     * a cache for name -> uuid
+     */
+    private Map<String, UUID> uuidCache = null;
+
+    /**
+     * returns the plugin instance
+     *
+     * @return the plugin instance
+     */
+    public static SupportTickets getInstance() {
+        return (SupportTickets) ProxyServer.getInstance().getPluginManager().getPlugin("SupportTickets");
+    }
+
+    /**
+     * returns the databaseController
+     *
+     * @return the databaseController
+     */
+    public static DatabaseController getDatabaseController() {
+        return databaseController;
+    }
+
+    /**
+     * onEnable
+     */
     @Override
     public void onEnable() {
+
+        // initialize the uuid cache
+        uuidCache = new HashMap<>();
+
+        // init the config
+        SupportTicketsConfig.getInstance();
+
+        // init the database connection
+        switch (SupportTicketsConfig.getInstance().getDb()) {
+            case MySQL:
+                MySQLConnector.getInstance().initConnection();
+                databaseController = new SQLController();
+                break;
+            case MongoDB:
+                databaseController = new MongoController();
+                break;
+        }
+
+        // register the command
+        getProxy().getPluginManager().registerCommand(this, new TicketCommandExecutor("ticket"));
+        getProxy().getPluginManager().registerCommand(this, new TicketCommandExecutor("pe"));
+
+        // register the Plugin channels for the bukkit <-> bungee communication
         getProxy().registerChannel("SupportTickets");
-        getProxy().getPluginManager().registerListener(this, this);
-    }
+        getProxy().getPluginManager().registerListener(this, new BukkitMessageListener());
 
-    @EventHandler
-    public void onPluginMessageReceived(PluginMessageEvent event) throws IOException {
-        if (!event.getTag().equals("SupportTickets")) {
-            return;
-        }
-        if (!(event.getSender() instanceof Server)) {
-            return;
-        }
+        // register the listeners
+        getProxy().getPluginManager().registerListener(this, new PlayerLoginListener());
 
-        ByteArrayInputStream stream = new ByteArrayInputStream(event.getData());
-        DataInputStream in = new DataInputStream(stream);
-        Operation operation = Operation.valueOf(in.readUTF());
-        switch (operation) {
-            case MESSAGE:
-                sendPlayerMessage(UUID.fromString(in.readUTF()), in.readUTF());
-                break;
-            case STATUSCHANGE:
-                sendPlayerStatusChange(UUID.fromString(in.readUTF()), in.readBoolean());
-                break;
-            case TEAMMESSAGE:
-                sendTeamMessage(in.readUTF());
-                break;
-            case WARP:
-                sendPlayerToTicket(UUID.fromString(in.readUTF()), in.readInt(), in.readUTF());
-                break;
-        }
+        // start the reminder task
+        getProxy().getScheduler().schedule(this,
+                new ReminderTask(), SupportTicketsConfig.getInstance().getReminderTaskDelay(), TimeUnit.MINUTES);
     }
 
     /**
-     * sends a message to all servers that a player has come online
-     * @param event an event
+     * onDisable
      */
-    @EventHandler
-    public void onPlayerJoin(PostLoginEvent event) {
-        sendPlayerStatusChange(event.getPlayer().getUniqueId(), true);
+    @Override
+    public void onDisable() {
+        if (databaseController instanceof MongoController) {
+            MongoConnector.getInstance().close();
+        }
     }
 
     /**
-     * sends a message to all servers that a player has went offline
-     * @param event an event
-     */
-    @EventHandler
-    public void onPlayerQuit(PlayerDisconnectEvent event) {
-        sendPlayerStatusChange(event.getPlayer().getUniqueId(), false);
-    }
-
-    /**
-     * sends a player to a ticket location
+     * sends a message to a player
      *
-     * @param uuid     the player uuid
-     * @param ticketId the ticket id
-     * @param serverIp the ip of the server the ticket was created on (xxx.xxx.xxx.xxx:PORT)
-     * @throws IOException
+     * @param receiver the player
+     * @param text     the message
      */
-    private void sendPlayerToTicket(UUID uuid, Integer ticketId, String serverIp) throws IOException {
-        ServerInfo target = getTargetServer(serverIp);
-
-        if (target != null && target.getAddress().getAddress().isReachable(2000)) {
-            ProxiedPlayer player = getProxy().getPlayer(uuid);
-            if (player != null && !player.getServer().getInfo().equals(target)) {
-                player.connect(target);
-            }
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("WARP");
-            out.writeUTF(uuid.toString());
-            out.writeInt(ticketId);
-            target.sendData("SupportTickets", out.toByteArray());
-        }
-
+    public static void sendMessage(CommandSender receiver, String text) {
+        receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + text));
     }
 
     /**
-     * sends a text message to all players who have a certain permission
+     * sends a message to a player
      *
-     * @param message the message
-     */
-    private void sendTeamMessage(String message) {
-        for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-            if (player.hasPermission("SupportTickets.team")) {
-                player.sendMessage(TextComponent.fromLegacyText(message));
-            }
-        }
-    }
-
-    /**
-     * sends a text message to a player
-     *
-     * @param uuid    the player uuid
-     * @param message the text message
-     */
-    private void sendPlayerMessage(UUID uuid, String message) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
-        if (player != null) {
-            player.sendMessage(TextComponent.fromLegacyText(message));
-        }
-    }
-
-    /**
-     * sends a message to all servers that a player is online or offline
      * @param uuid the players uuid
-     * @param online true or false
+     * @param text the message
      */
-    private void sendPlayerStatusChange(UUID uuid, boolean online) {
-        for (ServerInfo serverInfo : ProxyServer.getInstance().getServers().values()) {
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("STATUSCHANGE");
-            out.writeUTF(uuid.toString());
-            out.writeBoolean(online);
-            serverInfo.sendData("SupportTickets", out.toByteArray());
+    public static void sendMessage(UUID uuid, String text) {
+        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+        if (uuid != null) {
+            sendMessage(player, text);
         }
     }
 
     /**
-     * returns the server info with the given ip (xxx.xxx.xxx.xxx:PORT)
+     * sends a message to all players with the permission "SupportTickets.receiveBukkitTeamMessage"
      *
-     * @param serverIp the ip:port
-     * @return the serverInfo
+     * @param message a text
      */
-    private ServerInfo getTargetServer(String serverIp) {
-        for (ServerInfo serverInfo : getProxy().getServers().values()) {
-            if (serverInfo.getAddress().equals(new InetSocketAddress(serverIp.split(":")[0],
-                    Integer.parseInt(serverIp.split(":")[1])))) {
-                return serverInfo;
+    public static void sendTeamMessage(String message) {
+        for (ProxiedPlayer receiver : ProxyServer.getInstance().getPlayers()) {
+            if (receiver.hasPermission("SupportTickets.mod")) {
+                sendMessage(receiver, message);
+            }
+        }
+    }
+
+    /**
+     * returns the prefix for messages
+     *
+     * @return the prefix for messages
+     */
+    public static String getPrefix() {
+        return SupportTicketsConfig.getInstance().getText("prefix");
+    }
+
+    /**
+     * checks if a player is online
+     *
+     * @param uuid a players uuid
+     * @return true or false
+     */
+    public boolean isPlayerOnline(UUID uuid) {
+        for (ProxiedPlayer player : getProxy().getPlayers()) {
+            if (player.getUniqueId().equals(uuid)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * returns the username of a player with the given uuid
+     *
+     * @param uuid a players uuid
+     * @return his name
+     */
+    public String getNameByUUID(UUID uuid) {
+        if (uuidCache.containsValue(uuid)) {
+            for (Map.Entry<String, UUID> entry : uuidCache.entrySet()) {
+                if (entry.getValue().equals(uuid)) {
+                    return entry.getKey();
+                }
+            }
+        } else if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
+            String name = net.zaiyers.UUIDDB.bungee.UUIDDB.getInstance().getStorage().getNameByUUID(uuid);
+            uuidCache.put(name.toUpperCase(), uuid);
+            return name;
+        } else {
+            //this should only occur if the player has never joined this particular server.
+            try {
+                URL url = new URL(SupportTicketsConfig.getInstance().getAPINameUrl().replace("{0}", uuid.toString().replace("-", "")));
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                StringBuilder json = new StringBuilder();
+                int read;
+                while ((read = in.read()) != -1) {
+                    json.append((char) read);
+                }
+                Object obj = new JSONParser().parse(json.toString());
+                JSONArray jsonArray = (JSONArray) obj;
+                return (String) ((JSONObject) jsonArray.get(jsonArray.size() - 1)).get("name");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return "Unknown Player";
+    }
+
+    /**
+     * returns the uuid of the player with the given uuid
+     *
+     * @param name a players name
+     * @return his uuid
+     */
+    public UUID getUUIDByName(String name) {
+        name = name.toUpperCase();
+        if (uuidCache.containsKey(name)) {
+            return uuidCache.get(name);
+        } else if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
+            UUID uuid = UUID.fromString(UUIDDB.getInstance().getStorage().getUUIDByName(name, false));
+            uuidCache.put(name, uuid);
+            return uuid;
+        } else {
+            try {
+                URL url = new URL(SupportTicketsConfig.getInstance().getAPIUUIDUrl().replace("{0}", name));
+                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+                StringBuilder json = new StringBuilder();
+                int read;
+                while ((read = in.read()) != -1) {
+                    json.append((char) read);
+                }
+                if (json.length() == 0) {
+                    return null;
+                }
+                JSONObject jsonObject = (JSONObject) (new JSONParser().parse(json.toString()));
+                String id = jsonObject.get("id").toString();
+                return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                        "$1-$2-$3-$4-$5"));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return null;
     }
 
     /**
-     * a
+     * joins a number of strings and places a seperator between them
+     * -> taken from StringUtils to reduce the number of dependencies
+     *
+     * @param array     the array of strings
+     * @param separator the seperator
+     * @return a joined string
      */
-    public enum Operation {
-        MESSAGE, STATUSCHANGE, TEAMMESSAGE, WARP
+    public static String join(Object[] array, String separator, String lastSeparator) {
+        if (array == null) {
+            return null;
+        } else {
+            if (separator == null) {
+                separator = "";
+            }
+            if (lastSeparator == null) {
+                lastSeparator = separator;
+            }
+
+            int noOfItems = array.length;
+            if (noOfItems <= 0) {
+                return "";
+            } else {
+                StringBuilder buf = new StringBuilder(noOfItems * 16);
+
+                for (int i = 0; i < array.length; ++i) {
+                    if (i > 0) {
+                        if (i < array.length - 1) {
+                            buf.append(separator);
+                        } else {
+                            buf.append(lastSeparator);
+                        }
+                    }
+
+                    if (array[i] != null) {
+                        buf.append(array[i]);
+                    }
+                }
+                return buf.toString();
+            }
+        }
+    }
+
+    /**
+     * checks if a String contains only numbers
+     *
+     * @param string a string
+     * @return true or false
+     */
+    public static boolean isNumeric(String string) {
+        return Pattern.matches("([0-9])*", string);
     }
 }

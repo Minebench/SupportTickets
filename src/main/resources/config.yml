@@ -1,8 +1,7 @@
 db: 'mongodb'
 pageSize: 10
 topListSize: 5
-reminderTaskDelay: 36000 #30 minutes
-teleportDelay: 30 #ticks
+reminderTaskDelay: 30 # minutes
 apiUrlName: 'https://api.mojang.com/user/profiles/{0}/names'
 apiUrlUUID: 'https://api.mojang.com/users/profiles/minecraft/{0}'
 sql:

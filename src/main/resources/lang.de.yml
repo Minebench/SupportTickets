@@ -1,8 +1,8 @@
 texts:
   prefix: '&7[&8PE&7]'
   error:
-    noPermission: '&c Du hast nicht die benötigte Berechtigung!'
-    notYourTicket: '&c Dieses Ticket wurde nicht von dir geöffnet!'
+    noPermission: '&c Du hast keine ausreichende Berechtigung!'
+    notYourTicket: '&c Dieses Ticket wurde nicht von dir geoeffnet!'
     ticketAlreadyClosed: '&c Das Ticket wurde bereits geschlossen'
     unknownCommand: '&c Die Funktion {0} existiert nicht!'
     unknownPlayer: '&c Der angegebene Spieler existiert nicht!'
@@ -18,63 +18,63 @@ texts:
       closeComment: '&7Das Ticket wurde von &e{0}&7 geschlossen: {1}'
       yourTicketGotClosed: '&6 Dein Ticket &e#{0}&6 wurde von &e{1}&6 geschlossen: &7{2}'
     closed:
-      footer: '&6 Für andere Seiten: &e/pe closed <Spieler> <#>'
+      footer: '&6 Fuer andere Seiten: &e/pe closed <Spieler> <#>'
       header: '&6 Von {0} geschlossene Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
     comment:
       commented: '&e {0}&6 hat das Ticket &e#{1}&6 kommentiert: &7{2}'
       yourTicketGotCommented: '&6 Dein Ticket &e#{0}&6 wurde von &e{1}&6 kommentiert: &7{2}'
     help:
-      header: '&6 Folgende Funktionen stehen dir zur Verfügung'
+      header: '&6 Folgende Funktionen stehen dir zur Verfuegung'
       commands:
         mod:
           assign: '&8 - &6assign <#> <Ziel>:&e Weise das &6Ticket&e einem &6Ziel&e zu'
-          closed: '&8 - &6closed <Spieler>:&e Zeige Tickets, die &6Spieler&e geschlossen hat'
+          closed: '&8 - &6closed <Spieler>:&e Zeige Tickets, die &6Sp.&e geschlossen hat'
           info: '&8 - &6info <#>:&e Zeige Informationen zu dem Ticket an'
           list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
           opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
-          reopen: '&8 - &6reopen <#>:&e Öffne ein &6Ticket&e erneut'
+          reopen: '&8 - &6reopen <#>:&e Oeffne ein &6Ticket&e erneut'
           top: '&8 - &6top: &e Zeigt die Topliste der aktivsten Teamler'
           unassign: '&8 - &6unassign <#>:&e Entfernt die Weiterleitung eines Tickets'
           warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
         user:
-          close: '&8 - &6close <#> <Grund>:&e Schließe das &6Ticket&e mit einem &6Grund'
+          close: '&8 - &6close <#> <Grund>:&e Schliesse das &6Ticket&e mit einem &6Grund'
           comment: '&8 - &6comment <#> <Text>:&6 Kommentiere&e ein &6Ticket'
           help: '&8 - &6help:&e Zeige eine Ansicht aller Funktionen an'
           new: '&8 - &6new <Text>:&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
           show: '&8 - &6show:&e Zeige eine Liste der von dir erstellen Tickets an'
           view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
     info:
-      info: '&6 Ticket &e#{0}&6, geöffnet von &e{1}&6'
-      date: '&6 Geöffnet: &e{0}'
+      info: '&6 Ticket &e#{0}&6, geoeffnet von &e{1}&6'
+      date: '&6 Geoeffnet: &e{0}'
       comments: '&6 Kommentare: &e{0} &7&o/pe view {1}'
       location: '&6 Server: &e{0}&6, [&e{1}&6,&e{2}&6,&e{3}&6], Welt: &e{4}'
     list:
       element: '&e  #{0} {1} &6{2}&8 -> &e{3}&7{4} &8[&7{5}&8]'
       online: '&2+'
       offline: '&c-'
-      footer: '&6 Für andere Seiten: &e/pe list <#>'
+      footer: '&6 Fuer andere Seiten: &e/pe list <#>'
       header: '&6 Offene Tickets: (&e{0}&6/&e{1}&6)'
     login:
-      newCommentsPlural: '&6 Während du abwesend warst, wurden einige deiner Tickets kommentiert: &e{0}&6. Schau sie dir mit &e/pe view #&6 an!'
-      newCommentsSingular: '&6 Während du abwesend warst, wurde dein Ticket &e#{0}&6 kommentiert. Schau es dir mit &e/pe view {0}&6 an!'
+      newCommentsPlural: '&6 Waehrend du abwesend warst, wurden einige deiner Tickets kommentiert: &e{0}&6. Schau sie dir mit &e/pe view #&6 an!'
+      newCommentsSingular: '&6 Waehrend du abwesend warst, wurde dein Ticket &e#{0}&6 kommentiert. Schau es dir mit &e/pe view {0}&6 an!'
     new:
-      created: '&6 Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! Mit &e/pe show&6 kannst du deine Tickets einsehen.'
+      created: '&6 Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmoeglich um dein Anliegen kuemmern! Mit &e/pe show&6 kannst du deine Tickets einsehen.'
       newTicket: '&6 Neues Ticket: &e#{0} &6{1} &8-> &7{2}'
     opened:
-      footer: '&6 Für andere Seiten: &e/pe opened <Spieler> <#>'
-      header: '&6 Von {0} geöffnete Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
+      footer: '&6 Fuer andere Seiten: &e/pe opened <Spieler> <#>'
+      header: '&6 Von {0} geoeffnete Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
     reload:
       reloaded: '&6 Die Config wurde neu geladen'
     reminderTask:
-      infoPlural: '&7 Es sind derzeit {0} Tickets geöffnet'
-      infoSingular: '&7 Es ist derzeit ein Ticket geöffnet'
+      infoPlural: '&7 Es sind derzeit {0} Tickets geoeffnet'
+      infoSingular: '&7 Es ist derzeit ein Ticket geoeffnet'
     reopen:
-      reopened: '&6 Das Ticket &e#{0}&6 wurde wieder geöffnet'
-      reopenComment: '&7Das Ticket wurde von &e{0}&7 wieder geöffnet'
-      yourTicketGotReopened: '&6 Dein Ticket &e#{0}&6 wurde wieder geöffnet'
+      reopened: '&6 Das Ticket &e#{0}&6 wurde wieder geoeffnet'
+      reopenComment: '&7Das Ticket wurde von &e{0}&7 wieder geoeffnet'
+      yourTicketGotReopened: '&6 Dein Ticket &e#{0}&6 wurde wieder geoeffnet'
     show:
-      footer: '&6 Für andere Seiten: &e/pe show <#>'
-      header: '&6 Von dir geöffnete Tickets: (&e{0}&6/&e{1}&6)'
+      footer: '&6 Fuer andere Seiten: &e/pe show <#>'
+      header: '&6 Von dir geoeffnete Tickets: (&e{0}&6/&e{1}&6)'
     top:
       header: '&6 Diese &e{0}&6 Teamler sind die aktivsten: '
       element: '&6 {0}. &e{1}: &7{2} geschlossene Tickets'
@@ -88,4 +88,4 @@ texts:
       new: ' &2Neu'
       ticket: '&6 Ticket &e#{0}&6, erstellt am &e{1}&6 von &e{2}'
     warp:
-      youGotWarped: '&6 Du wurdest zu Ticket &e#{0}&6 teleportiert'
+      warped: ' &e#{0} [&e{1}&8]{2} &6{3}: &7{4}'

@@ -3,13 +3,13 @@ package io.github.apfelcreme.SupportTickets.Bukkit.Bungee;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import io.github.apfelcreme.SupportTickets.Bukkit.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bukkit.SupportTicketsConfig;
-import io.github.apfelcreme.SupportTickets.Bukkit.Ticket.Ticket;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.UUID;
 
 /**
@@ -37,63 +37,70 @@ public class BungeeMessageListener implements PluginMessageListener {
             return;
         }
 
-        SupportTickets.getInstance().getServer().getScheduler().runTaskAsynchronously(SupportTickets.getInstance(), new Runnable() {
-            public void run() {
-                ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
-                String subChannel = in.readUTF();
-                if (subChannel.equals("WARP")) {
-                    UUID uuid = UUID.fromString(in.readUTF());
-                    Ticket ticket = SupportTickets.getDatabaseController().loadTicket(in.readInt());
-                    if ((ticket != null)) {
-                        teleportPlayer(uuid, ticket);
-                    }
-                } else if (subChannel.equals("STATUSCHANGE")) {
-                    UUID uuid = UUID.fromString(in.readUTF());
-                    if (in.readBoolean()) {
-                        SupportTickets.getInstance().setPlayerOnline(uuid);
-                    } else {
-                        SupportTickets.getInstance().setPlayerOffline(uuid);
-                    }
-                }
-            }
-        });
-    }
-
-    /**
-     * teleports a player to a tickets location
-     *
-     * @param uuid   the player uuid
-     * @param ticket the ticket
-     */
-    private void teleportPlayer(final UUID uuid, final Ticket ticket) {
-        final World world = SupportTickets.getInstance().getServer().getWorld(ticket.getLocation().getWorldName());
-        if (world != null) {
-            SupportTickets.getInstance().getServer().getScheduler().runTaskLater(SupportTickets.getInstance(), new Runnable() {
-                public void run() {
-                    Player player = SupportTickets.getInstance().getServer().getPlayer(uuid);
-                    if (player != null) {
-                        Location location = new Location(world,
-                                ticket.getLocation().getLocationX(),
-                                ticket.getLocation().getLocationY(),
-                                ticket.getLocation().getLocationZ(),
-                                (float) ticket.getLocation().getYaw(),
-                                (float) ticket.getLocation().getPitch());
-                        player.teleport(location);
-
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.warp.youGotWarped")
-                                .replace("{0}", ticket.getTicketId().toString()));
-
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getText("info.list.element")
-                                .replace("{0}", ticket.getTicketId().toString())
-                                .replace("{1}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
-                                .replace("{2}", ticket.getAssigned() != null ? ticket.getAssigned() + ": " : "")
-                                .replace("{3}", ticket.getMessage())
-                                .replace("{4}", Integer.toString(ticket.getComments().size())));
-                    }
-                }
-            }, SupportTicketsConfig.getTeleportDelay());
+        ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
+        String subChannel = in.readUTF();
+        if (subChannel.equals("WARP")) {
+            UUID uuid = UUID.fromString(in.readUTF());
+            Location location = new Location(SupportTickets.getInstance().getServer().getWorld(in.readUTF()),
+                    in.readDouble(), in.readDouble(), in.readDouble(),
+                    (float) in.readDouble(), (float) in.readDouble());
+            warp(uuid, location);
+        } else if (subChannel.equals("POSITIONREQUEST")) {
+            UUID uuid = UUID.fromString(in.readUTF());
+            String message = in.readUTF();
+            answerPositionRequest(uuid, message);
         }
     }
 
+    /**
+     * answers a position request
+     *
+     * @param uuid    a players uuid
+     * @param message a ticket message (which is just carried around, so it does not have to be mapped in the
+     *                bungee instance somewhere to wait for this request to return)
+     */
+    private void answerPositionRequest(UUID uuid, String message) {
+        ByteArrayOutputStream b = new ByteArrayOutputStream();
+        DataOutputStream out = new DataOutputStream(b);
+
+        try {
+            Player player = SupportTickets.getInstance().getServer().getPlayer(uuid);
+            if (player != null) {
+                out.writeUTF("POSITIONANSWER");
+                out.writeUTF(uuid.toString());
+                out.writeUTF(SupportTickets.getInstance().getServer().getIp()+":"+SupportTickets.getInstance().getServer().getPort());
+                out.writeUTF(player.getWorld().getName());
+                out.writeDouble(player.getLocation().getX());
+                out.writeDouble(player.getLocation().getY());
+                out.writeDouble(player.getLocation().getZ());
+                out.writeDouble((double) player.getLocation().getYaw());
+                out.writeDouble((double) player.getLocation().getPitch());
+                out.writeUTF(message);
+                player.sendPluginMessage(SupportTickets.getInstance(), "SupportTickets", b.toByteArray());
+                out.close();
+                b.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * teleports a player to a location
+     *
+     * @param uuid     the players uuid
+     * @param location the location
+     */
+    private void warp(final UUID uuid, final Location location) {
+        SupportTickets.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SupportTickets.getInstance(), new Runnable() {
+            @Override
+            public void run() {
+                Player player = SupportTickets.getInstance().getServer().getPlayer(uuid);
+                if (uuid != null) {
+                    player.teleport(location);
+                }
+            }
+        }, 20L);
+    }
 
 }
