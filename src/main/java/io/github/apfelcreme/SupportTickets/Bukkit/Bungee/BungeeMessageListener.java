@@ -92,7 +92,7 @@ public class BungeeMessageListener implements PluginMessageListener {
      * @param location the location
      */
     private void warp(final UUID uuid, final Location location) {
-        SupportTickets.getInstance().getServer().getScheduler().runTaskLaterAsynchronously(SupportTickets.getInstance(), new Runnable() {
+        SupportTickets.getInstance().getServer().getScheduler().runTaskLater(SupportTickets.getInstance(), new Runnable() {
             @Override
             public void run() {
                 Player player = SupportTickets.getInstance().getServer().getPlayer(uuid);
