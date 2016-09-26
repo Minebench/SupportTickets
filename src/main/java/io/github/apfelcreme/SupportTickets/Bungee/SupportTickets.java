@@ -13,7 +13,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.zaiyers.UUIDDB.bukkit.UUIDDB;
+import net.zaiyers.UUIDDB.bungee.UUIDDB;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -129,7 +129,9 @@ public class SupportTickets extends Plugin {
      * @param text     the message
      */
     public static void sendMessage(CommandSender receiver, String text) {
-        receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + text));
+        if (receiver != null && text != null) {
+            receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + text));
+        }
     }
 
     /**
@@ -140,7 +142,7 @@ public class SupportTickets extends Plugin {
      */
     public static void sendMessage(UUID uuid, String text) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
-        if (uuid != null) {
+        if (player != null) {
             sendMessage(player, text);
         }
     }
@@ -197,8 +199,8 @@ public class SupportTickets extends Plugin {
                 }
             }
         } else if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
-            String name = net.zaiyers.UUIDDB.bungee.UUIDDB.getInstance().getStorage().getNameByUUID(uuid);
-            uuidCache.put(name.toUpperCase(), uuid);
+            String name = UUIDDB.getInstance().getStorage().getNameByUUID(uuid);
+            uuidCache.put(name, uuid);
             return name;
         } else {
             //this should only occur if the player has never joined this particular server.
@@ -212,7 +214,9 @@ public class SupportTickets extends Plugin {
                 }
                 Object obj = new JSONParser().parse(json.toString());
                 JSONArray jsonArray = (JSONArray) obj;
-                return (String) ((JSONObject) jsonArray.get(jsonArray.size() - 1)).get("name");
+                String name = (String) ((JSONObject) jsonArray.get(jsonArray.size() - 1)).get("name");
+                uuidCache.put(name, uuid);
+                return name;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -221,13 +225,12 @@ public class SupportTickets extends Plugin {
     }
 
     /**
-     * returns the uuid of the player with the given uuid
+     * returns the uuid of the player with the given name
      *
      * @param name a players name
      * @return his uuid
      */
     public UUID getUUIDByName(String name) {
-        name = name.toUpperCase();
         if (uuidCache.containsKey(name)) {
             return uuidCache.get(name);
         } else if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
@@ -248,8 +251,10 @@ public class SupportTickets extends Plugin {
                 }
                 JSONObject jsonObject = (JSONObject) (new JSONParser().parse(json.toString()));
                 String id = jsonObject.get("id").toString();
-                return UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
+                UUID uuid = UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
                         "$1-$2-$3-$4-$5"));
+                uuidCache.put(name, uuid);
+                return uuid;
             } catch (Exception e) {
                 e.printStackTrace();
             }
