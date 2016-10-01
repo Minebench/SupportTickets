@@ -1,3 +1,8 @@
+#IntelliJ Idea files
+.idea
+*.iml
+out
+target
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
