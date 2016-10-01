@@ -13,7 +13,7 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
-import net.zaiyers.UUIDDB.bungee.UUIDDB;
+import net.zaiyers.UUIDDB.core.UUIDDBPlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -56,7 +56,13 @@ public class SupportTickets extends Plugin {
     private Map<String, UUID> uuidCache = null;
 
     /**
+     * directly store reference to UUIDDB plugin instead of always getting the instance
+     */
+    private UUIDDBPlugin uuidDb = null;
+
+    /**
      * returns the plugin instance
+     * TODO: Get rid of the need for this static method
      *
      * @return the plugin instance
      */
@@ -78,6 +84,10 @@ public class SupportTickets extends Plugin {
      */
     @Override
     public void onEnable() {
+
+        if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
+            uuidDb = (UUIDDBPlugin) getProxy().getPluginManager().getPlugin("UUIDDB");
+        }
 
         // initialize the uuid cache
         uuidCache = new HashMap<>();
@@ -191,18 +201,20 @@ public class SupportTickets extends Plugin {
      * @return his name
      */
     public String getNameByUUID(UUID uuid) {
-        if (uuidCache.containsValue(uuid)) {
+        String name = null;
+        if (uuidDb != null) {
+            name = uuidDb.getStorage().getNameByUUID(uuid);
+        } else if (uuidCache.containsValue(uuid)) {
             for (Map.Entry<String, UUID> entry : uuidCache.entrySet()) {
                 if (entry.getValue().equals(uuid)) {
-                    return entry.getKey();
+                    name = entry.getKey();
+                    break;
                 }
             }
-        } else if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
-            String name = UUIDDB.getInstance().getStorage().getNameByUUID(uuid);
-            uuidCache.put(name, uuid);
-            return name;
-        } else {
-            //this should only occur if the player has never joined this particular server.
+        }
+
+        if (name == null) {
+            //this should only occur if the player has never joined
             try {
                 URL url = new URL(SupportTicketsConfig.getInstance().getAPINameUrl().replace("{0}", uuid.toString().replace("-", "")));
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -213,14 +225,17 @@ public class SupportTickets extends Plugin {
                 }
                 Object obj = new JSONParser().parse(json.toString());
                 JSONArray jsonArray = (JSONArray) obj;
-                String name = (String) ((JSONObject) jsonArray.get(jsonArray.size() - 1)).get("name");
-                uuidCache.put(name, uuid);
-                return name;
+                name = (String) ((JSONObject) jsonArray.get(jsonArray.size() - 1)).get("name");
+                if (uuidDb != null) {
+                    uuidDb.getStorage().insert(uuid, name);
+                } else {
+                    uuidCache.put(name, uuid);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return "Unknown Player";
+        return name != null ? name : "Unknown Player";
     }
 
     /**
@@ -230,13 +245,22 @@ public class SupportTickets extends Plugin {
      * @return his uuid
      */
     public UUID getUUIDByName(String name) {
-        if (uuidCache.containsKey(name)) {
-            return uuidCache.get(name);
-        } else if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
-            UUID uuid = UUID.fromString(UUIDDB.getInstance().getStorage().getUUIDByName(name, false));
-            uuidCache.put(name, uuid);
-            return uuid;
+        UUID uuid = null;
+        if (uuidDb != null) {
+            uuid = UUID.fromString(uuidDb.getStorage().getUUIDByName(name, false));
+        } else if (uuidCache.containsKey(name)) {
+            uuid = uuidCache.get(name);
         } else {
+            // Search for name with different case
+            for (Map.Entry<String, UUID> entry : uuidCache.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(name)) {
+                    uuid = entry.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (uuid == null) {
             try {
                 URL url = new URL(SupportTicketsConfig.getInstance().getAPIUUIDUrl().replace("{0}", name));
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -249,16 +273,21 @@ public class SupportTickets extends Plugin {
                     return null;
                 }
                 JSONObject jsonObject = (JSONObject) (new JSONParser().parse(json.toString()));
+                // Get correct case of the inputted name
+                name = jsonObject.get("name").toString();
                 String id = jsonObject.get("id").toString();
-                UUID uuid = UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})",
-                        "$1-$2-$3-$4-$5"));
-                uuidCache.put(name, uuid);
+                uuid = UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
+                if (uuidDb != null) {
+                    uuidDb.getStorage().insert(uuid, name);
+                } else {
+                    uuidCache.put(name, uuid);
+                }
                 return uuid;
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return uuid;
     }
 
     /**
