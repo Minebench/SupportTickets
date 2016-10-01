@@ -25,8 +25,8 @@ import net.md_5.bungee.api.plugin.Command;
  */
 public class TicketCommandExecutor extends Command {
 
-    public TicketCommandExecutor(String name) {
-        super(name);
+    public TicketCommandExecutor() {
+        super("ticket", null, "ti", "petition", "pe");
     }
 
     @Override
