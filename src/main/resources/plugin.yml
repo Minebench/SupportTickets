@@ -1,4 +1,4 @@
 name: SupportTickets
-version: 1.2.2
+version: '${minecraft.plugin.version}'
 main: io.github.apfelcreme.SupportTickets.Bukkit.SupportTickets
 author: Lord36
