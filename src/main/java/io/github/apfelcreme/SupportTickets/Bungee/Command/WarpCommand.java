@@ -50,7 +50,8 @@ public class WarpCommand implements SubCommand {
                                 .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
                                 .replace("{2}", "")
                                 .replace("{3}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
-                                .replace("{4}", ticket.getMessage()));
+                                .replace("{4}", ticket.getMessage())
+                                .replace("{5}", Integer.toString(ticket.getComments().size())));
                     } else {
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
                     }

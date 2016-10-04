@@ -88,4 +88,4 @@ texts:
       new: ' &2Neu'
       ticket: '&6 Ticket &e#{0}&6, erstellt am &e{1}&6 von &e{2}'
     warp:
-      warped: ' &e#{0} [&e{1}&8]{2} &6{3}: &7{4}'
+      warped: ' &e#{0} [&e{1}&8]{2} &6{3}: &7{4} &7({5})'
