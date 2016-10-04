@@ -49,7 +49,7 @@ texts:
       comments: '&6 Kommentare: &e{0} &7&o/pe view {1}'
       location: '&6 Server: &e{0}&6, [&e{1}&6,&e{2}&6,&e{3}&6], Welt: &e{4}'
     list:
-      element: '&e  #{0} {1} &6{2}&8 -> &e{3}&7{4} &8[&7{5}&8]'
+      element: '&e  #{0} {1} &6{2}&8 -> &e{3}:&7{4} &8[&7{5}&8]'
       online: '&2+'
       offline: '&c-'
       footer: '&6 Fuer andere Seiten: &e/pe list <#>'
