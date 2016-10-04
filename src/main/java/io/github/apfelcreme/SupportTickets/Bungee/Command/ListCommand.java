@@ -64,7 +64,7 @@ public class ListCommand implements SubCommand {
                                     ? SupportTicketsConfig.getInstance().getText("info.list.online")
                                     : SupportTicketsConfig.getInstance().getText("info.list.offline"))
                             .replace("{2}", SupportTickets.getInstance().getNameByUUID(tickets.get(i).getSender()))
-                            .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned(): "*")
+                            .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() : "*")
                             .replace("{4}", tickets.get(i).getMessage())
                             .replace("{5}", Integer.toString(tickets.get(i).getComments().size())));
                 }
