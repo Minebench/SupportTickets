@@ -26,7 +26,11 @@ import java.util.*;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class HelpCommand implements SubCommand {
+public class HelpCommand extends SubCommand {
+
+    public HelpCommand(SupportTickets plugin, String name) {
+        super(plugin, name);
+    }
 
     /**
      * executes a subcommand
@@ -36,7 +40,7 @@ public class HelpCommand implements SubCommand {
      */
     public void execute(CommandSender sender, String[] args) {
         Configuration configurationSection =
-                SupportTicketsConfig.getInstance().getLanguageConfiguration().getSection("texts.info.help.commands");
+                plugin.getConfig().getLanguageConfiguration().getSection("texts.info.help.commands");
         List<String> keys = new ArrayList<>();
         List<String> strings = new ArrayList<>();
 
@@ -51,10 +55,10 @@ public class HelpCommand implements SubCommand {
         }
         for (String key : keys) {
             System.out.println(key);
-            strings.add(SupportTicketsConfig.getInstance().getText(key));
+            strings.add(plugin.getConfig().getText(key));
         }
         Collections.sort(strings);
-        SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("info.help.header"));
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.help.header"));
         for (Object s : strings) {
             SupportTickets.sendMessage(sender, ChatColor.translateAlternateColorCodes('&', s.toString()));
         }

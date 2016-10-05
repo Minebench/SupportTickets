@@ -28,7 +28,11 @@ import java.util.Date;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class NewCommand implements SubCommand {
+public class NewCommand extends SubCommand {
+
+    public NewCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -39,21 +43,12 @@ public class NewCommand implements SubCommand {
     public void execute(final CommandSender sender, final String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
 
-        if (sender.hasPermission("SupportTickets.user")) {
-            if (args.length > 1) {
-                String message = "";
-                for (int i = 1; i < args.length; i++) {
-                    message += args[i] + " ";
-                }
-                message = message.trim();
-                BukkitMessenger.fetchPosition(player, message);
-                //todo
-            } else {
-                SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe new <Text>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        String message = "";
+        for (int i = 1; i < args.length; i++) {
+            message += args[i] + " ";
         }
+        message = message.trim();
+        BukkitMessenger.fetchPosition(player, message);
+        //TODO: Better communication
     }
 }

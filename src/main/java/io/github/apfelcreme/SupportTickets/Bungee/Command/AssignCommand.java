@@ -27,7 +27,11 @@ import java.util.Date;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class AssignCommand implements SubCommand {
+public class AssignCommand extends SubCommand {
+
+    public AssignCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -37,52 +41,42 @@ public class AssignCommand implements SubCommand {
      */
     public void execute(CommandSender sender, final String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.mod")) {
-            if (args.length > 1) {
-                if (SupportTickets.isNumeric(args[1])) {
-                    Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                    if (ticket != null) {
-                        if (ticket.getTicketStatus() != Ticket.TicketStatus.CLOSED) {
-                            String to = "";
-                            if (args.length > 2) {
-                                for (int i = 2; i < args.length; i++) {
-                                    to += args[i] + " ";
-                                }
-                                to = to.trim();
-                            } else {
-                                to = player.getName();
-                            }
-                            SupportTickets.getDatabaseController().assignTicket(ticket, to);
 
-                            Comment comment = new Comment(
-                                    ticket.getTicketId(),
-                                    player.getUniqueId(),
-                                    SupportTicketsConfig.getInstance().getText("info.assign.assignedComment").replace("{0}", to),
-                                    new Date());
-
-                            SupportTickets.getDatabaseController().saveComment(comment);
-                            SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.assign.assigned")
-                                    .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                    .replace("{1}", to));
-                            SupportTickets.sendMessage(ticket.getSender(), SupportTicketsConfig.getInstance().getText("info.assign.yourTicketGotAssigned")
-                                    .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                    .replace("{1}", to));
-                        } else {
-                            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.ticketAlreadyClosed"));
-                        }
-                    } else {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                    }
-                } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                            .replace("{0}", "/pe assign <#> <Kommentar>"));
-                }
-            } else {
-                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe assign <#> <Kommentar>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        if (ticket == null) {
+            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            return;
         }
+
+        if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
+            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            return;
+        }
+
+        String to = "";
+        if (args.length > 2) {
+            for (int i = 2; i < args.length; i++) {
+                to += args[i] + " ";
+            }
+            to = to.trim();
+        } else {
+            to = player.getName();
+        }
+        SupportTickets.getDatabaseController().assignTicket(ticket, to);
+
+        Comment comment = new Comment(
+                ticket.getTicketId(),
+                player.getUniqueId(),
+                plugin.getConfig().getText("info.assign.assignedComment").replace("{0}", to),
+                new Date()
+        );
+
+        SupportTickets.getDatabaseController().saveComment(comment);
+        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.assign.assigned")
+                .replace("{0}", String.valueOf(ticket.getTicketId()))
+                .replace("{1}", to));
+        SupportTickets.sendMessage(ticket.getSender(), plugin.getConfig().getText("info.assign.yourTicketGotAssigned")
+                .replace("{0}", String.valueOf(ticket.getTicketId()))
+                .replace("{1}", to));
     }
 }

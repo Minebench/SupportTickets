@@ -26,7 +26,11 @@ import java.util.*;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class TopCommand implements SubCommand {
+public class TopCommand extends SubCommand {
+
+    public TopCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -36,33 +40,30 @@ public class TopCommand implements SubCommand {
      */
     @Override
     public void execute(CommandSender sender, String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.mod")) {
-            List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(Ticket.TicketStatus.CLOSED);
-            Map<UUID, Integer> playerCloses = new HashMap<>();
-            for (Ticket ticket : tickets) {
-                if (!playerCloses.containsKey(ticket.getClosed())) {
-                    playerCloses.put(ticket.getClosed(), 0);
-                }
-                playerCloses.put(ticket.getClosed(), playerCloses.get(ticket.getClosed()) + 1);
+        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(Ticket.TicketStatus.CLOSED);
+        Map<UUID, Integer> playerCloses = new HashMap<>();
+        for (Ticket ticket : tickets) {
+            if (!playerCloses.containsKey(ticket.getClosed())) {
+                playerCloses.put(ticket.getClosed(), 0);
             }
-            ValueComparator comparator = new ValueComparator(playerCloses);
-            TreeMap<UUID, Integer> sortedMap = new TreeMap<>(comparator);
-            sortedMap.putAll(playerCloses);
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("info.top.header")
-                    .replace("{0}", SupportTicketsConfig.getInstance().getTopListSize().toString()));
-            int i = 0;
-            for (Map.Entry<UUID, Integer> entry : sortedMap.entrySet()) {
-                i++;
-                if (i <= SupportTicketsConfig.getInstance().getTopListSize()) {
-                    SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("info.top.element")
-                            .replace("{0}", Integer.toString(i))
-                            .replace("{1}", SupportTickets.getInstance().getNameByUUID(entry.getKey()))
-                            .replace("{2}", entry.getValue().toString()));
-                }
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+            playerCloses.put(ticket.getClosed(), playerCloses.get(ticket.getClosed()) + 1);
+        }
+
+        ValueComparator comparator = new ValueComparator(playerCloses);
+        TreeMap<UUID, Integer> sortedMap = new TreeMap<>(comparator);
+        sortedMap.putAll(playerCloses);
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.top.header")
+                .replace("{0}", plugin.getConfig().getTopListSize().toString()));
+
+        int i = 0;
+        Iterator<Map.Entry<UUID, Integer>> sortedIt = sortedMap.entrySet().iterator();
+        while (sortedIt.hasNext() && i < plugin.getConfig().getTopListSize()){
+            Map.Entry<UUID, Integer> entry = sortedIt.next();
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.top.element")
+                    .replace("{0}", Integer.toString(i))
+                    .replace("{1}", plugin.getNameByUUID(entry.getKey()))
+                    .replace("{2}", entry.getValue().toString()));
+            i++;
         }
     }
 

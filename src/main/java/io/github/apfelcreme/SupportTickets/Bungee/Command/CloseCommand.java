@@ -27,7 +27,11 @@ import java.util.Date;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class CloseCommand implements SubCommand {
+public class CloseCommand extends SubCommand {
+
+    public CloseCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -37,60 +41,48 @@ public class CloseCommand implements SubCommand {
      */
     public void execute(CommandSender sender, final String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.user")) {
-            if (args.length > 1) {
-                if (SupportTickets.isNumeric(args[1])) {
-                    Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                    if (ticket != null) {
-                        System.out.println(ticket.getTicketStatus());
-                        if (ticket.getTicketStatus() != Ticket.TicketStatus.CLOSED) {
-                            if (ticket.getSender().equals(player.getUniqueId()) ||
-                                    player.hasPermission("SupportTickets.mod")) {
-                                String reason = "";
-                                for (int i = 2; i < args.length; i++) {
-                                    reason += args[i] + " ";
-                                }
-                                reason = reason.trim();
 
-                                Comment comment = new Comment(
-                                        ticket.getTicketId(),
-                                        player.getUniqueId(),
-                                        SupportTicketsConfig.getInstance().getText("info.close.closeComment")
-                                                .replace("{0}", player.getName())
-                                                .replace("{1}", reason),
-                                        new Date());
-                                SupportTickets.getDatabaseController().saveComment(comment);
-
-                                SupportTickets.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
-                                SupportTickets.sendMessage(ticket.getSender(),
-                                        SupportTicketsConfig.getInstance().getText("info.close.yourTicketGotClosed")
-                                                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                                .replace("{1}", player.getName())
-                                                .replace("{2}", reason));
-
-                                SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.close.closed")
-                                        .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                        .replace("{1}", player.getName())
-                                        .replace("{2}", reason));
-                            } else {
-                                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.notYourTicket"));
-                            }
-                        } else {
-                            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.ticketAlreadyClosed"));
-                        }
-                    } else {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                    }
-                } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                            .replace("{0}", "/pe close <#> <Kommentar>"));
-                }
-            } else {
-                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe close <#> <Kommentar>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        if (ticket == null) {
+            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            return;
         }
+
+        if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
+            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            return;
+        }
+
+        if (!ticket.getSender().equals(player.getUniqueId()) && !player.hasPermission("SupportTickets.mod")) {
+            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.notYourTicket"));
+            return;
+        }
+
+        String reason = args[2];
+        for (int i = 3; i < args.length; i++) {
+            reason += " " + args[i];
+        }
+
+        Comment comment = new Comment(
+                ticket.getTicketId(),
+                player.getUniqueId(),
+                plugin.getConfig().getText("info.close.closeComment")
+                        .replace("{0}", player.getName())
+                        .replace("{1}", reason),
+                new Date());
+
+        SupportTickets.getDatabaseController().saveComment(comment);
+
+        SupportTickets.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
+        SupportTickets.sendMessage(ticket.getSender(),
+                plugin.getConfig().getText("info.close.yourTicketGotClosed")
+                        .replace("{0}", String.valueOf(ticket.getTicketId()))
+                        .replace("{1}", player.getName())
+                        .replace("{2}", reason));
+
+        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.close.closed")
+                .replace("{0}", String.valueOf(ticket.getTicketId()))
+                .replace("{1}", player.getName())
+                .replace("{2}", reason));
     }
 }

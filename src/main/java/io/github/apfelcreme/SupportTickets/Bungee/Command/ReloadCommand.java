@@ -25,7 +25,11 @@ import java.net.URISyntaxException;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class ReloadCommand implements SubCommand {
+public class ReloadCommand extends SubCommand {
+
+    public ReloadCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -34,11 +38,7 @@ public class ReloadCommand implements SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, String[] args) {
-        if (sender.hasPermission("SupportTickets.mod")) {
-            SupportTicketsConfig.getInstance().reload();
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("info.reload.reloaded"));
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
-        }
+        plugin.getConfig().reload();
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.reload.reloaded"));
     }
 }

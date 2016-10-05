@@ -8,6 +8,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -27,7 +28,11 @@ import java.util.Date;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class CommentCommand implements SubCommand {
+public class CommentCommand extends SubCommand {
+
+    public CommentCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -36,54 +41,43 @@ public class CommentCommand implements SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, final String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.user")) {
-            if (args.length > 2) {
-                if (SupportTickets.isNumeric(args[1])) {
-                    Ticket ticket =
-                            SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                    if (ticket != null) {
-                        if (ticket.getTicketStatus() != Ticket.TicketStatus.CLOSED) {
-                            if (ticket.getSender().equals(player.getUniqueId()) ||
-                                    player.hasPermission("SupportTickets.mod")) {
-                                String message = "";
-                                for (int i = 2; i < args.length; i++) {
-                                    message += args[i] + " ";
-                                }
-                                message = message.trim();
-                                Comment comment = new Comment(ticket.getTicketId(), player.getUniqueId(), message, new Date());
 
-                                SupportTickets.getDatabaseController().saveComment(comment);
-
-                                SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.comment.commented")
-                                        .replace("{0}", player.getName())
-                                        .replace("{1}", String.valueOf(ticket.getTicketId()))
-                                        .replace("{2}", message));
-
-                                SupportTickets.sendMessage(ticket.getSender(),
-                                        SupportTicketsConfig.getInstance().getText("info.comment.yourTicketGotCommented")
-                                                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                                .replace("{1}", player.getName())
-                                                .replace("{2}", message));
-                            } else {
-                                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.notYourTicket"));
-                            }
-                        } else {
-                            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.ticketAlreadyClosed"));
-                        }
-                    } else {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                    }
-                } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                            .replace("{0}", "/pe comment <#> <Kommentar>"));
-                }
-            } else {
-                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe comment <#> <Kommentar>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        Ticket ticket =  SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        if (ticket == null) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            return;
         }
+
+        if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            return;
+        }
+
+        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+
+        if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod")) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.notYourTicket"));
+            return;
+        }
+
+        String message = "";
+        for (int i = 2; i < args.length; i++) {
+            message += args[i] + " ";
+        }
+        message = message.trim();
+        Comment comment = new Comment(ticket.getTicketId(), senderId, message, new Date());
+
+        SupportTickets.getDatabaseController().saveComment(comment);
+
+        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.comment.commented")
+                .replace("{0}", sender.getName())
+                .replace("{1}", String.valueOf(ticket.getTicketId()))
+                .replace("{2}", message));
+
+        SupportTickets.sendMessage(ticket.getSender(),
+                plugin.getConfig().getText("info.comment.yourTicketGotCommented")
+                        .replace("{0}", String.valueOf(ticket.getTicketId()))
+                        .replace("{1}", sender.getName())
+                        .replace("{2}", message));
     }
 }

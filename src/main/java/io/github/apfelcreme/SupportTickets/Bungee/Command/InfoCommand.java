@@ -27,7 +27,11 @@ import java.text.SimpleDateFormat;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class InfoCommand implements SubCommand {
+public class InfoCommand extends SubCommand {
+
+    public InfoCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -37,40 +41,25 @@ public class InfoCommand implements SubCommand {
      */
     @Override
     public void execute(CommandSender sender, String[] args) {
-
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.mod")) {
-            if (args.length > 1) {
-                if (SupportTickets.isNumeric(args[1])) {
-                    Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                    if (ticket != null) {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.info")
-                                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                .replace("{1}", SupportTickets.getInstance().getNameByUUID(ticket.getSender())));
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.date")
-                                .replace("{0}", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate())));
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.comments")
-                                .replace("{0}", Integer.toString(ticket.getComments().size()))
-                                .replace("{1}", String.valueOf(ticket.getTicketId())));
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.location")
-                                .replace("{0}", ticket.getLocation().getServer())
-                                .replace("{1}", new DecimalFormat("0").format(ticket.getLocation().getLocationX()))
-                                .replace("{2}", new DecimalFormat("0").format(ticket.getLocation().getLocationY()))
-                                .replace("{3}", new DecimalFormat("0").format(ticket.getLocation().getLocationZ()))
-                                .replace("{4}", ticket.getLocation().getWorldName()));
-                    } else {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                    }
-                } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                            .replace("{0}", "/pe info <#>"));
-                }
-            } else {
-                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe info <#>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        if (ticket == null) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            return;
         }
+
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.info")
+                .replace("{0}", String.valueOf(ticket.getTicketId()))
+                .replace("{1}", plugin.getNameByUUID(ticket.getSender())));
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.date")
+                .replace("{0}", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate())));
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.comments")
+                .replace("{0}", String.valueOf(ticket.getComments().size()))
+                .replace("{1}", String.valueOf(ticket.getTicketId())));
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.location")
+                .replace("{0}", ticket.getLocation().getServer())
+                .replace("{1}", new DecimalFormat("0").format(ticket.getLocation().getLocationX()))
+                .replace("{2}", new DecimalFormat("0").format(ticket.getLocation().getLocationY()))
+                .replace("{3}", new DecimalFormat("0").format(ticket.getLocation().getLocationZ()))
+                .replace("{4}", ticket.getLocation().getWorldName()));
     }
 }

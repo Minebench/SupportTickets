@@ -1,5 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Command.*;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MySQLConnector;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.DatabaseController;
@@ -64,6 +65,11 @@ public class SupportTickets extends Plugin {
     private UUIDDBPlugin uuidDb = null;
 
     /**
+     * The plugin's config
+     */
+    private SupportTicketsConfig config;
+
+    /**
      * returns the plugin instance
      * TODO: Get rid of the need for this static method
      *
@@ -96,7 +102,7 @@ public class SupportTickets extends Plugin {
         uuidCache = new HashMap<>();
 
         // init the config
-        SupportTicketsConfig.getInstance();
+        config = SupportTicketsConfig.getInstance();
 
         // init the database connection
         switch (SupportTicketsConfig.getInstance().getDb()) {
@@ -109,8 +115,28 @@ public class SupportTickets extends Plugin {
                 break;
         }
 
+        CommandExecutor ticketCommand = new CommandExecutor(this,   "ticket",                           null,                   "ti", "petition", "pe");
+
+//                                       Class extends SubCommand   name        arguments               permission              aliases...
+        ticketCommand.registerSubCommand(new AssignCommand(this,    "assign",   "<#> [<player>]",       "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new CloseCommand(this,     "close",    "<#> <reason>",         "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new ClosedCommand(this,    "closed",   "[<player> [<#page>]]", "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new CommentCommand(this,   "comment",  "<#> <comment>",        "SupportTickets.user",  "log"));
+        ticketCommand.registerSubCommand(new HelpCommand(this,      "help"));
+        ticketCommand.registerSubCommand(new InfoCommand(this,      "info",     "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ListCommand(this,      "list",     "[<#page>]",            "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new NewCommand(this,       "new",      "<text>",               "SupportTickets.user",  "open"));
+        ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "[<player> [<#page>]]", "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ReloadCommand(this,    "reload",   "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ReopenCommand(this,    "reopen",   "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<page>]",             "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                  "SupportTickets.mod",   "goto"));
+
         // register the command
-        getProxy().getPluginManager().registerCommand(this, new TicketCommandExecutor());
+        getProxy().getPluginManager().registerCommand(this, ticketCommand);
 
         // register the Plugin channels for the bukkit <-> bungee communication
         getProxy().registerChannel("SupportTickets");
@@ -204,6 +230,9 @@ public class SupportTickets extends Plugin {
      * @return his name
      */
     public String getNameByUUID(UUID uuid) {
+        if (uuid.equals(new UUID(0, 0))) {
+            return "[Console]";
+        }
         String name = null;
         if (uuidDb != null) {
             name = uuidDb.getStorage().getNameByUUID(uuid);
@@ -248,6 +277,9 @@ public class SupportTickets extends Plugin {
      * @return his uuid
      */
     public UUID getUUIDByName(String name) {
+        if ("[Console]".equalsIgnoreCase(name)) {
+            return new UUID(0, 0);
+        }
         UUID uuid = null;
         if (uuidDb != null) {
             uuid = UUID.fromString(uuidDb.getStorage().getUUIDByName(name, false));
@@ -368,5 +400,9 @@ public class SupportTickets extends Plugin {
             getInstance().getLogger().log(Level.SEVERE, "Error while getting server '" + server + "'!", e);
         }
         return null;
+    }
+
+    public SupportTicketsConfig getConfig() {
+        return config;
     }
 }

@@ -6,6 +6,7 @@ import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import org.bukkit.ChatColor;
 
 import java.text.SimpleDateFormat;
 
@@ -27,7 +28,11 @@ import java.text.SimpleDateFormat;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class WarpCommand implements SubCommand {
+public class WarpCommand extends SubCommand {
+
+    public WarpCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -36,30 +41,33 @@ public class WarpCommand implements SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.mod")) {
-            if (args.length > 1 && SupportTickets.isNumeric(args[1])) {
-                Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                if (ticket != null) {
-//                        BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
-                    BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
-
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.warp.warped")
-                            .replace("{0}", String.valueOf(ticket.getTicketId()))
-                            .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                            .replace("{2}", "")
-                            .replace("{3}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
-                            .replace("{4}", ticket.getMessage())
-                            .replace("{5}", Integer.toString(ticket.getComments().size())));
-                } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                }
-            } else {
-                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe warp <#>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        if (!(sender instanceof ProxiedPlayer)) {
+            SupportTickets.sendMessage(sender, ChatColor.RED + "This command can only be run by a player!");
+            return;
         }
+
+        final ProxiedPlayer player = (ProxiedPlayer) sender;
+
+        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        if (ticket == null) {
+            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            return;
+        }
+
+        if (ticket.getLocation() == null) {
+            SupportTickets.sendMessage(sender, ChatColor.RED + "This ticket does not have a location!");
+            return;
+        }
+
+//      BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
+        BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
+
+        SupportTickets.sendMessage(player, plugin.getConfig().getText("info.warp.warped")
+                .replace("{0}", String.valueOf(ticket.getTicketId()))
+                .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
+                .replace("{2}", "")
+                .replace("{3}", plugin.getNameByUUID(ticket.getSender()))
+                .replace("{4}", ticket.getMessage())
+                .replace("{5}", String.valueOf(ticket.getComments().size())));
     }
 }

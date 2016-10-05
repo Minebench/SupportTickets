@@ -26,7 +26,11 @@ import java.util.List;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class ListCommand implements SubCommand {
+public class ListCommand extends SubCommand {
+
+    public ListCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -35,44 +39,41 @@ public class ListCommand implements SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, final String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.mod")) {
-            int page = 0;
-            if (args.length > 1 && SupportTickets.isNumeric(args[1])) {
-                page = Integer.parseInt(args[1]) - 1;
-            }
-
-            //load the tickets
-            List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(
-                    Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
-
-            //display the results
-            Integer pageSize = SupportTicketsConfig.getInstance().getPageSize();
-            Integer maxPages = (int) Math.ceil((float) tickets.size() / pageSize);
-            if (page >= maxPages - 1) {
-                page = maxPages - 1;
-            }
-
-            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.list.header")
-                    .replace("{0}", Integer.toString(page + 1))
-                    .replace("{1}", maxPages.toString()));
-            for (int i = page * pageSize; i < (page * pageSize) + pageSize; i++) {
-                if (i < tickets.size() && tickets.size() > 0) {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.list.element")
-                            .replace("{0}", String.valueOf(tickets.get(i).getTicketId()))
-                            .replace("{1}", SupportTickets.getInstance().isPlayerOnline(tickets.get(i).getSender())
-                                    ? SupportTicketsConfig.getInstance().getText("info.list.online")
-                                    : SupportTicketsConfig.getInstance().getText("info.list.offline"))
-                            .replace("{2}", SupportTickets.getInstance().getNameByUUID(tickets.get(i).getSender()))
-                            .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() : "*")
-                            .replace("{4}", tickets.get(i).getMessage())
-                            .replace("{5}", Integer.toString(tickets.get(i).getComments().size())));
-                }
-            }
-            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.list.footer"));
-
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        int page = 0;
+        if (args.length > 1 && SupportTickets.isNumeric(args[1])) {
+            page = Integer.parseInt(args[1]) - 1;
         }
+        if (page < 0) {
+            page = 0;
+        }
+
+        //load the tickets
+        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(
+                Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
+
+        //display the results
+        int pageSize = plugin.getConfig().getPageSize();
+        int maxPages = (int) Math.ceil((float) tickets.size() / pageSize);
+        if (page >= maxPages - 1) {
+            page = maxPages - 1;
+        }
+
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.header")
+                .replace("{0}", String.valueOf(page + 1))
+                .replace("{1}", String.valueOf(maxPages)));
+
+        for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.element")
+                    .replace("{0}", String.valueOf(tickets.get(i).getTicketId()))
+                    .replace("{1}", plugin.isPlayerOnline(tickets.get(i).getSender())
+                            ? plugin.getConfig().getText("info.list.online")
+                            : plugin.getConfig().getText("info.list.offline"))
+                    .replace("{2}", plugin.getNameByUUID(tickets.get(i).getSender()))
+                    .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() : "*")
+                    .replace("{4}", tickets.get(i).getMessage())
+                    .replace("{5}", Integer.toString(tickets.get(i).getComments().size())));
+        }
+
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.footer"));
     }
 }

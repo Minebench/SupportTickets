@@ -1,6 +1,7 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 
+import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import net.md_5.bungee.api.CommandSender;
 
 /**
@@ -21,12 +22,56 @@ import net.md_5.bungee.api.CommandSender;
  *
  * @author Lord36 aka Apfelcreme
  */
-public interface SubCommand {
+public abstract class SubCommand {
+
+    protected final SupportTickets plugin;
+    private final String name;
+    private final String usage;
+    private final String permission;
+    private final String[] aliases;
+
+    public SubCommand(SupportTickets plugin, String name) {
+        this(plugin, name, null, null);
+    }
+
+    public SubCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        this.plugin = plugin;
+        this.name = name;
+        this.usage = usage;
+        this.permission = permission;
+        this.aliases = aliases;
+    }
 
     /**
      * executes a subcommand
      * @param sender the sender
      * @param args the string arguments in an array
+     * @return <tt>true</tt> if the sub command executed properly, <tt>false</tt> if not and a usage message should be send
      */
-    void execute(CommandSender sender, String[] args);
+    public abstract void execute(CommandSender sender, String[] args);
+
+    /**
+     * Check whether or not a sender has a permission
+     * @param sender The sender to check
+     * @return <tt>true</tt> if the sender has the permission or that sub command doesn't need a permission
+     */
+    public boolean checkPermission(CommandSender sender) {
+        return getPermission() == null || sender.hasPermission(getPermission());
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUsage() {
+        return usage;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public String[] getAliases() {
+        return aliases;
+    }
 }

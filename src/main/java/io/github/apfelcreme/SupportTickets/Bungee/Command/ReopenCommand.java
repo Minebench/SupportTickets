@@ -8,6 +8,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -27,7 +28,11 @@ import java.util.Date;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class ReopenCommand implements SubCommand {
+public class ReopenCommand extends SubCommand {
+
+    public ReopenCommand(SupportTickets plugin, String name, String usage, String permission, String... aliases) {
+        super(plugin, name, usage, permission, aliases);
+    }
 
     /**
      * executes a subcommand
@@ -36,41 +41,29 @@ public class ReopenCommand implements SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
-        if (player.hasPermission("SupportTickets.mod")) {
-            if (args.length > 1) {
-                if (SupportTickets.isNumeric(args[1])) {
-                    Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                    if (ticket != null) {
-
-                        SupportTickets.getDatabaseController().reopenTicket(ticket);
-                        Comment comment = new Comment(
-                                ticket.getTicketId(),
-                                player.getUniqueId(),
-                                SupportTicketsConfig.getInstance().getText("info.reopen.reopenComment")
-                                        .replace("{0}", player.getName()),
-                                new Date());
-
-                        SupportTickets.getDatabaseController().saveComment(comment);
-
-                        SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.reopen.reopened")
-                                .replace("{0}", String.valueOf(ticket.getTicketId())));
-                        SupportTickets.sendMessage(ticket.getSender(),
-                                SupportTicketsConfig.getInstance().getText("info.reopen.yourTicketGotReopened")
-                                        .replace("{0}", String.valueOf(ticket.getTicketId())));
-                    } else {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                    }
-                } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                            .replace("{0}", "/pe reopen <#>"));
-                }
-            } else {
-                SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe reopen <#>"));
-            }
-        } else {
-            SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
+        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        if (ticket == null) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            return;
         }
+
+        SupportTickets.getDatabaseController().reopenTicket(ticket);
+
+        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+
+        Comment comment = new Comment(
+                ticket.getTicketId(),
+                senderId,
+                plugin.getConfig().getText("info.reopen.reopenComment")
+                        .replace("{0}", sender.getName()),
+                new Date());
+
+        SupportTickets.getDatabaseController().saveComment(comment);
+
+        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.reopen.reopened")
+                .replace("{0}", String.valueOf(ticket.getTicketId())));
+        SupportTickets.sendMessage(ticket.getSender(),
+                plugin.getConfig().getText("info.reopen.yourTicketGotReopened")
+                        .replace("{0}", String.valueOf(ticket.getTicketId())));
     }
 }
