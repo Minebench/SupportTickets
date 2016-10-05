@@ -441,6 +441,9 @@ public class SQLController implements DatabaseController {
      */
     @Override
     public void setCommentRead(final Comment comment) {
+        if (comment.getCommentId() == -1) {
+            return;
+        }
         SupportTickets.getInstance().getProxy().getScheduler().runAsync(SupportTickets.getInstance(), new Runnable() {
             public void run() {
                 Connection connection = MySQLConnector.getInstance().getConnection();

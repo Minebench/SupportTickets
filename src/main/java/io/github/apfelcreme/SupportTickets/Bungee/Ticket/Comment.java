@@ -23,14 +23,14 @@ import java.util.UUID;
  */
 public class Comment {
 
-    private Integer commentId = null;
-    private Integer ticketId = null;
-    private UUID sender = null;
-    private String comment = null;
-    private Boolean senderHasNoticed = null;
-    private Date date = null;
+    private final int commentId;
+    private final int ticketId;
+    private final UUID sender;
+    private final String comment;
+    private final boolean senderHasNoticed;
+    private final Date date;
 
-    public Comment(Integer commentId, Integer ticketId, UUID sender, String comment, Boolean senderHasNoticed, Date date) {
+    public Comment(int commentId, int ticketId, UUID sender, String comment, boolean senderHasNoticed, Date date) {
         this.commentId = commentId;
         this.ticketId = ticketId;
         this.sender = sender;
@@ -39,12 +39,8 @@ public class Comment {
         this.date = date;
     }
 
-    public Comment(Integer ticketId, UUID sender, String comment, Date date) {
-        this.ticketId = ticketId;
-        this.sender = sender;
-        this.comment = comment;
-        this.senderHasNoticed = false;
-        this.date = date;
+    public Comment(int ticketId, UUID sender, String comment, Date date) {
+        this(-1, ticketId, sender, comment, false, date);
     }
 
     /**
@@ -52,7 +48,7 @@ public class Comment {
      *
      * @return the comment id
      */
-    public Integer getCommentId() {
+    public int getCommentId() {
         return commentId;
     }
 
@@ -61,7 +57,7 @@ public class Comment {
      *
      * @return the ticket id
      */
-    public Integer getTicketId() {
+    public int getTicketId() {
         return ticketId;
     }
 
@@ -88,7 +84,7 @@ public class Comment {
      * has the sender read the comment already=
      * @return true or false
      */
-    public Boolean getSenderHasNoticed() {
+    public boolean getSenderHasNoticed() {
         return senderHasNoticed;
     }
 

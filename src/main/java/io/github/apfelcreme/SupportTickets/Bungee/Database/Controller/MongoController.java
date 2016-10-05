@@ -285,6 +285,9 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void setCommentRead(Comment comment) {
+        if (comment.getCommentId() == -1) {
+            return;
+        }
         DBCollection collection = MongoConnector.getInstance().getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", comment.getTicketId());
