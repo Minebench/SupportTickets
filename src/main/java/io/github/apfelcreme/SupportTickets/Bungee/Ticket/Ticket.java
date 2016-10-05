@@ -25,17 +25,17 @@ import java.util.UUID;
  */
 public class Ticket {
 
-    private Integer ticketId = null;
-    private UUID sender = null;
+    private int ticketId = -1;
+    private final UUID sender;
     private UUID closed = null;
-    private List<Comment> comments = null;
-    private Date date = null;
+    private final List<Comment> comments;
+    private final Date date;
     private String assigned = null;
     private Date assignedDate = null;
     private Date closedDate = null;
-    private String message = null;
-    private Location location = null;
-    private TicketStatus ticketStatus = null;
+    private final String message;
+    private final Location location;
+    private final TicketStatus ticketStatus;
 
     public Ticket(UUID sender, String message, Date date, Location location, TicketStatus ticketStatus) {
         this.sender = sender;
@@ -43,10 +43,10 @@ public class Ticket {
         this.date = date;
         this.location = location;
         this.ticketStatus = ticketStatus;
-        comments = new ArrayList<Comment>();
+        comments = new ArrayList<>();
     }
 
-    public Ticket(Integer ticketId, UUID sender, UUID closed, List<Comment> comments, Date date, String assigned,
+    public Ticket(int ticketId, UUID sender, UUID closed, List<Comment> comments, Date date, String assigned,
                   Date assignedDate, Date closedDate, String message, Location location, TicketStatus ticketStatus) {
         this.ticketId = ticketId;
         this.sender = sender;
@@ -66,7 +66,7 @@ public class Ticket {
      *
      * @return the ticket Id
      */
-    public Integer getTicketId() {
+    public int getTicketId() {
         return ticketId;
     }
 
@@ -75,7 +75,7 @@ public class Ticket {
      *
      * @param ticketId the ticket id
      */
-    public void setTicketId(Integer ticketId) {
+    public void setTicketId(int ticketId) {
         this.ticketId = ticketId;
     }
 
@@ -86,15 +86,6 @@ public class Ticket {
      */
     public UUID getSender() {
         return sender;
-    }
-
-    /**
-     * sets the senders uuid
-     *
-     * @param sender the senders uuid
-     */
-    public void setSender(UUID sender) {
-        this.sender = sender;
     }
 
     /**
@@ -152,15 +143,6 @@ public class Ticket {
     }
 
     /**
-     * sets the creation date
-     *
-     * @param date the creation date
-     */
-    public void setDate(Date date) {
-        this.date = date;
-    }
-
-    /**
      * returns the date when the ticket was assigned to someone or something
      *
      * @return the date when the ticket was assigned to someone or something
@@ -206,15 +188,6 @@ public class Ticket {
     }
 
     /**
-     * sets  the ticket message
-     *
-     * @param message the ticket message
-     */
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    /**
      * returns the location where the ticket was opened
      *
      * @return the location where the ticket was opened
@@ -224,30 +197,12 @@ public class Ticket {
     }
 
     /**
-     * sets the location where the ticket was opened
-     *
-     * @param location the location where the ticket was opened
-     */
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    /**
      * returns the ticket status
      *
      * @return the ticket status
      */
     public TicketStatus getTicketStatus() {
         return ticketStatus;
-    }
-
-    /**
-     * sets the ticket status
-     *
-     * @param ticketStatus the ticket status
-     */
-    public void setTicketStatus(TicketStatus ticketStatus) {
-        this.ticketStatus = ticketStatus;
     }
 
     /**

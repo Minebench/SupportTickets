@@ -43,7 +43,7 @@ public class BungeeMessageListener implements PluginMessageListener {
             UUID uuid = UUID.fromString(in.readUTF());
             Location location = new Location(SupportTickets.getInstance().getServer().getWorld(in.readUTF()),
                     in.readDouble(), in.readDouble(), in.readDouble(),
-                    (float) in.readDouble(), (float) in.readDouble());
+                    in.readFloat(), in.readFloat());
             warp(uuid, location);
         } else if (subChannel.equals("POSITIONREQUEST")) {
             UUID uuid = UUID.fromString(in.readUTF());
@@ -73,8 +73,8 @@ public class BungeeMessageListener implements PluginMessageListener {
                 out.writeDouble(player.getLocation().getX());
                 out.writeDouble(player.getLocation().getY());
                 out.writeDouble(player.getLocation().getZ());
-                out.writeDouble((double) player.getLocation().getYaw());
-                out.writeDouble((double) player.getLocation().getPitch());
+                out.writeFloat(player.getLocation().getYaw());
+                out.writeFloat(player.getLocation().getPitch());
                 out.writeUTF(message);
                 player.sendPluginMessage(SupportTickets.getInstance(), "SupportTickets", b.toByteArray());
                 out.close();

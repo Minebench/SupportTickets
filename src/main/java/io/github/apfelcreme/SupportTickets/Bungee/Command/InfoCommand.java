@@ -45,13 +45,13 @@ public class InfoCommand implements SubCommand {
                     Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
                     if (ticket != null) {
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.info")
-                                .replace("{0}", ticket.getTicketId().toString())
+                                .replace("{0}", String.valueOf(ticket.getTicketId()))
                                 .replace("{1}", SupportTickets.getInstance().getNameByUUID(ticket.getSender())));
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.date")
                                 .replace("{0}", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate())));
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.comments")
                                 .replace("{0}", Integer.toString(ticket.getComments().size()))
-                                .replace("{1}", ticket.getTicketId().toString()));
+                                .replace("{1}", String.valueOf(ticket.getTicketId())));
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.info.location")
                                 .replace("{0}", ticket.getLocation().getServer())
                                 .replace("{1}", new DecimalFormat("0").format(ticket.getLocation().getLocationX()))

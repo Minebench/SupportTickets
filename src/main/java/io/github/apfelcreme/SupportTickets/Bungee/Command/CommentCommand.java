@@ -57,12 +57,12 @@ public class CommentCommand implements SubCommand {
 
                                 SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.comment.commented")
                                         .replace("{0}", player.getName())
-                                        .replace("{1}", ticket.getTicketId().toString())
+                                        .replace("{1}", String.valueOf(ticket.getTicketId()))
                                         .replace("{2}", message));
 
                                 SupportTickets.sendMessage(ticket.getSender(),
                                         SupportTicketsConfig.getInstance().getText("info.comment.yourTicketGotCommented")
-                                                .replace("{0}", ticket.getTicketId().toString())
+                                                .replace("{0}", String.valueOf(ticket.getTicketId()))
                                                 .replace("{1}", player.getName())
                                                 .replace("{2}", message));
                             } else {

@@ -319,20 +319,17 @@ public class MongoController implements DatabaseController {
                 UUID.fromString((String) dbObject.get("sender")),
                 (String) dbObject.get("message"),
                 new Date((Long) dbObject.get("time_stamp")),
-                null,
-                Ticket.TicketStatus.fromInt((Integer) dbObject.get("status")));
-        ticket.setTicketId((Integer) dbObject.get("ticket_id"));
-        ticket.setLocation(
                 new Location(
                         (String) dbObject.get("server"),
                         (String) dbObject.get("world"),
-                        (Double) dbObject.get("loc_X"),
-                        (Double) dbObject.get("loc_Y"),
-                        (Double) dbObject.get("loc_Z"),
-                        (Double) dbObject.get("yaw"),
-                        (Double) dbObject.get("pitch")
-                )
-        );
+                        (double) dbObject.get("loc_X"),
+                        (double) dbObject.get("loc_Y"),
+                        (double) dbObject.get("loc_Z"),
+                        (float) dbObject.get("yaw"),
+                        (float) dbObject.get("pitch")
+                ),
+                Ticket.TicketStatus.fromInt((Integer) dbObject.get("status")));
+        ticket.setTicketId((Integer) dbObject.get("ticket_id"));
 
 
         // load the assign text

@@ -54,10 +54,10 @@ public class ReopenCommand implements SubCommand {
                         SupportTickets.getDatabaseController().saveComment(comment);
 
                         SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.reopen.reopened")
-                                .replace("{0}", ticket.getTicketId().toString()));
+                                .replace("{0}", String.valueOf(ticket.getTicketId())));
                         SupportTickets.sendMessage(ticket.getSender(),
                                 SupportTicketsConfig.getInstance().getText("info.reopen.yourTicketGotReopened")
-                                        .replace("{0}", ticket.getTicketId().toString()));
+                                        .replace("{0}", String.valueOf(ticket.getTicketId())));
                     } else {
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
                     }

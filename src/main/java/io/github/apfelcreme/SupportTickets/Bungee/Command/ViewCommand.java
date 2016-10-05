@@ -44,7 +44,7 @@ public class ViewCommand implements SubCommand {
                     if (ticket != null) {
                         if (ticket.getSender().equals(player.getUniqueId()) || player.hasPermission("SupportTickets.mod")) {
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.view.ticket")
-                                    .replace("{0}", ticket.getTicketId().toString())
+                                    .replace("{0}", String.valueOf(ticket.getTicketId()))
                                     .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
                                     .replace("{2}", SupportTickets.getInstance().getNameByUUID(ticket.getSender())));
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.view.comment")

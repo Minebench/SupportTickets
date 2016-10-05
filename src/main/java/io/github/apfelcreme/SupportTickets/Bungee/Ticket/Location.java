@@ -20,15 +20,15 @@ package io.github.apfelcreme.SupportTickets.Bungee.Ticket;
  */
 public class Location {
 
-    private String server = null;
-    private String worldName = null;
-    private Double locationX = null;
-    private Double locationY = null;
-    private Double locationZ = null;
-    private Double yaw = null;
-    private Double pitch = null;
+    private final String server;
+    private final String worldName;
+    private final double locationX;
+    private final double locationY;
+    private final double locationZ;
+    private final float yaw;
+    private final float pitch;
 
-    public Location(String server, String worldName, Double locationX, Double locationY, Double locationZ, Double yaw, Double pitch) {
+    public Location(String server, String worldName, double locationX, double locationY, double locationZ, float yaw, float pitch) {
         this.server = server;
         this.worldName = worldName;
         this.locationX = locationX;
@@ -61,7 +61,7 @@ public class Location {
      *
      * @return the x location
      */
-    public Double getLocationX() {
+    public double getLocationX() {
         return locationX;
     }
 
@@ -70,7 +70,7 @@ public class Location {
      *
      * @return the y location
      */
-    public Double getLocationY() {
+    public double getLocationY() {
         return locationY;
     }
 
@@ -79,7 +79,7 @@ public class Location {
      *
      * @return the z location
      */
-    public Double getLocationZ() {
+    public double getLocationZ() {
         return locationZ;
     }
 
@@ -89,7 +89,7 @@ public class Location {
      *
      * @return yaw
      */
-    public double getYaw() {
+    public float getYaw() {
         return yaw;
     }
 
@@ -98,7 +98,7 @@ public class Location {
      *
      * @return the pitch
      */
-    public double getPitch() {
+    public float getPitch() {
         return pitch;
     }
 }

@@ -46,7 +46,7 @@ public class WarpCommand implements SubCommand {
                         BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
 
                         SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.warp.warped")
-                                .replace("{0}", ticket.getTicketId().toString())
+                                .replace("{0}", String.valueOf(ticket.getTicketId()))
                                 .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
                                 .replace("{2}", "")
                                 .replace("{3}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))

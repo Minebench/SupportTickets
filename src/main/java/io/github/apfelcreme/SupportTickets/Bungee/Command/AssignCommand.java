@@ -62,10 +62,10 @@ public class AssignCommand implements SubCommand {
 
                             SupportTickets.getDatabaseController().saveComment(comment);
                             SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.assign.assigned")
-                                    .replace("{0}", ticket.getTicketId().toString())
+                                    .replace("{0}", String.valueOf(ticket.getTicketId()))
                                     .replace("{1}", to));
                             SupportTickets.sendMessage(ticket.getSender(), SupportTicketsConfig.getInstance().getText("info.assign.yourTicketGotAssigned")
-                                    .replace("{0}", ticket.getTicketId().toString())
+                                    .replace("{0}", String.valueOf(ticket.getTicketId()))
                                     .replace("{1}", to));
                         } else {
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.ticketAlreadyClosed"));

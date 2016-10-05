@@ -97,8 +97,8 @@ public class SQLController implements DatabaseController {
                 preparedStatement.setDouble(7, ticket.getLocation().getLocationX());
                 preparedStatement.setDouble(8, ticket.getLocation().getLocationY());
                 preparedStatement.setDouble(9, ticket.getLocation().getLocationZ());
-                preparedStatement.setDouble(10, ticket.getLocation().getYaw());
-                preparedStatement.setDouble(11, ticket.getLocation().getPitch());
+                preparedStatement.setFloat(10, ticket.getLocation().getYaw());
+                preparedStatement.setFloat(11, ticket.getLocation().getPitch());
                 preparedStatement.executeUpdate();
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {
@@ -478,21 +478,18 @@ public class SQLController implements DatabaseController {
                 UUID.fromString(resultSet.getString("uuid")),
                 resultSet.getString("message"),
                 new Date(resultSet.getLong("time_stamp")),
-                null,
-                Ticket.TicketStatus.fromInt(resultSet.getInt("status")));
-        ticket.setTicketId(resultSet.getInt("ticket_id"));
-        ticket.setLocation(
                 new Location(
                         resultSet.getString("server"),
                         resultSet.getString("world"),
                         resultSet.getDouble("loc_X"),
                         resultSet.getDouble("loc_Y"),
                         resultSet.getDouble("loc_Z"),
-                        resultSet.getDouble("yaw"),
-                        resultSet.getDouble("pitch")
+                        resultSet.getFloat("yaw"),
+                        resultSet.getFloat("pitch")
 
-                )
-        );
+                ),
+                Ticket.TicketStatus.fromInt(resultSet.getInt("status")));
+        ticket.setTicketId(resultSet.getInt("ticket_id"));
 
         // load the assign text
         if (resultSet.getString("assigned") != null) {

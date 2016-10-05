@@ -55,10 +55,10 @@ public class UnassignCommand implements SubCommand {
                             SupportTickets.getDatabaseController().saveComment(comment);
 
                             SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.unassign.unassigned")
-                                    .replace("{0}", ticket.getTicketId().toString()));
+                                    .replace("{0}", String.valueOf(ticket.getTicketId())));
                             SupportTickets.sendMessage(ticket.getSender(),
                                     SupportTicketsConfig.getInstance().getText("info.unassign.yourTicketGotUnassigned")
-                                            .replace("{0}", ticket.getTicketId().toString()));
+                                            .replace("{0}", String.valueOf(ticket.getTicketId())));
                         } else {
                             SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.ticketAlreadyClosed"));
                         }

@@ -74,8 +74,8 @@ public class BukkitMessenger {
                     out.writeDouble(location.getLocationX());
                     out.writeDouble(location.getLocationY());
                     out.writeDouble(location.getLocationZ());
-                    out.writeDouble(location.getYaw());
-                    out.writeDouble(location.getPitch());
+                    out.writeFloat(location.getYaw());
+                    out.writeFloat(location.getPitch());
                     serverInfo.sendData("SupportTickets", out.toByteArray());
                 }
             } catch (IOException e) {

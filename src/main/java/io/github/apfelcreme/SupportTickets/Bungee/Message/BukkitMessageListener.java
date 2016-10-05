@@ -50,7 +50,7 @@ public class BukkitMessageListener implements Listener {
         if (subChannel.equals("POSITIONANSWER")) {
             UUID uuid = UUID.fromString(in.readUTF());
             Location location = new Location(in.readUTF(), in.readUTF(), in.readDouble(), in.readDouble(),
-                    in.readDouble(), in.readDouble(), in.readDouble());
+                    in.readDouble(), in.readFloat(), in.readFloat());
             String message = in.readUTF();
 
             Ticket ticket = new Ticket(uuid, message, new Date(), location, Ticket.TicketStatus.OPEN);

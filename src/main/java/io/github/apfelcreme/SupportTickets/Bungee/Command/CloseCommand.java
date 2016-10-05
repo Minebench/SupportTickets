@@ -64,12 +64,12 @@ public class CloseCommand implements SubCommand {
                                 SupportTickets.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
                                 SupportTickets.sendMessage(ticket.getSender(),
                                         SupportTicketsConfig.getInstance().getText("info.close.yourTicketGotClosed")
-                                                .replace("{0}", ticket.getTicketId().toString())
+                                                .replace("{0}", String.valueOf(ticket.getTicketId()))
                                                 .replace("{1}", player.getName())
                                                 .replace("{2}", reason));
 
                                 SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.close.closed")
-                                        .replace("{0}", ticket.getTicketId().toString())
+                                        .replace("{0}", String.valueOf(ticket.getTicketId()))
                                         .replace("{1}", player.getName())
                                         .replace("{2}", reason));
                             } else {
