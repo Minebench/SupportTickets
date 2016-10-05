@@ -57,7 +57,7 @@ public class ShowCommand implements SubCommand {
             for (int i = page * pageSize; i < (page * pageSize) + pageSize; i++) {
                 if (i < tickets.size() && tickets.size() > 0) {
                     SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.list.element")
-                            .replace("{0}", tickets.get(i).getTicketId().toString())
+                            .replace("{0}", String.valueOf(tickets.get(i).getTicketId()))
                             .replace("{1}", SupportTickets.getInstance().isPlayerOnline(tickets.get(i).getSender())
                                     ? SupportTicketsConfig.getInstance().getText("info.list.online")
                                     : SupportTicketsConfig.getInstance().getText("info.list.offline"))
