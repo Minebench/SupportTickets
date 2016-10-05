@@ -11,6 +11,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.logging.Level;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -61,7 +62,7 @@ public class BukkitMessenger {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         if (player != null) {
             try {
-                ServerInfo serverInfo = getTargetServer(location.getServer());
+                ServerInfo serverInfo = SupportTickets.getServer(location.getServer());
                 if (serverInfo != null) {
                     if (!player.getServer().getInfo().equals(serverInfo) && serverInfo.getAddress().getAddress().isReachable(2000)) {
                         player.connect(serverInfo);
@@ -77,26 +78,12 @@ public class BukkitMessenger {
                     out.writeFloat(location.getYaw());
                     out.writeFloat(location.getPitch());
                     serverInfo.sendData("SupportTickets", out.toByteArray());
+                } else {
+                    SupportTickets.getInstance().getLogger().log(Level.WARNING, "No server found for '" + location.getServer() + "'!");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    /**
-     * returns the server info with the given ip (xxx.xxx.xxx.xxx:PORT)
-     *
-     * @param serverIp the ip:port
-     * @return the serverInfo
-     */
-    private static ServerInfo getTargetServer(String serverIp) {
-        for (ServerInfo serverInfo : ProxyServer.getInstance().getServers().values()) {
-            if (serverInfo.getAddress().equals(new InetSocketAddress(serverIp.split(":")[0],
-                    Integer.parseInt(serverIp.split(":")[1])))) {
-                return serverInfo;
-            }
-        }
-        return null;
     }
 }

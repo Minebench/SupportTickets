@@ -11,6 +11,7 @@ import io.github.apfelcreme.SupportTickets.Bungee.Task.ReminderTask;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.zaiyers.UUIDDB.core.UUIDDBPlugin;
@@ -20,9 +21,11 @@ import org.json.simple.parser.JSONParser;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
 
 /**
@@ -341,5 +344,29 @@ public class SupportTickets extends Plugin {
      */
     public static boolean isNumeric(String string) {
         return Pattern.matches("([0-9])*", string);
+    }
+
+    /**
+     * returns the server info with the given ip (xxx.xxx.xxx.xxx:PORT)
+     *
+     * @param server the server name or ip:port
+     * @return the serverInfo
+     */
+    public static ServerInfo getServer(String server) {
+        ServerInfo sInfo = ProxyServer.getInstance().getServerInfo(server);
+        if (sInfo != null) {
+            return sInfo;
+        }
+        try {
+            InetSocketAddress address = new InetSocketAddress(server.split(":")[0], Integer.parseInt(server.split(":")[1]));
+            for (ServerInfo serverInfo : ProxyServer.getInstance().getServers().values()) {
+                if (serverInfo.getAddress().equals(address)) {
+                    return serverInfo;
+                }
+            }
+        } catch (NumberFormatException e) {
+            getInstance().getLogger().log(Level.SEVERE, "Error while getting server '" + server + "'!", e);
+        }
+        return null;
     }
 }

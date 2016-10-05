@@ -6,6 +6,9 @@ import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
+import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -49,7 +52,17 @@ public class BukkitMessageListener implements Listener {
         String subChannel = in.readUTF();
         if (subChannel.equals("POSITIONANSWER")) {
             UUID uuid = UUID.fromString(in.readUTF());
-            Location location = new Location(in.readUTF(), in.readUTF(), in.readDouble(), in.readDouble(),
+            String server = in.readUTF();
+            ServerInfo serverInfo = SupportTickets.getServer(server);
+            if (serverInfo != null) {
+                server = serverInfo.getName();
+            } else {
+                ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
+                if (player != null && player.getServer() != null && player.getServer().getInfo() != null) {
+                    server = player.getServer().getInfo().getName();
+                }
+            }
+            Location location = new Location(server, in.readUTF(), in.readDouble(), in.readDouble(),
                     in.readDouble(), in.readFloat(), in.readFloat());
             String message = in.readUTF();
 

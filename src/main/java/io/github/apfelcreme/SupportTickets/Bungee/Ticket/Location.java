@@ -39,9 +39,9 @@ public class Location {
     }
 
     /**
-     * returns the server ip + port
+     * returns the name of the server or it's address (ip:port)
      *
-     * @return the server ip + port
+     * @return the name of the server/ip:port
      */
     public String getServer() {
         return server;
