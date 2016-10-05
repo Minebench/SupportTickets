@@ -60,6 +60,7 @@ public class TicketCommandExecutor extends Command {
                         case LIST:
                             subCommand = new ListCommand();
                             break;
+                        case OPEN:
                         case NEW:
                             subCommand = new NewCommand();
                             break;
@@ -115,7 +116,7 @@ public class TicketCommandExecutor extends Command {
      * a list of available subcommands
      */
     public enum Operation {
-        ASSIGN, CLOSE, CLOSED, COMMENT, GOTO, HELP, INFO, LIST, LOG, NEW, OPENED, RELOAD, REOPEN, SHOW, TOP, UNASSIGN, VIEW, WARP;
+        ASSIGN, CLOSE, CLOSED, COMMENT, GOTO, HELP, INFO, LIST, LOG, NEW, OPEN, OPENED, RELOAD, REOPEN, SHOW, TOP, UNASSIGN, VIEW, WARP;
 
         /**
          * returns the matching operation
