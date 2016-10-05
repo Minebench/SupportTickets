@@ -24,7 +24,14 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
@@ -68,6 +75,11 @@ public class SupportTickets extends Plugin {
      * The plugin's config
      */
     private SupportTicketsConfig config;
+
+    /**
+     * Last shown ticket cache
+     */
+    private Map<String, Set<Integer>> shownTicketsCache = new HashMap<>();
 
     /**
      * returns the plugin instance
@@ -404,5 +416,27 @@ public class SupportTickets extends Plugin {
 
     public SupportTicketsConfig getConfig() {
         return config;
+    }
+
+    public void addShownTicket(CommandSender sender, int ticketId) {
+        Set<Integer> senderTickets = shownTicketsCache.get(sender.getName().toLowerCase());
+        if (senderTickets == null) {
+            senderTickets = new HashSet<>();
+        }
+        if (senderTickets.size() > 100) {
+            Iterator ticketIt = senderTickets.iterator();
+            while (senderTickets.size() > 100 && ticketIt.hasNext()) {
+                ticketIt.next();
+                ticketIt.remove();
+            }
+        }
+        senderTickets.add(ticketId);
+        shownTicketsCache.put(sender.getName().toLowerCase(), senderTickets);
+    }
+
+    public Set<Integer> getLastShownTickets(CommandSender sender) {
+        Set<Integer> senderTickets = shownTicketsCache.get(sender.getName().toLowerCase());
+
+        return senderTickets != null ? senderTickets : new HashSet<Integer>();
     }
 }

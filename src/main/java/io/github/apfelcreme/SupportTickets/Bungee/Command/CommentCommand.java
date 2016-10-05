@@ -79,5 +79,6 @@ public class CommentCommand extends SubCommand {
                         .replace("{0}", String.valueOf(ticket.getTicketId()))
                         .replace("{1}", sender.getName())
                         .replace("{2}", message));
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

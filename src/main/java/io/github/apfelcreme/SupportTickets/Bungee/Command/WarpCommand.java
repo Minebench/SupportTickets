@@ -69,5 +69,6 @@ public class WarpCommand extends SubCommand {
                 .replace("{3}", plugin.getNameByUUID(ticket.getSender()))
                 .replace("{4}", ticket.getMessage())
                 .replace("{5}", String.valueOf(ticket.getComments().size())));
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

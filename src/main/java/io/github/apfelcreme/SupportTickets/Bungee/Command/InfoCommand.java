@@ -61,5 +61,7 @@ public class InfoCommand extends SubCommand {
                 .replace("{2}", new DecimalFormat("0").format(ticket.getLocation().getLocationY()))
                 .replace("{3}", new DecimalFormat("0").format(ticket.getLocation().getLocationZ()))
                 .replace("{4}", ticket.getLocation().getWorldName()));
+
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

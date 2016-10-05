@@ -3,9 +3,14 @@ package io.github.apfelcreme.SupportTickets.Bungee;
 import io.github.apfelcreme.SupportTickets.Bungee.Command.*;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.TabCompleteEvent;
 import net.md_5.bungee.api.plugin.Command;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,7 +31,7 @@ import java.util.Map;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class CommandExecutor extends Command {
+public class CommandExecutor extends Command implements Listener {
 
     private final SupportTickets plugin;
 
@@ -118,4 +123,80 @@ public class CommandExecutor extends Command {
         return subCommands.get(name.toLowerCase());
     }
 
+    @EventHandler
+    public void onTabComplete(TabCompleteEvent event) {
+        String cursor = event.getCursor().toLowerCase();
+        if (!cursor.startsWith("/")) {
+            return;
+        }
+
+        if (("/" + getName()).startsWith(cursor)) {
+            event.getSuggestions().add(getName());
+            return;
+        }
+
+        if (!cursor.startsWith("/" + getName())) {
+            return;
+        }
+
+        if (!(event.getSender() instanceof CommandSender)) {
+            return;
+        }
+
+        String[] parts = cursor.split(" ");
+
+        if (parts.length == 1 && cursor.endsWith(" ")) {
+            for (SubCommand sub : getSubCommands().values()) {
+                if (sub.checkPermission((CommandSender) event.getSender())) {
+                    event.getSuggestions().add(sub.getName());
+                }
+            }
+        } else if (parts.length == 2) {
+            if (!cursor.endsWith(" ")) {
+                for (SubCommand sub : getSubCommands().values()) {
+                    if (sub.getName().startsWith(parts[1]) && sub.checkPermission((CommandSender) event.getSender())) {
+                        event.getSuggestions().add(sub.getName());
+                    }
+                }
+            } else {
+                SubCommand subCommand = getSubCommand(parts[1]);
+                if (subCommand != null && subCommand.getUsage() != null) {
+                    String[] args = subCommand.getUsage().split(" ");
+                    if (args.length > 0) {
+                        if (args[0].contains("player")) {
+                            for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
+                                event.getSuggestions().add(player.getName());
+                            }
+                        } else if (args[0].contains("<#>")) {
+                            for (Integer ticketId : plugin.getLastShownTickets((CommandSender) event.getSender())) {
+                                event.getSuggestions().add(ticketId.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (parts.length > 2) {
+            SubCommand subCommand = getSubCommand(parts[1]);
+            if (subCommand != null && subCommand.getUsage() != null) {
+                String[] args = subCommand.getUsage().split(" ");
+                if (args.length > 0) {
+                    int i = parts.length - 3;
+
+                    if (args[i].contains("player")) {
+                        for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
+                            if (cursor.endsWith(" ") || player.getName().startsWith(parts[parts.length - 1])) {
+                                event.getSuggestions().add(player.getName());
+                            }
+                        }
+                    } else if (args[i].contains("<#>")) {
+                        for (Integer ticketId : plugin.getLastShownTickets((CommandSender) event.getSender())) {
+                            if (cursor.endsWith(" ") || ticketId.toString().startsWith(parts[parts.length - 1])) {
+                                event.getSuggestions().add(ticketId.toString());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

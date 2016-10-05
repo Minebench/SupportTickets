@@ -77,15 +77,17 @@ public class OpenedCommand extends SubCommand {
                 .replace("{3}", String.valueOf(tickets.size())));
 
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
+            Ticket ticket = tickets.get(i);
             SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.element")
-                    .replace("{0}", String.valueOf(tickets.get(i).getTicketId()))
-                    .replace("{1}", plugin.isPlayerOnline(tickets.get(i).getSender())
+                    .replace("{0}", String.valueOf(ticket.getTicketId()))
+                    .replace("{1}", plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
                             : plugin.getConfig().getText("info.list.offline"))
-                    .replace("{2}", plugin.getNameByUUID(tickets.get(i).getSender()))
-                    .replace("{3}", tickets.get(i).getAssigned() != null ? tickets.get(i).getAssigned() : "*")
-                    .replace("{4}", tickets.get(i).getMessage())
-                    .replace("{5}", Integer.toString(tickets.get(i).getComments().size())));
+                    .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
+                    .replace("{3}", ticket.getAssigned() != null ? ticket.getAssigned() : "*")
+                    .replace("{4}", ticket.getMessage())
+                    .replace("{5}", Integer.toString(ticket.getComments().size())));
+            plugin.addShownTicket(sender, ticket.getTicketId());
         }
         SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.opened.footer"));
     }

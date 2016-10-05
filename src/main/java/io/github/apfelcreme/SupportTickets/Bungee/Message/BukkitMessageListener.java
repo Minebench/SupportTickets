@@ -67,12 +67,17 @@ public class BukkitMessageListener implements Listener {
             String message = in.readUTF();
 
             Ticket ticket = new Ticket(uuid, message, new Date(), location, Ticket.TicketStatus.OPEN);
-            Integer ticketId = SupportTickets.getDatabaseController().saveTicket(ticket);
+            int ticketId = SupportTickets.getDatabaseController().saveTicket(ticket);
             SupportTickets.sendMessage(uuid, SupportTicketsConfig.getInstance().getText("info.new.created"));
             SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.new.newTicket")
-                    .replace("{0}", ticketId.toString())
+                    .replace("{0}", String.valueOf(ticketId))
                     .replace("{1}", SupportTickets.getInstance().getNameByUUID(uuid))
                     .replace("{2}", message));
+            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
+                if (player.hasPermission("SupportTickets.mod")) {
+                    SupportTickets.getInstance().addShownTicket(player, ticket.getTicketId());
+                }
+            }
         }
     }
 }

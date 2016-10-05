@@ -84,5 +84,7 @@ public class CloseCommand extends SubCommand {
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", player.getName())
                 .replace("{2}", reason));
+
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

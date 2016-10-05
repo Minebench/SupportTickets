@@ -77,5 +77,6 @@ public class ViewCommand extends SubCommand {
                 SupportTickets.getDatabaseController().setCommentRead(comment);
             }
         }
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

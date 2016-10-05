@@ -78,5 +78,7 @@ public class AssignCommand extends SubCommand {
         SupportTickets.sendMessage(ticket.getSender(), plugin.getConfig().getText("info.assign.yourTicketGotAssigned")
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", to));
+
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

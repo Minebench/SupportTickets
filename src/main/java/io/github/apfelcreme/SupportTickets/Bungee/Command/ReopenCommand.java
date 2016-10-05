@@ -65,5 +65,6 @@ public class ReopenCommand extends SubCommand {
         SupportTickets.sendMessage(ticket.getSender(),
                 plugin.getConfig().getText("info.reopen.yourTicketGotReopened")
                         .replace("{0}", String.valueOf(ticket.getTicketId())));
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

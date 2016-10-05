@@ -69,5 +69,6 @@ public class UnassignCommand extends SubCommand {
         SupportTickets.sendMessage(ticket.getSender(),
                 plugin.getConfig().getText("info.unassign.yourTicketGotUnassigned")
                         .replace("{0}", String.valueOf(ticket.getTicketId())));
+        plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }
