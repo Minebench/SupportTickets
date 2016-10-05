@@ -38,30 +38,25 @@ public class WarpCommand implements SubCommand {
     public void execute(CommandSender sender, String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
         if (player.hasPermission("SupportTickets.mod")) {
-            if (args.length > 1) {
-                if (SupportTickets.isNumeric(args[1])) {
-                    Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-                    if (ticket != null) {
+            if (args.length > 1 && SupportTickets.isNumeric(args[1])) {
+                Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+                if (ticket != null) {
 //                        BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
-                        BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
+                    BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
 
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.warp.warped")
-                                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                                .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                                .replace("{2}", "")
-                                .replace("{3}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
-                                .replace("{4}", ticket.getMessage())
-                                .replace("{5}", Integer.toString(ticket.getComments().size())));
-                    } else {
-                        SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
-                    }
+                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.warp.warped")
+                            .replace("{0}", String.valueOf(ticket.getTicketId()))
+                            .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
+                            .replace("{2}", "")
+                            .replace("{3}", SupportTickets.getInstance().getNameByUUID(ticket.getSender()))
+                            .replace("{4}", ticket.getMessage())
+                            .replace("{5}", Integer.toString(ticket.getComments().size())));
                 } else {
-                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                            .replace("{0}", "/pe comment <#> <Kommentar>"));
+                    SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.unknownTicket"));
                 }
             } else {
                 SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("error.wrongUsage")
-                        .replace("{0}", "/pe comment <#> <Kommentar>"));
+                        .replace("{0}", "/pe warp <#>"));
             }
         } else {
             SupportTickets.sendMessage(sender, SupportTicketsConfig.getInstance().getText("error.noPermission"));
