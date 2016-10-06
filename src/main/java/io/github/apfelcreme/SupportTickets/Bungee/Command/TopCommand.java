@@ -55,7 +55,7 @@ public class TopCommand extends SubCommand {
         SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.top.header")
                 .replace("{0}", plugin.getConfig().getTopListSize().toString()));
 
-        int i = 0;
+        int i = 1;
         Iterator<Map.Entry<UUID, Integer>> sortedIt = sortedMap.entrySet().iterator();
         while (sortedIt.hasNext() && i < plugin.getConfig().getTopListSize()){
             Map.Entry<UUID, Integer> entry = sortedIt.next();
