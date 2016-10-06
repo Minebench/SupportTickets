@@ -63,7 +63,7 @@ public class BukkitMessageListener implements Listener {
                 }
             }
             Location location = new Location(server, in.readUTF(), in.readDouble(), in.readDouble(),
-                    in.readDouble(), in.readFloat(), in.readFloat());
+                    in.readDouble(), in.readDouble(), in.readDouble());
             String message = in.readUTF();
 
             Ticket ticket = new Ticket(uuid, message, new Date(), location, Ticket.TicketStatus.OPEN);
