@@ -40,6 +40,7 @@ public class CommandExecutor extends Command implements Listener {
     public CommandExecutor(SupportTickets plugin, String name, String permission, String... aliases) {
         super(name, permission, aliases);
         this.plugin = plugin;
+        plugin.getProxy().getPluginManager().registerListener(plugin, this);
     }
 
     @Override
