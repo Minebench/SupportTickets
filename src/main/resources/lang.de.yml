@@ -1,8 +1,8 @@
 texts:
-  prefix: '&7[&8PE&7]'
+  prefix: '&7[&9PE&7]'
   error:
     noPermission: '&c Du hast keine ausreichende Berechtigung!'
-    notYourTicket: '&c Dieses Ticket wurde nicht von dir geoeffnet!'
+    notYourTicket: '&c Dieses Ticket wurde nicht von dir geöffnet!'
     ticketAlreadyClosed: '&c Das Ticket wurde bereits geschlossen'
     unknownCommand: '&c Die Funktion {0} existiert nicht!'
     unknownPlayer: '&c Der angegebene Spieler existiert nicht!'
@@ -10,21 +10,21 @@ texts:
     wrongUsage: '&c Falsche Eingabe! Probiere {0}!'
   info:
     assign:
-      assigned: '&6 Das Ticket &e#{0}&6 wurde an &e{1}&6 weitergeleitet'
-      assignedComment: '&7Das Ticket wurde an &e{0}&7 weitergeleitet'
-      yourTicketGotAssigned: '&6 Dein Ticket &e#{0}&6 wurde an &e{1}&6 weitergeleitet'
+      assigned: '&9 Ticket &6#{0}&9 wurde &f{1}&9 zugewiesen'
+      assignedComment: '&7Das Ticket wurde &f{0}&7 zugewiesen'
+      yourTicketGotAssigned: '&9 Dein Ticket &6#{0}&9 wurde &f{1}&9 zugewiesen'
     close:
-      closed: '&6 Das Ticket &e#{0}&6 wurde von &e{1}&6 geschlossen: &7{2}'
-      closeComment: '&7Das Ticket wurde von &e{0}&7 geschlossen: {1}'
-      yourTicketGotClosed: '&6 Dein Ticket &e#{0}&6 wurde von &e{1}&6 geschlossen: &7{2}'
+      closed: '&9 Ticket &6#{0}&9 geschlossen von &f{1}&9: &7{2}'
+      closeComment: '&7Ticket geschlossen: {1}'
+      yourTicketGotClosed: '&9 Dein Ticket &6#{0}&9 wurde von &f{1}&9 geschlossen: &7{2}'
     closed:
-      footer: '&6 Fuer andere Seiten: &e/pe closed <Spieler> <#>'
-      header: '&6 Von {0} geschlossene Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
+      footer: '&9 Für andere Seiten: &f/pe closed <Spieler> <#>'
+      header: '&9 Von &f{0}&9 geschlossene Tickets: (&f{1}&9/&f{2}&9)&f - &9insgesamt: &7{3}'
     comment:
-      commented: '&e {0}&6 hat das Ticket &e#{1}&6 kommentiert: &7{2}'
-      yourTicketGotCommented: '&6 Dein Ticket &e#{0}&6 wurde von &e{1}&6 kommentiert: &7{2}'
+      commented: '&f {0}&9 hat Ticket &6#{1}&9 kommentiert: &7{2}'
+      yourTicketGotCommented: '&9 Dein Ticket &6#{0}&9 wurde von &f{1}&9 kommentiert: &7{2}'
     help:
-      header: '&6 Folgende Funktionen stehen dir zur Verfuegung'
+      header: '&6 Folgende Funktionen stehen dir zur Verfügung'
       commands:
         mod:
           assign: '&8 - &6assign <#> <Ziel>:&e Weise das &6Ticket&e einem &6Ziel&e zu'
@@ -32,60 +32,60 @@ texts:
           info: '&8 - &6info <#>:&e Zeige Informationen zu dem Ticket an'
           list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
           opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
-          reopen: '&8 - &6reopen <#>:&e Oeffne ein &6Ticket&e erneut'
+          reopen: '&8 - &6reopen <#>:&e Ã–ffne ein &6Ticket&e erneut'
           top: '&8 - &6top: &e Zeigt die Topliste der aktivsten Teamler'
-          unassign: '&8 - &6unassign <#>:&e Entfernt die Weiterleitung eines Tickets'
+          unassign: '&8 - &6unassign <#>:&e Entfernt die Zuweisung eines Tickets'
           warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
         user:
           close: '&8 - &6close <#> <Grund>:&e Schliesse das &6Ticket&e mit einem &6Grund'
           comment: '&8 - &6comment <#> <Text>:&6 Kommentiere&e ein &6Ticket'
           help: '&8 - &6help:&e Zeige eine Ansicht aller Funktionen an'
-          new: '&8 - &6new <Text>:&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
+          new: '&8 - &6new <Text>:&e Erstelle ein neüs Ticket mit einer &6Nachricht&e'
           show: '&8 - &6show:&e Zeige eine Liste der von dir erstellen Tickets an'
           view: '&8 - &6view <#>:&e Schau dir ein &6Tickets&e genau an'
     info:
-      info: '&6 Ticket &e#{0}&6, geoeffnet von &e{1}&6'
-      date: '&6 Geoeffnet: &e{0}'
-      comments: '&6 Kommentare: &e{0} &7&o/pe view {1}'
-      location: '&6 Server: &e{0}&6, [&e{1}&6,&e{2}&6,&e{3}&6], Welt: &e{4}'
+      info: '&9 Ticket &6#{0}&9, geöffnet von &f{1}&6'
+      date: '&9 Geöffnet: &f{0}'
+      comments: '&9 Kommentare: &f{0} &7&o/pe view {1}'
+      location: '&9 Server: &f{0}&9, [&f{1}&9,&f{2}&9,&f{3}&9], Welt: &9{4}'
     list:
-      element: '&e  #{0} {1} &6{2}&8 -> &e{3}:&7{4} &8[&7{5}&8]'
+      element: '&6 #{0} {1}&f{2}&7 -> &f{3}: &7{4} &7({5})'
       online: '&2+'
       offline: '&c-'
-      footer: '&6 Fuer andere Seiten: &e/pe list <#>'
-      header: '&6 Offene Tickets: (&e{0}&6/&e{1}&6)'
+      footer: '&9 Für andere Seiten: &f/pe list <#>'
+      header: '&9 Offene Tickets: (&f{0}&9/&f{1}&9)'
     login:
-      newCommentsPlural: '&6 Waehrend du abwesend warst, wurden einige deiner Tickets kommentiert: &e{0}&6. Schau sie dir mit &e/pe view #&6 an!'
-      newCommentsSingular: '&6 Waehrend du abwesend warst, wurde dein Ticket &e#{0}&6 kommentiert. Schau es dir mit &e/pe view {0}&6 an!'
+      newCommentsPlural: '&9 Während du abwesend warst, wurden einige deiner Tickets kommentiert: &f{0}&9. Schau sie dir mit &f/pe view <#>&9 an!'
+      newCommentsSingular: '&9 Während du abwesend warst, wurde dein Ticket &6#{0}&9 kommentiert. Schau es dir mit &f/pe view {0}&9 an!'
     new:
-      created: '&6 Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmoeglich um dein Anliegen kuemmern! Mit &e/pe show&6 kannst du deine Tickets einsehen.'
-      newTicket: '&6 Neues Ticket: &e#{0} &6{1} &8-> &7{2}'
+      created: '&b Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! &7Mit &f/pe show&b kannst du deine Tickets einsehen.'
+      newTicket: '&9 Neüs Ticket &6#{0} &9von &f{1}&7: &7{2}'
     opened:
-      footer: '&6 Fuer andere Seiten: &e/pe opened <Spieler> <#>'
-      header: '&6 Von {0} geoeffnete Tickets: (&e{1}&6/&e{2}&6)&e - &6insgesamt: &e{3}'
+      footer: '&9 Für andere Seiten: &f/pe opened <Spieler> <#>'
+      header: '&9 Von &f{0}&9 geöffnete Tickets: (&f{1}&9/&f{2}&9)&f - &9insgesamt: &f{3}'
     reload:
       reloaded: '&6 Die Config wurde neu geladen'
     reminderTask:
-      infoPlural: '&7 Es sind derzeit {0} Tickets geoeffnet'
-      infoSingular: '&7 Es ist derzeit ein Ticket geoeffnet'
+      infoPlural: '&b Es sind derzeit {0} Tickets geöffnet'
+      infoSingular: '&b Es ist derzeit ein Ticket geöffnet'
     reopen:
-      reopened: '&6 Das Ticket &e#{0}&6 wurde wieder geoeffnet'
-      reopenComment: '&7Das Ticket wurde von &e{0}&7 wieder geoeffnet'
-      yourTicketGotReopened: '&6 Dein Ticket &e#{0}&6 wurde wieder geoeffnet'
+      reopened: '&9 Ticket &6#{0}&9 wurde wieder geöffnet'
+      reopenComment: '&7Ticket wieder geöffnet'
+      yourTicketGotReopened: '&9 Dein Ticket &6#{0}&9 wurde wieder geöffnet'
     show:
-      footer: '&6 Fuer andere Seiten: &e/pe show <#>'
-      header: '&6 Von dir geoeffnete Tickets: (&e{0}&6/&e{1}&6)'
+      footer: '&9 Für andere Seiten: &f/pe show <#>'
+      header: '&9 Von dir geöffnete Tickets: (&f{0}&9/&f{1}&9)'
     top:
-      header: '&6 Diese &e{0}&6 Teamler sind die aktivsten: '
-      element: '&6 {0}. &e{1}: &7{2} geschlossene Tickets'
+      header: '&9 Diese &f{0}&9 Teamler sind die aktivsten: '
+      element: '&9 {0}. &f{1}: &7{2} geschlossene Tickets'
     unassign:
-      unassigned: '&6 Die Weiterleitung von Ticket &e#{0}&6 wurde aufgehoben'
-      unassignedComment: '&7Die Weiterleitung dieses Tickets wurde aufgehoben'
-      yourTicketGotUnassigned: '&6 Die Weiterleitung deines Tickets &e#{0}&6 wurde aufgehoben'
+      unassigned: '&9 Die Zuweisung von Ticket &6#{0}&9 wurde aufgehoben'
+      unassignedComment: '&7Die Zuweisung dieses Tickets wurde aufgehoben'
+      yourTicketGotUnassigned: '&9 Die Zuweisung deines Tickets &6#{0}&9 wurde aufgehoben'
     view:
-      comment: '&8 [&e{0}&8]{1} &6{2}: &7{3}'
-      header: '&6 Du schaust das Ticket mit der Nummer &e{0}&6 an:'
-      new: ' &2Neu'
-      ticket: '&6 Ticket &e#{0}&6, erstellt am &e{1}&6 von &e{2}'
+      comment: ' &3{0} &f{2}{1}: &7{3}'
+      header: '&9 Du schaust das Ticket mit der Nummer &6{0}&9 an:'
+      new: ' &2(Neu)'
+      ticket: '&9 Ticket &6#{0}&9 von &6{2}&9:'
     warp:
-      warped: ' &e#{0} [&e{1}&8]{2} &6{3}: &7{4} &7({5})'
+      warped: ' &3{1}{2} &6#{0} &f{3}: &7{4} &7({5})'
