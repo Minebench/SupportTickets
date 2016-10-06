@@ -68,7 +68,7 @@ public class CommandExecutor extends Command implements Listener {
 
             int required = 0;
 
-            if (usage.length > 0 || !usage[0].isEmpty()) {
+            if (usage.length > 0 && !usage[0].isEmpty()) {
                 for (int i = 0; i < usage.length; i++) {
                     if (!usage[i].startsWith("[") && !usage[i].endsWith("]")) {
                         required++;
