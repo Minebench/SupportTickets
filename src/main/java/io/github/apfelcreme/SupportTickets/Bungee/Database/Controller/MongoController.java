@@ -325,8 +325,8 @@ public class MongoController implements DatabaseController {
                         (double) dbObject.get("loc_X"),
                         (double) dbObject.get("loc_Y"),
                         (double) dbObject.get("loc_Z"),
-                        (float) dbObject.get("yaw"),
-                        (float) dbObject.get("pitch")
+                        (double) dbObject.get("yaw"),
+                        (double) dbObject.get("pitch")
                 ),
                 Ticket.TicketStatus.fromInt((Integer) dbObject.get("status")));
         ticket.setTicketId((Integer) dbObject.get("ticket_id"));

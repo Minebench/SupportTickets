@@ -97,8 +97,8 @@ public class SQLController implements DatabaseController {
                 preparedStatement.setDouble(7, ticket.getLocation().getLocationX());
                 preparedStatement.setDouble(8, ticket.getLocation().getLocationY());
                 preparedStatement.setDouble(9, ticket.getLocation().getLocationZ());
-                preparedStatement.setFloat(10, ticket.getLocation().getYaw());
-                preparedStatement.setFloat(11, ticket.getLocation().getPitch());
+                preparedStatement.setDouble(10, ticket.getLocation().getYaw());
+                preparedStatement.setDouble(11, ticket.getLocation().getPitch());
                 preparedStatement.executeUpdate();
                 ResultSet resultSet = preparedStatement.getGeneratedKeys();
                 if (resultSet.next()) {

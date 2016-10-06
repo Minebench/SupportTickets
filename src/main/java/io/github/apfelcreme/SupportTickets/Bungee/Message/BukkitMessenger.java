@@ -75,8 +75,8 @@ public class BukkitMessenger {
                     out.writeDouble(location.getLocationX());
                     out.writeDouble(location.getLocationY());
                     out.writeDouble(location.getLocationZ());
-                    out.writeFloat(location.getYaw());
-                    out.writeFloat(location.getPitch());
+                    out.writeDouble(location.getYaw());
+                    out.writeDouble(location.getPitch());
                     serverInfo.sendData("SupportTickets", out.toByteArray());
                 } else {
                     SupportTickets.getInstance().getLogger().log(Level.WARNING, "No server found for '" + location.getServer() + "'!");

@@ -25,10 +25,10 @@ public class Location {
     private final double locationX;
     private final double locationY;
     private final double locationZ;
-    private final float yaw;
-    private final float pitch;
+    private final double yaw;
+    private final double pitch;
 
-    public Location(String server, String worldName, double locationX, double locationY, double locationZ, float yaw, float pitch) {
+    public Location(String server, String worldName, double locationX, double locationY, double locationZ, double yaw, double pitch) {
         this.server = server;
         this.worldName = worldName;
         this.locationX = locationX;
@@ -89,7 +89,7 @@ public class Location {
      *
      * @return yaw
      */
-    public float getYaw() {
+    public double getYaw() {
         return yaw;
     }
 
@@ -98,7 +98,7 @@ public class Location {
      *
      * @return the pitch
      */
-    public float getPitch() {
+    public double getPitch() {
         return pitch;
     }
 }
