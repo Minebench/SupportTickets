@@ -75,7 +75,7 @@ public class CommandExecutor extends Command implements Listener {
                     }
                     if (strings.length > i + 2) {
                         if (usage[i].contains("#")) {
-                            failed |= SupportTickets.isNumeric(strings[i + 1]);
+                            failed = !failed && !SupportTickets.isNumeric(strings[i + 1]);
                         }
                     }
                 }
