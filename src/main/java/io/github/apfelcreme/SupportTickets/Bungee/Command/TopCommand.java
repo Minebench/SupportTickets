@@ -57,7 +57,7 @@ public class TopCommand extends SubCommand {
 
         int i = 1;
         Iterator<Map.Entry<UUID, Integer>> sortedIt = sortedMap.entrySet().iterator();
-        while (sortedIt.hasNext() && i < plugin.getConfig().getTopListSize()){
+        while (sortedIt.hasNext() && i <= plugin.getConfig().getTopListSize()){
             Map.Entry<UUID, Integer> entry = sortedIt.next();
             SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.top.element")
                     .replace("{0}", Integer.toString(i))
