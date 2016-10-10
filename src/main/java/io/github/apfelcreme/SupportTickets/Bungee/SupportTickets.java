@@ -144,7 +144,7 @@ public class SupportTickets extends Plugin {
         ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<page>]",             "SupportTickets.user"));
         ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "",                     "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                  "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                  "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                  "SupportTickets.user"));
         ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                  "SupportTickets.mod",   "goto"));
 
         // register the command
