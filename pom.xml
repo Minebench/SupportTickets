@@ -80,8 +80,12 @@
                             <shadedPattern>io.github.apfelcreme.SupportTickets.lib.hikari</shadedPattern>
                         </relocation>
                         <relocation>
-                            <pattern>org.mongodb</pattern>
+                            <pattern>com.mongodb</pattern>
                             <shadedPattern>io.github.apfelcreme.SupportTickets.lib.mongodb</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>org.bson</pattern>
+                            <shadedPattern>io.github.apfelcreme.SupportTickets.lib.bson</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>
