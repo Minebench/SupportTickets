@@ -8,6 +8,7 @@ texts:
     unknownPlayer: '&c Der angegebene Spieler existiert nicht!'
     unknownTicket: '&c Es existiert kein Ticket mit der angegebenen Nummer!'
     wrongUsage: '&c Falsche Eingabe! Probiere {0}!'
+    wrongEnumArgument: '&c {0} ist kein valider Wert. Verfügbar: {1}'
   info:
     assign:
       assigned: '&9 Ticket &6#{0}&9 wurde &f{1}&9 zugewiesen'

@@ -3,6 +3,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Command;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
+import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
 
@@ -52,7 +53,15 @@ public class ListCommand extends SubCommand {
                 Ticket.TicketStatus.REOPENED
         };
         if (args.length > 1 && !SupportTickets.isNumeric(args[1])) {
-            messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
+            try {
+                messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.wrongEnumArgument")
+                        .replace("{0}", args[1])
+                        .replace("{1}", StringUtils.join(Ticket.TicketStatus.values(), ", "))
+                );
+                return;
+            }
             statuses = new Ticket.TicketStatus[]{messageStatus};
         }
 
@@ -100,13 +109,6 @@ public class ListCommand extends SubCommand {
 
     @Override
     public boolean validateInput(String[] strings) {
-        if (strings.length > 1 && !SupportTickets.isNumeric(strings[1])) {
-            try {
-                Ticket.TicketStatus.valueOf(strings[1].toUpperCase());
-            } catch (IllegalArgumentException e) {
-                return false;
-            }
-        }
         return strings.length > 0;
     }
 }
