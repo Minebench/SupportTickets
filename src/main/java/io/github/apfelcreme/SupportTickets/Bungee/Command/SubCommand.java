@@ -74,4 +74,35 @@ public abstract class SubCommand {
     public String[] getAliases() {
         return aliases;
     }
+
+    /**
+     * Check whether or not the input is valid. Checks both the argument count and
+     * if the input is a number if needed. Uses the usage text as the instructions.
+     * @param strings The input strings
+     * @return <tt>true</tt> if it is valid; <tt>false</tt> if not
+     */
+    public boolean validateInput(String[] strings) {
+        if (getUsage() != null) {
+            String[] usage = getUsage().split(" ");
+            boolean failed = false;
+
+            int required = 0;
+
+            if (usage.length > 0 && !usage[0].replace(" ", "").isEmpty()) {
+                for (int i = 0; i < usage.length; i++) {
+                    if (!usage[i].startsWith("[") && !usage[i].endsWith("]")) {
+                        required++;
+                    }
+                    if (strings.length > i + 1) {
+                        if (usage[i].contains("#")) {
+                            failed = !failed && !SupportTickets.isNumeric(strings[i + 1]);
+                        }
+                    }
+                }
+            }
+
+            return !(failed || strings.length - 1 < required);
+        }
+        return true;
+    }
 }

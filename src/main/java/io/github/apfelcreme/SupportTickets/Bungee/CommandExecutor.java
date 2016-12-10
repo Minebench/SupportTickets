@@ -63,30 +63,10 @@ public class CommandExecutor extends Command implements Listener {
             return;
         }
 
-        if (subCommand.getUsage() != null) {
-            String[] usage = subCommand.getUsage().split(" ");
-            boolean failed = false;
-
-            int required = 0;
-
-            if (usage.length > 0 && !usage[0].replace(" ", "").isEmpty()) {
-                for (int i = 0; i < usage.length; i++) {
-                    if (!usage[i].startsWith("[") && !usage[i].endsWith("]")) {
-                        required++;
-                    }
-                    if (strings.length > i + 1) {
-                        if (usage[i].contains("#")) {
-                            failed = !failed && !SupportTickets.isNumeric(strings[i + 1]);
-                        }
-                    }
-                }
-            }
-
-            if (failed || strings.length - 1 < required) {
-                SupportTickets.sendMessage(commandSender, plugin.getConfig().getText("error.wrongUsage")
-                        .replace("{0}", "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage()));
-                return;
-            }
+        if (!subCommand.validateInput(strings)) {
+            SupportTickets.sendMessage(commandSender, plugin.getConfig().getText("error.wrongUsage")
+                    .replace("{0}", "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage()));
+            return;
         }
 
         final SubCommand finalSubCommand = subCommand;
