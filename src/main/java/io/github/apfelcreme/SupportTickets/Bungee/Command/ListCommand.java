@@ -45,13 +45,15 @@ public class ListCommand extends SubCommand {
             page = 0;
         }
 
+        Ticket.TicketStatus messageStatus = Ticket.TicketStatus.OPEN;
         Ticket.TicketStatus[] statuses = new Ticket.TicketStatus[]{
                 Ticket.TicketStatus.OPEN,
                 Ticket.TicketStatus.ASSIGNED,
                 Ticket.TicketStatus.REOPENED
         };
         if (args.length > 1 && !SupportTickets.isNumeric(args[1])) {
-            statuses = new Ticket.TicketStatus[]{Ticket.TicketStatus.valueOf(args[1].toUpperCase())};
+            messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
+            statuses = new Ticket.TicketStatus[]{messageStatus};
         }
 
         //load the tickets
@@ -66,7 +68,9 @@ public class ListCommand extends SubCommand {
 
         SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.header")
                 .replace("{0}", String.valueOf(page + 1))
-                .replace("{1}", String.valueOf(maxPages)));
+                .replace("{1}", String.valueOf(maxPages))
+                .replace("{3}", messageStatus.toString())
+        );
 
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);

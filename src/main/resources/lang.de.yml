@@ -53,7 +53,7 @@ texts:
       online: '&2+'
       offline: '&c-'
       footer: '&9 Für andere Seiten: &f/pe list <#>'
-      header: '&9 Offene Tickets: (&f{0}&9/&f{1}&9)'
+      header: '&9 {3} Tickets: (&f{0}&9/&f{1}&9)'
     login:
       newCommentsPlural: '&9 Während du abwesend warst, wurden einige deiner Tickets kommentiert: &f{0}&9. Schau sie dir mit &f/pe view <#>&9 an!'
       newCommentsSingular: '&9 Während du abwesend warst, wurde dein Ticket &6#{0}&9 kommentiert. Schau es dir mit &f/pe view {0}&9 an!'
