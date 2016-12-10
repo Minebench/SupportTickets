@@ -137,7 +137,7 @@ public class SupportTickets extends Plugin {
         ticketCommand.registerSubCommand(new HelpCommand(this,      "help"));
         ticketCommand.registerSubCommand(new InfoCommand(this,      "info",     "<#>",                  "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ListCommand(this,      "list",     "[<#page>]",            "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new NewCommand(this,       "new",      "<text>",               "SupportTickets.user",  "open"));
+        ticketCommand.registerSubCommand(new NewCommand(this,       "new",      "<text>",               "SupportTickets.user",  "open", "create", "neu"));
         ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "<player> [<#page>]",   "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ReloadCommand(this,    "reload",   "",                     "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ReopenCommand(this,    "reopen",   "<#>",                  "SupportTickets.mod"));
@@ -145,7 +145,7 @@ public class SupportTickets extends Plugin {
         ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "",                     "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                  "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                  "SupportTickets.user"));
-        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                  "SupportTickets.mod",   "goto"));
+        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                  "SupportTickets.mod",   "goto", "tp"));
 
         // register the command
         getProxy().getPluginManager().registerCommand(this, ticketCommand);
