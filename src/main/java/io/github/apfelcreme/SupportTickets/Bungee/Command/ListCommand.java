@@ -62,7 +62,7 @@ public class ListCommand extends SubCommand {
         //display the results
         int pageSize = plugin.getConfig().getPageSize();
         int maxPages = (int) Math.ceil((float) tickets.size() / pageSize);
-        if (page >= maxPages - 1) {
+        if (maxPages > 0 && page >= maxPages - 1) {
             page = maxPages - 1;
         }
 
@@ -86,7 +86,16 @@ public class ListCommand extends SubCommand {
             plugin.addShownTicket(sender, ticket.getTicketId());
         }
 
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.footer"));
+        if (tickets.size() > pageSize) {
+            String usage = getUsage().replace("[<#page>]]", "<#>");
+            if (messageStatus == Ticket.TicketStatus.OPEN) {
+                usage = usage.replace("[[<status>] ", "");
+            } else {
+                usage = usage.replace("[[<status>]", messageStatus.toString().toLowerCase());
+            }
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.footer")
+                    .replace("{0}", "/ticket " + usage));
+        }
     }
 
     @Override
