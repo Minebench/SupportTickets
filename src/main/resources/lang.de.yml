@@ -32,7 +32,7 @@ texts:
           info: '&8 - &6info <#>:&e Zeige Informationen zu dem Ticket an'
           list: '&8 - &6list:&e Zeige die Liste von offenen Tickets an'
           opened: '&8 - &6opened <Spieler>:&e Zeige alle Tickets eines &6Spielers'
-          reopen: '&8 - &6reopen <#>:&e Ã–ffne ein &6Ticket&e erneut'
+          reopen: '&8 - &6reopen <#>:&e Öffne ein &6Ticket&e erneut'
           top: '&8 - &6top: &e Zeigt die Topliste der aktivsten Teamler'
           unassign: '&8 - &6unassign <#>:&e Entfernt die Zuweisung eines Tickets'
           warp: '&8 - &6warp <#>:&e Teleportiere dich zu einem &6Ticket'
