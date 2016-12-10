@@ -139,7 +139,7 @@ public class SupportTickets extends Plugin {
         ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "<player> [<#page>]",     "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ReloadCommand(this,    "reload",   "",                       "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ReopenCommand(this,    "reopen",   "<#>",                    "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<#page>]",               "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<#page>]",              "SupportTickets.user"));
         ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "",                       "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                    "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                    "SupportTickets.user"));
