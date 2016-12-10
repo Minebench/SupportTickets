@@ -39,7 +39,7 @@ public class ListCommand extends SubCommand {
     public void execute(CommandSender sender, final String[] args) {
         int page = 0;
         if (SupportTickets.isNumeric(args[args.length - 1])) {
-            page = Integer.parseInt(args[1]) - 1;
+            page = Integer.parseInt(args[args.length - 1]) - 1;
         }
         if (page < 0) {
             page = 0;
