@@ -69,7 +69,7 @@ public class ListCommand extends SubCommand {
         SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.header")
                 .replace("{0}", String.valueOf(page + 1))
                 .replace("{1}", String.valueOf(maxPages))
-                .replace("{3}", messageStatus.toString())
+                .replace("{2}", messageStatus.toString())
         );
 
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
