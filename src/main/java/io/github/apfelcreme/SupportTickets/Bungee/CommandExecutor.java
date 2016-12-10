@@ -74,7 +74,7 @@ public class CommandExecutor extends Command implements Listener {
                     if (!usage[i].startsWith("[") && !usage[i].endsWith("]")) {
                         required++;
                     }
-                    if (strings.length > i + 2) {
+                    if (strings.length > i + 1) {
                         if (usage[i].contains("#")) {
                             failed = !failed && !SupportTickets.isNumeric(strings[i + 1]);
                         }
