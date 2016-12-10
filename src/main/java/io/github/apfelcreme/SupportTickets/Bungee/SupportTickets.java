@@ -132,13 +132,13 @@ public class SupportTickets extends Plugin {
 //                                       Class extends SubCommand   name        arguments               permission              aliases...
         ticketCommand.registerSubCommand(new AssignCommand(this,    "assign",   "<#> [<player>]",       "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new CloseCommand(this,     "close",    "<#> <reason>",         "SupportTickets.user"));
-        ticketCommand.registerSubCommand(new ClosedCommand(this,    "closed",   "[<player> [<#page>]]", "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ClosedCommand(this,    "closed",   "<player> [<#page>]",   "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new CommentCommand(this,   "comment",  "<#> <comment>",        "SupportTickets.user",  "log"));
         ticketCommand.registerSubCommand(new HelpCommand(this,      "help"));
         ticketCommand.registerSubCommand(new InfoCommand(this,      "info",     "<#>",                  "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ListCommand(this,      "list",     "[<#page>]",            "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new NewCommand(this,       "new",      "<text>",               "SupportTickets.user",  "open"));
-        ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "[<player> [<#page>]]", "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "<player> [<#page>]",   "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ReloadCommand(this,    "reload",   "",                     "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ReopenCommand(this,    "reopen",   "<#>",                  "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<page>]",             "SupportTickets.user"));
