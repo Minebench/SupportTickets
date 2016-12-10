@@ -24,11 +24,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -127,25 +125,25 @@ public class SupportTickets extends Plugin {
                 break;
         }
 
-        CommandExecutor ticketCommand = new CommandExecutor(this,   "ticket",                           null,                   "ti", "petition", "pe");
+        CommandExecutor ticketCommand = new CommandExecutor(this,   "ticket",                             null,                   "ti", "petition", "pe");
 
-//                                       Class extends SubCommand   name        arguments               permission              aliases...
-        ticketCommand.registerSubCommand(new AssignCommand(this,    "assign",   "<#> [<player>]",       "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new CloseCommand(this,     "close",    "<#> <reason>",         "SupportTickets.user"));
-        ticketCommand.registerSubCommand(new ClosedCommand(this,    "closed",   "<player> [<#page>]",   "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new CommentCommand(this,   "comment",  "<#> <comment>",        "SupportTickets.user",  "log"));
+//                                       Class extends SubCommand   name        arguments                 permission              aliases...
+        ticketCommand.registerSubCommand(new AssignCommand(this,    "assign",   "<#> [<player>]",         "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new CloseCommand(this,     "close",    "<#> <reason>",           "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new ClosedCommand(this,    "closed",   "<player> [<#page>]",     "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new CommentCommand(this,   "comment",  "<#> <comment>",          "SupportTickets.user",  "log"));
         ticketCommand.registerSubCommand(new HelpCommand(this,      "help"));
-        ticketCommand.registerSubCommand(new InfoCommand(this,      "info",     "<#>",                  "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ListCommand(this,      "list",     "[<#page>]",            "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new NewCommand(this,       "new",      "<text>",               "SupportTickets.user",  "open", "create", "neu"));
-        ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "<player> [<#page>]",   "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ReloadCommand(this,    "reload",   "",                     "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ReopenCommand(this,    "reopen",   "<#>",                  "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<#page>]",             "SupportTickets.user"));
-        ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "",                     "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                  "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                  "SupportTickets.user"));
-        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                  "SupportTickets.mod",   "goto", "tp"));
+        ticketCommand.registerSubCommand(new InfoCommand(this,      "info",     "<#>",                    "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ListCommand(this,      "list",     "[[<status>] [<#page>]]", "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new NewCommand(this,       "new",      "<text>",                 "SupportTickets.user",  "open", "create", "neu"));
+        ticketCommand.registerSubCommand(new OpenedCommand(this,    "opened",   "<player> [<#page>]",     "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ReloadCommand(this,    "reload",   "",                       "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ReopenCommand(this,    "reopen",   "<#>",                    "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ShowCommand(this,      "show",     "[<#page>]",               "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "",                       "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                    "SupportTickets.mod"));
+        ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                    "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                    "SupportTickets.mod",   "goto", "tp"));
 
         // register the command
         getProxy().getPluginManager().registerCommand(this, ticketCommand);

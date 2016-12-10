@@ -1,11 +1,10 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -40,16 +39,21 @@ public class ListCommand extends SubCommand {
      */
     public void execute(CommandSender sender, final String[] args) {
         int page = 0;
-        if (args.length > 1 && SupportTickets.isNumeric(args[1])) {
+        if (SupportTickets.isNumeric(args[args.length - 1])) {
             page = Integer.parseInt(args[1]) - 1;
         }
         if (page < 0) {
             page = 0;
         }
 
+        List<Ticket.TicketStatus> statuses = Arrays.asList(Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
+        if (args.length > 1 && !SupportTickets.isNumeric(args[1])) {
+            statuses.clear();
+            statuses.add(Ticket.TicketStatus.valueOf(args[1].toUpperCase()));
+        }
+
         //load the tickets
-        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(
-                Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
+        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(statuses.toArray(new Ticket.TicketStatus[statuses.size()]));
 
         //display the results
         int pageSize = plugin.getConfig().getPageSize();
@@ -77,5 +81,17 @@ public class ListCommand extends SubCommand {
         }
 
         SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.footer"));
+    }
+
+    @Override
+    public boolean validateInput(String[] strings) {
+        if (strings.length > 1 && !SupportTickets.isNumeric(strings[1])) {
+            try {
+                Ticket.TicketStatus.valueOf(strings[1].toUpperCase());
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }
+        return strings.length > 0;
     }
 }
