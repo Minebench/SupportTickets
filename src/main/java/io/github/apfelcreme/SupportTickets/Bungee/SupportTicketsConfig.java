@@ -56,7 +56,6 @@ public class SupportTicketsConfig {
     public SupportTicketsConfig() {
 
         File configurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/config.yml");
-        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/lang.de.yml");
         try {
             if (!SupportTickets.getInstance().getDataFolder().exists()) {
                 SupportTickets.getInstance().getDataFolder().mkdir();
@@ -64,11 +63,7 @@ public class SupportTicketsConfig {
             if (!configurationFile.exists()) {
                 createConfigFile("config.yml", configurationFile);
             }
-            if (!languageConfigurationFile.exists()) {
-                createConfigFile("lang.de.yml", languageConfigurationFile);
-            }
             configuration = yamlProvider.load(configurationFile);
-            languageConfiguration = yamlProvider.load(languageConfigurationFile);
 
             for (ServerInfo serverInfo : ProxyServer.getInstance().getServers().values()) {
                 if (configuration.get("disabledWorlds." + serverInfo.getAddress().getHostName() + "."
@@ -78,8 +73,18 @@ public class SupportTicketsConfig {
                 }
             }
             yamlProvider.save(configuration, configurationFile);
-            yamlProvider.save(languageConfiguration, languageConfigurationFile);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/lang." + getLanguage() + ".yml");
+        try {
+            if (!languageConfigurationFile.exists()) {
+                createConfigFile("lang.de.yml", languageConfigurationFile);
+            }
+            languageConfiguration = yamlProvider.load(languageConfigurationFile);
+            yamlProvider.save(languageConfiguration, languageConfigurationFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -98,7 +103,7 @@ public class SupportTicketsConfig {
      */
     public void save() {
         File configurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/config.yml");
-        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/lang.de.yml");
+        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/lang." + getLanguage() + ".yml");
         try {
             yamlProvider.save(configuration, configurationFile);
             yamlProvider.save(languageConfiguration, languageConfigurationFile);
@@ -117,6 +122,11 @@ public class SupportTicketsConfig {
     private void createConfigFile(String source, File dest) throws IOException {
         Configuration configuration = yamlProvider.load(new InputStreamReader(SupportTickets.getInstance().getResourceAsStream(source)));
         yamlProvider.save(configuration, dest);
+    }
+
+
+    public String getLanguage() {
+        return configuration.getString("lang", "de");
     }
 
     /**
