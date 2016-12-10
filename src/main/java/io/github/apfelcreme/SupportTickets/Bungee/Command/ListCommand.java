@@ -4,7 +4,6 @@ import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -46,14 +45,17 @@ public class ListCommand extends SubCommand {
             page = 0;
         }
 
-        List<Ticket.TicketStatus> statuses = Arrays.asList(Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
+        Ticket.TicketStatus[] statuses = new Ticket.TicketStatus[]{
+                Ticket.TicketStatus.OPEN,
+                Ticket.TicketStatus.ASSIGNED,
+                Ticket.TicketStatus.REOPENED
+        };
         if (args.length > 1 && !SupportTickets.isNumeric(args[1])) {
-            statuses.clear();
-            statuses.add(Ticket.TicketStatus.valueOf(args[1].toUpperCase()));
+            statuses = new Ticket.TicketStatus[]{Ticket.TicketStatus.valueOf(args[1].toUpperCase())};
         }
 
         //load the tickets
-        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(statuses.toArray(new Ticket.TicketStatus[statuses.size()]));
+        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(statuses);
 
         //display the results
         int pageSize = plugin.getConfig().getPageSize();
