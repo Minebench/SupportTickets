@@ -3,9 +3,11 @@ package io.github.apfelcreme.SupportTickets.Bungee.Command;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.apache.commons.lang.StringUtils;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -66,7 +68,13 @@ public class ListCommand extends SubCommand {
         }
 
         //load the tickets
-        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(statuses);
+        List<Ticket> tickets;
+        if (sender.hasPermission("SupportTickets.mod")) {
+            tickets = SupportTickets.getDatabaseController().getTickets(statuses);
+        } else {
+            UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+            tickets = SupportTickets.getDatabaseController().getPlayerTickets(senderId, statuses);
+        }
 
         //display the results
         int pageSize = plugin.getConfig().getPageSize();
