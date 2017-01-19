@@ -48,7 +48,7 @@ public class ShowCommand extends SubCommand {
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
         List<Ticket> tickets = SupportTickets.getDatabaseController().getPlayerTickets(senderId,
-                Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.ASSIGNED);
+                Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
 
         //display the results
         int pageSize = plugin.getConfig().getPageSize();
