@@ -111,7 +111,7 @@ public class ListCommand extends SubCommand {
                 usage = usage.replace("[[<status>]", messageStatus.toString().toLowerCase());
             }
             SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.footer")
-                    .replace("{0}", "/ticket " + usage));
+                    .replace("{0}", "/ticket " + getName() + " " + usage));
         }
     }
 
