@@ -291,7 +291,8 @@ public class SupportTickets extends Plugin {
         }
         UUID uuid = null;
         if (uuidDb != null) {
-            uuid = UUID.fromString(uuidDb.getStorage().getUUIDByName(name, false));
+            String uuidStr = uuidDb.getStorage().getUUIDByName(name, false);
+            uuid = UUID.fromString(uuidStr);
         } else if (uuidCache.containsKey(name)) {
             uuid = uuidCache.get(name);
         } else {
