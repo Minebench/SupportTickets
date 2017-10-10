@@ -23,7 +23,7 @@ import java.util.UUID;
  *
  * @author Lord36 aka Apfelcreme
  */
-public class Ticket {
+public class Ticket implements Comparable {
 
     private int ticketId = -1;
     private final UUID sender;
@@ -203,6 +203,11 @@ public class Ticket {
      */
     public TicketStatus getTicketStatus() {
         return ticketStatus;
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        return Integer.compare(ticketId, ((Ticket) o).getTicketId());
     }
 
     /**

@@ -78,7 +78,7 @@ public class ListCommand extends SubCommand {
         }
 
         if (statuses.length == 1) {
-            tickets.sort((t1, t2) -> Integer.compare(t2.getTicketId(), t1.getTicketId()));
+            tickets.sort(Comparator.reverseOrder());
         }
 
         //display the results

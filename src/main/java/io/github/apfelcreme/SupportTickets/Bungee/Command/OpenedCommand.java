@@ -6,6 +6,7 @@ import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,6 +59,7 @@ public class OpenedCommand extends SubCommand {
             page = 0;
         }
         List<Ticket> tickets = SupportTickets.getDatabaseController().getTicketsOpenedBy(target);
+        tickets.sort(Comparator.reverseOrder());
 
         //display the results
         int pageSize = plugin.getConfig().getPageSize();
