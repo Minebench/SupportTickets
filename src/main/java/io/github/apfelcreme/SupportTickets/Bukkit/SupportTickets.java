@@ -1,8 +1,15 @@
 package io.github.apfelcreme.SupportTickets.Bukkit;
 
-import io.github.apfelcreme.SupportTickets.Bukkit.Bungee.BungeeMessageListener;
-import org.bukkit.Bukkit;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import io.github.apfelcreme.SupportTickets.Bukkit.Listener.BungeeMessageListener;
+import io.github.apfelcreme.SupportTickets.Bukkit.Listener.PlayerListener;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -24,22 +31,26 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class SupportTickets extends JavaPlugin {
 
-    /**
-     * returns the plugin instance
-     *
-     * @return the plugin instance
-     */
-    public static SupportTickets getInstance() {
-        return (SupportTickets) Bukkit.getServer().getPluginManager().getPlugin("SupportTickets");
-    }
+    private Cache<UUID, Location> teleportQueue = CacheBuilder.newBuilder().expireAfterWrite(60, TimeUnit.SECONDS).build();
 
     @Override
     public void onEnable() {
         // register the Plugin channels for the bungee communication
         getServer().getMessenger().registerOutgoingPluginChannel(this, "SupportTickets");
         getServer().getMessenger().registerIncomingPluginChannel(this, "SupportTickets",
-                new BungeeMessageListener());
+                new BungeeMessageListener(this));
+        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
     }
 
+    public void addToQueue(UUID playerId, Location location) {
+        teleportQueue.put(playerId, location);
+    }
 
+    public Location getQueuedLocation(UUID playerId) {
+        return teleportQueue.getIfPresent(playerId);
+    }
+
+    public void removeQueue(UUID playerId) {
+        teleportQueue.invalidate(playerId);
+    }
 }

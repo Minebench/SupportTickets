@@ -1,4 +1,4 @@
-package io.github.apfelcreme.SupportTickets.Bukkit.Bungee;
+package io.github.apfelcreme.SupportTickets.Bukkit.Listener;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -31,6 +31,11 @@ import java.util.UUID;
  * @author Lord36 aka Apfelcreme
  */
 public class BungeeMessageListener implements PluginMessageListener {
+    private final SupportTickets plugin;
+
+    public BungeeMessageListener(SupportTickets plugin) {
+        this.plugin = plugin;
+    }
 
     public void onPluginMessageReceived(String s, Player p, final byte[] bytes) {
         if (!s.equals("SupportTickets")) {
@@ -41,7 +46,7 @@ public class BungeeMessageListener implements PluginMessageListener {
         String subChannel = in.readUTF();
         if (subChannel.equals("WARP")) {
             UUID uuid = UUID.fromString(in.readUTF());
-            Location location = new Location(SupportTickets.getInstance().getServer().getWorld(in.readUTF()),
+            Location location = new Location(plugin.getServer().getWorld(in.readUTF()),
                     in.readDouble(), in.readDouble(), in.readDouble(),
                     (float) in.readDouble(), (float) in.readDouble());
             warp(uuid, location);
@@ -64,11 +69,11 @@ public class BungeeMessageListener implements PluginMessageListener {
         DataOutputStream out = new DataOutputStream(b);
 
         try {
-            Player player = SupportTickets.getInstance().getServer().getPlayer(uuid);
+            Player player = plugin.getServer().getPlayer(uuid);
             if (player != null) {
                 out.writeUTF("POSITIONANSWER");
                 out.writeUTF(uuid.toString());
-                out.writeUTF(SupportTickets.getInstance().getServer().getIp() + ":" + SupportTickets.getInstance().getServer().getPort());
+                out.writeUTF(plugin.getServer().getIp() + ":" + plugin.getServer().getPort());
                 out.writeUTF(player.getWorld().getName());
                 out.writeDouble(player.getLocation().getX());
                 out.writeDouble(player.getLocation().getY());
@@ -76,7 +81,7 @@ public class BungeeMessageListener implements PluginMessageListener {
                 out.writeDouble((double) player.getLocation().getYaw());
                 out.writeDouble((double) player.getLocation().getPitch());
                 out.writeUTF(message);
-                player.sendPluginMessage(SupportTickets.getInstance(), "SupportTickets", b.toByteArray());
+                player.sendPluginMessage(plugin, "SupportTickets", b.toByteArray());
                 out.close();
                 b.close();
             }
@@ -92,13 +97,12 @@ public class BungeeMessageListener implements PluginMessageListener {
      * @param location the location
      */
     private void warp(final UUID uuid, final Location location) {
-        SupportTickets.getInstance().getServer().getScheduler().runTaskLater(SupportTickets.getInstance(), new Runnable() {
-            @Override
-            public void run() {
-                Player player = SupportTickets.getInstance().getServer().getPlayer(uuid);
-                if (uuid != null) {
-                    player.teleport(location);
-                }
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
+            Player player = plugin.getServer().getPlayer(uuid);
+            if (player != null) {
+                player.teleport(location);
+            } else {
+                plugin.addToQueue(uuid, location);
             }
         }, 20L);
     }
