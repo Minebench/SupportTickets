@@ -6,6 +6,7 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import org.apache.commons.lang.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -74,6 +75,10 @@ public class ListCommand extends SubCommand {
         } else {
             UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
             tickets = SupportTickets.getDatabaseController().getPlayerTickets(senderId, statuses);
+        }
+
+        if (statuses.length == 1) {
+            tickets.sort((t1, t2) -> Integer.compare(t2.getTicketId(), t1.getTicketId()));
         }
 
         //display the results
