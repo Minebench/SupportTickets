@@ -2,7 +2,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
+import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -69,6 +69,25 @@ public class WarpCommand extends SubCommand {
                 .replace("{3}", plugin.getNameByUUID(ticket.getSender()))
                 .replace("{4}", ticket.getMessage())
                 .replace("{5}", String.valueOf(ticket.getComments().size())));
+
+        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
+                .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
+                .replace("{1}", "")
+                .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
+                .replace("{3}", ticket.getMessage()));
+
+        for (Comment comment : ticket.getComments()) {
+            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
+                    .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()))
+                    .replace("{1}", comment.getSenderHasNoticed() ?
+                            "" : plugin.getConfig().getText("info.view.new"))
+                    .replace("{2}", plugin.getNameByUUID(comment.getSender()))
+                    .replace("{3}", comment.getComment()));
+
+            if (!comment.getSenderHasNoticed() && player.getUniqueId().equals(ticket.getSender())) {
+                SupportTickets.getDatabaseController().setCommentRead(comment);
+            }
+        }
         plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

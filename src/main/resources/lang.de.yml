@@ -89,4 +89,4 @@ texts:
       new: ' &2(Neu)'
       ticket: '&9 Ticket &6#{0}&9 von &6{2}&9:'
     warp:
-      warped: ' &3{1}{2} &6#{0} &f{3}: &7{4} &7({5})'
+      warped: ' &9Teleportiere zu Ticket #6#{0} von &6{3}&9:'
