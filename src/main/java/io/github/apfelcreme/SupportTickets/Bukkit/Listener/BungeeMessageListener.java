@@ -52,8 +52,7 @@ public class BungeeMessageListener implements PluginMessageListener {
             warp(uuid, location);
         } else if (subChannel.equals("POSITIONREQUEST")) {
             UUID uuid = UUID.fromString(in.readUTF());
-            String message = in.readUTF();
-            answerPositionRequest(uuid, message);
+            answerPositionRequest(uuid);
         }
     }
 
@@ -61,10 +60,8 @@ public class BungeeMessageListener implements PluginMessageListener {
      * answers a position request
      *
      * @param uuid    a players uuid
-     * @param message a ticket message (which is just carried around, so it does not have to be mapped in the
-     *                bungee instance somewhere to wait for this request to return)
      */
-    private void answerPositionRequest(UUID uuid, String message) {
+    private void answerPositionRequest(UUID uuid) {
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
 
@@ -80,7 +77,6 @@ public class BungeeMessageListener implements PluginMessageListener {
                 out.writeDouble(player.getLocation().getZ());
                 out.writeDouble((double) player.getLocation().getYaw());
                 out.writeDouble((double) player.getLocation().getPitch());
-                out.writeUTF(message);
                 player.sendPluginMessage(plugin, "SupportTickets", b.toByteArray());
                 out.close();
                 b.close();

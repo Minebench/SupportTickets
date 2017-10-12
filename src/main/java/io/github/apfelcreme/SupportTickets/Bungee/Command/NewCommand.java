@@ -3,9 +3,9 @@ package io.github.apfelcreme.SupportTickets.Bungee.Command;
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
-import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Date;
@@ -43,12 +43,21 @@ public class NewCommand extends SubCommand {
     public void execute(final CommandSender sender, final String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
 
-        String message = "";
+        StringBuilder mb = new StringBuilder();
         for (int i = 1; i < args.length; i++) {
-            message += args[i] + " ";
+            mb.append(args[i]).append(" ");
         }
-        message = message.trim();
-        BukkitMessenger.fetchPosition(player, message);
-        //TODO: Better communication
+        BukkitMessenger.fetchPosition(player, (location) -> {
+            Ticket ticket = new Ticket(player.getUniqueId(), mb.toString().trim(), new Date(), location, Ticket.TicketStatus.OPEN);
+            int ticketId = SupportTickets.getDatabaseController().saveTicket(ticket);
+            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.new.created"));
+            SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.new.newTicket")
+                    .replace("{0}", String.valueOf(ticketId))
+                    .replace("{1}", player.getName())
+                    .replace("{2}", ticket.getMessage()));
+            ProxyServer.getInstance().getPlayers().stream()
+                    .filter(p -> p.hasPermission("SupportTickets.mod"))
+                    .forEach(p -> SupportTickets.getInstance().addShownTicket(p, ticket.getTicketId()));
+        });
     }
 }

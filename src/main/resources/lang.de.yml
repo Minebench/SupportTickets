@@ -64,6 +64,11 @@ texts:
     opened:
       footer: '&9 Für andere Seiten: &f/pe opened <Spieler> <#>'
       header: '&9 Von &f{0}&9 geöffnete Tickets: (&f{1}&9/&f{2}&9)&f - &9insgesamt: &f{3}'
+    radius:
+      element: '&9{6} &6 #{0} {1}&f{2}&7 -> &f{3}: &7{4} &7({5})'
+      online: '&2+'
+      offline: '&c-'
+      header: '&9 Tickets im Umkreis von &6{0}&9 Blöcken: (&f{1}&9)'
     reload:
       reloaded: '&6 Die Config wurde neu geladen'
     reminderTask:

@@ -391,6 +391,38 @@ public class SQLController implements DatabaseController {
         return tickets;
     }
 
+    @Override
+    public List<Ticket> getTicketsInRadius(Location location, int radius) {
+        final List<Ticket> tickets = new ArrayList<>();
+        Connection connection = MySQLConnector.getInstance().getConnection();
+        if (connection != null) {
+            try {
+                PreparedStatement statement = connection.prepareStatement(
+                        "Select *, (Select uuid from " + SupportTicketsConfig.getInstance().getPlayerTable() + " where player_id = t.closed_player_id) as uuidPlayerClosed"
+                                + " from " + SupportTicketsConfig.getInstance().getTicketTable() + " t"
+                                + " left join " + SupportTicketsConfig.getInstance().getPlayerTable() + " p on p.player_id = t.player_id"
+                                + " where server = ? and world = ? and (loc_X between ? and ?) and (loc_Y between ? and ?) and (loc_Z between ? and ?)");
+                statement.setString(1, location.getServer());
+                statement.setString(2, location.getWorldName());
+                statement.setDouble(3, location.getLocationX() - radius);
+                statement.setDouble(4, location.getLocationX() + radius);
+                statement.setDouble(5, location.getLocationY() - radius);
+                statement.setDouble(6, location.getLocationY() + radius);
+                statement.setDouble(7, location.getLocationZ() - radius);
+                statement.setDouble(8, location.getLocationZ() + radius);
+                ResultSet resultSet = statement.executeQuery();
+                while (resultSet.next()) {
+                    tickets.add(buildTicket(resultSet));
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } finally {
+                MySQLConnector.getInstance().closeConnection(connection);
+            }
+        }
+        return tickets;
+    }
+
     /**
      * saves a comment
      *

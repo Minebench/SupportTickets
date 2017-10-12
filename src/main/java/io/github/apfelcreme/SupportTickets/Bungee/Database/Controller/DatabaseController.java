@@ -1,6 +1,7 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Database.Controller;
 
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
+import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 
 import java.util.List;
@@ -107,6 +108,14 @@ public interface DatabaseController {
     List<Ticket> getPlayerTickets(UUID uuid, Ticket.TicketStatus... ticketStatus);
 
     /**
+     * Get tickets around a certain location
+     * @param location  the center location
+     * @param radius    the radius
+     * @return a list of tickets
+     */
+    List<Ticket> getTicketsInRadius(Location location, int radius);
+
+    /**
      * saves a comment
      *
      * @param comment a comment
@@ -119,5 +128,4 @@ public interface DatabaseController {
      * @param comment the comment
      */
     void setCommentRead(Comment comment);
-
 }

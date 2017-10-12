@@ -249,6 +249,29 @@ public class MongoController implements DatabaseController {
         return tickets;
     }
 
+    @Override
+    public List<Ticket> getTicketsInRadius(Location location, int radius) {
+        List<Ticket> tickets = new ArrayList<>();
+        DBCollection collection = MongoConnector.getInstance().getCollection();
+        BasicDBObject query = new BasicDBObject();
+        query.put("server", location.getServer());
+        query.put("world", location.getWorldName());
+        query.put("loc_X",
+                new BasicDBObject("$gt", location.getLocationX() - radius)
+                        .append("$lt", location.getLocationX() + radius));
+        query.put("loc_Y",
+                new BasicDBObject("$gt", location.getLocationY() - radius)
+                        .append("$lt", location.getLocationY() + radius));
+        query.put("loc_Z",
+                new BasicDBObject("$gt", location.getLocationZ() - radius)
+                        .append("$lt", location.getLocationZ() + radius));
+        DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
+        while (dbCursor.hasNext()) {
+            tickets.add(buildTicket(dbCursor.next()));
+        }
+        return tickets;
+    }
+
     /**
      * saves a comment
      *

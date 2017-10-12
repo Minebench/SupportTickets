@@ -3,9 +3,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Message;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
-import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -15,7 +13,6 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -52,6 +49,11 @@ public class BukkitMessageListener implements Listener {
         String subChannel = in.readUTF();
         if (subChannel.equals("POSITIONANSWER")) {
             UUID uuid = UUID.fromString(in.readUTF());
+            BukkitPositionAnswer answer = BukkitMessenger.getQueuedPositionAnswer(uuid);
+            if (answer == null) {
+                return;
+            }
+
             String server = in.readUTF();
             ServerInfo serverInfo = SupportTickets.getServer(server);
             if (serverInfo != null) {
@@ -64,20 +66,8 @@ public class BukkitMessageListener implements Listener {
             }
             Location location = new Location(server, in.readUTF(), in.readDouble(), in.readDouble(),
                     in.readDouble(), in.readDouble(), in.readDouble());
-            String message = in.readUTF();
 
-            Ticket ticket = new Ticket(uuid, message, new Date(), location, Ticket.TicketStatus.OPEN);
-            int ticketId = SupportTickets.getDatabaseController().saveTicket(ticket);
-            SupportTickets.sendMessage(uuid, SupportTicketsConfig.getInstance().getText("info.new.created"));
-            SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.new.newTicket")
-                    .replace("{0}", String.valueOf(ticketId))
-                    .replace("{1}", SupportTickets.getInstance().getNameByUUID(uuid))
-                    .replace("{2}", message));
-            for (ProxiedPlayer player : ProxyServer.getInstance().getPlayers()) {
-                if (player.hasPermission("SupportTickets.mod")) {
-                    SupportTickets.getInstance().addShownTicket(player, ticket.getTicketId());
-                }
-            }
+            answer.onAnswer(location);
         }
     }
 }

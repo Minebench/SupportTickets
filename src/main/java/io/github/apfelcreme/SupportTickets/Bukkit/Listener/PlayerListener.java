@@ -6,8 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-/**
- * Copyright (C) 2017 Max Lee aka Phoenix616
+/*
+ * Copyright (C) 2017 Max Lee (https://github.com/Phoenix616)
  * <p>
  * This program is free software;
  * you can redistribute it and/or modify it under the terms of the GNU General

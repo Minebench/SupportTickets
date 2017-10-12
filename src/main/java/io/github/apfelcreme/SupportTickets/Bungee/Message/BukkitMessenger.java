@@ -9,8 +9,9 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.io.IOException;
-import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 /**
@@ -33,20 +34,21 @@ import java.util.logging.Level;
  */
 public class BukkitMessenger {
 
+    private static Map<UUID, BukkitPositionAnswer> queuedPositionRequests = new ConcurrentHashMap<>();
+
     /**
      * calls bukkit to fetch a players positon. the message is sent with it,
      * so it can be read in the BukkitMessageListener later on
-     *
      * @param player  the player
-     * @param message the ticket mesage
+     * @param answer what to do when the answer arrives
      */
-    public static void fetchPosition(ProxiedPlayer player, String message) {
+    public static void fetchPosition(ProxiedPlayer player, BukkitPositionAnswer answer) {
         ServerInfo target = player.getServer().getInfo();
         if (target != null) {
+            queuedPositionRequests.put(player.getUniqueId(), answer);
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
             out.writeUTF("POSITIONREQUEST");
             out.writeUTF(player.getUniqueId().toString());
-            out.writeUTF(message);
             target.sendData("SupportTickets", out.toByteArray());
         }
     }
@@ -85,5 +87,9 @@ public class BukkitMessenger {
                 e.printStackTrace();
             }
         }
+    }
+
+    static BukkitPositionAnswer getQueuedPositionAnswer(UUID uuid) {
+        return queuedPositionRequests.get(uuid);
     }
 }
