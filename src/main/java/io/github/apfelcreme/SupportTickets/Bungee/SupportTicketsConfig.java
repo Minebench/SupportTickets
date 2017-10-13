@@ -180,7 +180,7 @@ public class SupportTicketsConfig {
      *
      * @return the mongo port
      */
-    public Integer getMongoPort() {
+    public int getMongoPort() {
         return configuration.getInt("mongo.port");
     }
 
@@ -234,7 +234,7 @@ public class SupportTicketsConfig {
      *
      * @return the number of items displayed on each site in /pe list
      */
-    public Integer getPageSize() {
+    public int getPageSize() {
         return configuration.getInt("pageSize");
     }
 
@@ -243,7 +243,7 @@ public class SupportTicketsConfig {
      *
      * @return the size of the top list
      */
-    public Integer getTopListSize() {
+    public int getTopListSize() {
         return configuration.getInt("topListSize");
     }
 
@@ -252,7 +252,7 @@ public class SupportTicketsConfig {
      *
      * @return the delay of the reminder task
      */
-    public Integer getReminderTaskDelay() {
+    public int getReminderTaskDelay() {
         return configuration.getInt("reminderTaskDelay");
     }
 
