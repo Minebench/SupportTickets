@@ -40,7 +40,7 @@ public class TopCommand extends SubCommand {
      */
     @Override
     public void execute(CommandSender sender, String[] args) {
-        List<Ticket> tickets = SupportTickets.getDatabaseController().getTickets(Ticket.TicketStatus.CLOSED);
+        List<Ticket> tickets = plugin.getDatabaseController().getTickets(Ticket.TicketStatus.CLOSED);
         Map<UUID, Integer> playerCloses = new HashMap<>();
         for (Ticket ticket : tickets) {
             if (!playerCloses.containsKey(ticket.getClosed())) {
@@ -52,14 +52,14 @@ public class TopCommand extends SubCommand {
         ValueComparator comparator = new ValueComparator(playerCloses);
         TreeMap<UUID, Integer> sortedMap = new TreeMap<>(comparator);
         sortedMap.putAll(playerCloses);
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.top.header")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.top.header")
                 .replace("{0}", plugin.getConfig().getTopListSize().toString()));
 
         int i = 1;
         Iterator<Map.Entry<UUID, Integer>> sortedIt = sortedMap.entrySet().iterator();
         while (sortedIt.hasNext() && i <= plugin.getConfig().getTopListSize()){
             Map.Entry<UUID, Integer> entry = sortedIt.next();
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.top.element")
+            plugin.sendMessage(sender, plugin.getConfig().getText("info.top.element")
                     .replace("{0}", Integer.toString(i))
                     .replace("{1}", plugin.getNameByUUID(entry.getKey()))
                     .replace("{2}", entry.getValue().toString()));

@@ -31,11 +31,6 @@ import java.io.InputStreamReader;
 public class SupportTicketsConfig {
 
     /**
-     * the singleton instance
-     */
-    private static SupportTicketsConfig instance = null;
-
-    /**
      * the configuration
      */
     private Configuration configuration;
@@ -88,14 +83,6 @@ public class SupportTicketsConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * reloads both configs
-     */
-    public void reload() {
-        instance = null;
-        getInstance();
     }
 
     /**
@@ -311,18 +298,6 @@ public class SupportTicketsConfig {
         } else {
             return "Missing text node: " + key;
         }
-    }
-
-    /**
-     * returns the singleton instance
-     *
-     * @return the singleton instance
-     */
-    public static SupportTicketsConfig getInstance() {
-        if (instance == null) {
-            instance = new SupportTicketsConfig();
-        }
-        return instance;
     }
 
     public enum DB {

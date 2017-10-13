@@ -1,7 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -44,7 +43,7 @@ public class ClosedCommand extends SubCommand {
         if (args.length > 1) {
             target = plugin.getUUIDByName(args[1]);
             if (target == null) {
-                SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownPlayer"));
+                plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownPlayer"));
                 return;
             }
         }
@@ -56,7 +55,7 @@ public class ClosedCommand extends SubCommand {
 
         //load the tickets
         List<Ticket> tickets =
-                SupportTickets.getDatabaseController().getTicketsClosedBy(target);
+                plugin.getDatabaseController().getTicketsClosedBy(target);
         tickets.sort(Comparator.reverseOrder());
 
         //display the results
@@ -70,7 +69,7 @@ public class ClosedCommand extends SubCommand {
             page = 0;
         }
 
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.closed.header")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.closed.header")
                 .replace("{0}", args[1])
                 .replace("{1}", String.valueOf(page + 1))
                 .replace("{2}", String.valueOf(maxPages))
@@ -78,7 +77,7 @@ public class ClosedCommand extends SubCommand {
 
         for (int i = page * pageSize; i < (page + 1 ) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.element")
+            plugin.sendMessage(sender, plugin.getConfig().getText("info.list.element")
                     .replace("{0}", String.valueOf(ticket.getTicketId()))
                     .replace("{1}", plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
@@ -89,6 +88,6 @@ public class ClosedCommand extends SubCommand {
                     .replace("{5}", Integer.toString(ticket.getComments().size())));
             plugin.addShownTicket(sender, ticket.getTicketId());
         }
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.closed.footer"));
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.closed.footer"));
     }
 }

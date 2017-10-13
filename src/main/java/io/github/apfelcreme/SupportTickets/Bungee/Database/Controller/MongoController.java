@@ -2,6 +2,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Database.Controller;
 
 import com.mongodb.*;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
+import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
@@ -31,6 +32,14 @@ import java.util.UUID;
  */
 public class MongoController implements DatabaseController {
 
+    private final SupportTickets plugin;
+    private final MongoConnector connector;
+
+    public MongoController(SupportTickets plugin) {
+        this.plugin = plugin;
+        connector = new MongoConnector(plugin);
+    }
+
     /**
      * loads a ticket
      *
@@ -39,7 +48,7 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public Ticket loadTicket(Integer ticketId) {
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticketId);
         DBCursor dbCursor = collection.find(query);
@@ -57,7 +66,7 @@ public class MongoController implements DatabaseController {
      */
     @Override
         public int saveTicket(Ticket ticket) {
-            DBCollection collection = MongoConnector.getInstance().getCollection();
+            DBCollection collection = connector.getCollection();
             BasicDBObject ticketObject = new BasicDBObject();
             ticketObject.put("ticket_id", (int) collection.count());
             ticketObject.put("sender", ticket.getSender().toString());
@@ -85,7 +94,7 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void assignTicket(Ticket ticket, String to) {
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
         DBCursor dbCursor = collection.find(query);
@@ -105,7 +114,7 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void unassignTicket(Ticket ticket) {
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
         DBCursor dbCursor = collection.find(query);
@@ -129,7 +138,7 @@ public class MongoController implements DatabaseController {
     @Override
     public void closeTicket(Ticket ticket, UUID closer, String reason) {
 
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
         DBCursor dbCursor = collection.find(query);
@@ -150,7 +159,7 @@ public class MongoController implements DatabaseController {
     @Override
     public void reopenTicket(Ticket ticket) {
 
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
         DBCursor dbCursor = collection.find(query);
@@ -170,7 +179,7 @@ public class MongoController implements DatabaseController {
     @Override
     public List<Ticket> getTickets(Ticket.TicketStatus... ticketStatus) {
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         BasicDBList or = new BasicDBList();
         for (Ticket.TicketStatus status : ticketStatus) {
@@ -194,7 +203,7 @@ public class MongoController implements DatabaseController {
     public List<Ticket> getTicketsClosedBy(UUID closer) {
 
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("closer", closer.toString());
         DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
@@ -214,7 +223,7 @@ public class MongoController implements DatabaseController {
     public List<Ticket> getTicketsOpenedBy(UUID opener) {
 
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("sender", opener.toString());
         DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
@@ -234,7 +243,7 @@ public class MongoController implements DatabaseController {
     @Override
     public List<Ticket> getPlayerTickets(UUID uuid, Ticket.TicketStatus... ticketStatus) {
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("sender", uuid.toString());
         BasicDBList or = new BasicDBList();
@@ -252,7 +261,7 @@ public class MongoController implements DatabaseController {
     @Override
     public List<Ticket> getTicketsInRadius(Location location, int radius) {
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("server", location.getServer());
         query.put("world", location.getWorldName());
@@ -279,7 +288,7 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void saveComment(Comment comment) {
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", comment.getTicketId());
         DBCursor dbCursor = collection.find(query);
@@ -311,7 +320,7 @@ public class MongoController implements DatabaseController {
         if (comment.getCommentId() == -1) {
             return;
         }
-        DBCollection collection = MongoConnector.getInstance().getCollection();
+        DBCollection collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", comment.getTicketId());
         DBCursor dbCursor = collection.find(query);
@@ -327,6 +336,11 @@ public class MongoController implements DatabaseController {
             ticketObject.put("comments", comments);
             collection.update(query, ticketObject);
         }
+    }
+
+    @Override
+    public void disable() {
+        connector.close();
     }
 
     /**

@@ -128,4 +128,9 @@ public interface DatabaseController {
      * @param comment the comment
      */
     void setCommentRead(Comment comment);
+
+    /**
+     * Disable this controller and close connections
+     */
+    void disable();
 }

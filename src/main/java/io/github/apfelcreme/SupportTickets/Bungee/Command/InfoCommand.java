@@ -41,21 +41,21 @@ public class InfoCommand extends SubCommand {
      */
     @Override
     public void execute(CommandSender sender, String[] args) {
-        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.info")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.info")
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", plugin.getNameByUUID(ticket.getSender())));
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.date")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.date")
                 .replace("{0}", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate())));
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.comments")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.comments")
                 .replace("{0}", String.valueOf(ticket.getComments().size()))
                 .replace("{1}", String.valueOf(ticket.getTicketId())));
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.info.location")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.location")
                 .replace("{0}", ticket.getLocation().getServer())
                 .replace("{1}", new DecimalFormat("0").format(ticket.getLocation().getLocationX()))
                 .replace("{2}", new DecimalFormat("0").format(ticket.getLocation().getLocationY()))

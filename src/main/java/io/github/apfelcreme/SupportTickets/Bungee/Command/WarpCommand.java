@@ -42,27 +42,27 @@ public class WarpCommand extends SubCommand {
      */
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof ProxiedPlayer)) {
-            SupportTickets.sendMessage(sender, ChatColor.RED + "This command can only be run by a player!");
+            plugin.sendMessage(sender, ChatColor.RED + "This command can only be run by a player!");
             return;
         }
 
         final ProxiedPlayer player = (ProxiedPlayer) sender;
 
-        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
         if (ticket.getLocation() == null) {
-            SupportTickets.sendMessage(sender, ChatColor.RED + "This ticket does not have a location!");
+            plugin.sendMessage(sender, ChatColor.RED + "This ticket does not have a location!");
             return;
         }
 
 //      BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
         BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
 
-        SupportTickets.sendMessage(player, plugin.getConfig().getText("info.warp.warped")
+        plugin.sendMessage(player, plugin.getConfig().getText("info.warp.warped")
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
                 .replace("{2}", "")
@@ -70,14 +70,14 @@ public class WarpCommand extends SubCommand {
                 .replace("{4}", ticket.getMessage())
                 .replace("{5}", String.valueOf(ticket.getComments().size())));
 
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
                 .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
                 .replace("{1}", "")
                 .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
                 .replace("{3}", ticket.getMessage()));
 
         for (Comment comment : ticket.getComments()) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
+            plugin.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
                     .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()))
                     .replace("{1}", comment.getSenderHasNoticed() ?
                             "" : plugin.getConfig().getText("info.view.new"))
@@ -85,7 +85,7 @@ public class WarpCommand extends SubCommand {
                     .replace("{3}", comment.getComment()));
 
             if (!comment.getSenderHasNoticed() && player.getUniqueId().equals(ticket.getSender())) {
-                SupportTickets.getDatabaseController().setCommentRead(comment);
+                plugin.getDatabaseController().setCommentRead(comment);
             }
         }
         plugin.addShownTicket(sender, ticket.getTicketId());

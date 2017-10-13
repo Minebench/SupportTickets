@@ -57,7 +57,7 @@ public class SupportTickets extends Plugin {
     /**
      * the database controller
      */
-    private static DatabaseController databaseController = null;
+    private DatabaseController databaseController = null;
 
     /**
      * a cache for name -> uuid
@@ -94,7 +94,7 @@ public class SupportTickets extends Plugin {
      *
      * @return the databaseController
      */
-    public static DatabaseController getDatabaseController() {
+    public DatabaseController getDatabaseController() {
         return databaseController;
     }
 
@@ -111,19 +111,7 @@ public class SupportTickets extends Plugin {
         // initialize the uuid cache
         uuidCache = new HashMap<>();
 
-        // init the config
-        config = SupportTicketsConfig.getInstance();
-
-        // init the database connection
-        switch (SupportTicketsConfig.getInstance().getDb()) {
-            case MySQL:
-                MySQLConnector.getInstance().initConnection();
-                databaseController = new SQLController();
-                break;
-            case MongoDB:
-                databaseController = new MongoController();
-                break;
-        }
+        loadConfig();
 
         CommandExecutor ticketCommand = new CommandExecutor(this,   "ticket",                             null,                   "ti", "petition", "pe");
 
@@ -150,14 +138,29 @@ public class SupportTickets extends Plugin {
 
         // register the Plugin channels for the bukkit <-> bungee communication
         getProxy().registerChannel("SupportTickets");
-        getProxy().getPluginManager().registerListener(this, new BukkitMessageListener());
+        getProxy().getPluginManager().registerListener(this, new BukkitMessageListener(this));
 
         // register the listeners
-        getProxy().getPluginManager().registerListener(this, new PlayerLoginListener());
+        getProxy().getPluginManager().registerListener(this, new PlayerLoginListener(this));
 
         // start the reminder task
         getProxy().getScheduler().schedule(this,
-                new ReminderTask(), SupportTicketsConfig.getInstance().getReminderTaskDelay(), TimeUnit.MINUTES);
+                new ReminderTask(this), getConfig().getReminderTaskDelay(), TimeUnit.MINUTES);
+    }
+
+    public void loadConfig() {
+        // init the config
+        config = new SupportTicketsConfig();
+
+        // init the database connection
+        switch (getConfig().getDb()) {
+            case MySQL:
+                databaseController = new SQLController(this);
+                break;
+            case MongoDB:
+                databaseController = new MongoController(this);
+                break;
+        }
     }
 
     /**
@@ -165,9 +168,7 @@ public class SupportTickets extends Plugin {
      */
     @Override
     public void onDisable() {
-        if (databaseController instanceof MongoController) {
-            MongoConnector.getInstance().close();
-        }
+        databaseController.disable();
     }
 
     /**
@@ -176,7 +177,7 @@ public class SupportTickets extends Plugin {
      * @param receiver the player
      * @param text     the message
      */
-    public static void sendMessage(CommandSender receiver, String text) {
+    public void sendMessage(CommandSender receiver, String text) {
         if (receiver != null && text != null) {
             receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + text));
         }
@@ -188,7 +189,7 @@ public class SupportTickets extends Plugin {
      * @param uuid the players uuid
      * @param text the message
      */
-    public static void sendMessage(UUID uuid, String text) {
+    public void sendMessage(UUID uuid, String text) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         if (player != null) {
             sendMessage(player, text);
@@ -200,7 +201,7 @@ public class SupportTickets extends Plugin {
      *
      * @param message a text
      */
-    public static void sendTeamMessage(String message) {
+    public void sendTeamMessage(String message) {
         for (ProxiedPlayer receiver : ProxyServer.getInstance().getPlayers()) {
             if (receiver.hasPermission("SupportTickets.mod")) {
                 sendMessage(receiver, message);
@@ -213,8 +214,8 @@ public class SupportTickets extends Plugin {
      *
      * @return the prefix for messages
      */
-    public static String getPrefix() {
-        return SupportTicketsConfig.getInstance().getText("prefix");
+    public String getPrefix() {
+        return getConfig().getText("prefix");
     }
 
     /**
@@ -258,7 +259,7 @@ public class SupportTickets extends Plugin {
         if (name == null) {
             //this should only occur if the player has never joined
             try {
-                URL url = new URL(SupportTicketsConfig.getInstance().getAPINameUrl().replace("{0}", uuid.toString().replace("-", "")));
+                URL url = new URL(getConfig().getAPINameUrl().replace("{0}", uuid.toString().replace("-", "")));
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
                 StringBuilder json = new StringBuilder();
                 int read;
@@ -308,7 +309,7 @@ public class SupportTickets extends Plugin {
 
         if (uuid == null) {
             try {
-                URL url = new URL(SupportTicketsConfig.getInstance().getAPIUUIDUrl().replace("{0}", name));
+                URL url = new URL(getConfig().getAPIUUIDUrl().replace("{0}", name));
                 BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
                 StringBuilder json = new StringBuilder();
                 int read;

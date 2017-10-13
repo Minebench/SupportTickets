@@ -1,7 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
@@ -42,21 +41,21 @@ public class CommentCommand extends SubCommand {
      */
     public void execute(CommandSender sender, final String[] args) {
 
-        Ticket ticket =  SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket =  plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
             return;
         }
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
         if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod")) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.notYourTicket"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.notYourTicket"));
             return;
         }
 
@@ -67,14 +66,14 @@ public class CommentCommand extends SubCommand {
         message = message.trim();
         Comment comment = new Comment(ticket.getTicketId(), senderId, message, new Date());
 
-        SupportTickets.getDatabaseController().saveComment(comment);
+        plugin.getDatabaseController().saveComment(comment);
 
-        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.comment.commented")
+        plugin.sendTeamMessage(plugin.getConfig().getText("info.comment.commented")
                 .replace("{0}", sender.getName())
                 .replace("{1}", String.valueOf(ticket.getTicketId()))
                 .replace("{2}", message));
 
-        SupportTickets.sendMessage(ticket.getSender(),
+        plugin.sendMessage(ticket.getSender(),
                 plugin.getConfig().getText("info.comment.yourTicketGotCommented")
                         .replace("{0}", String.valueOf(ticket.getTicketId()))
                         .replace("{1}", sender.getName())

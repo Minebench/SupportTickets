@@ -1,7 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.config.Configuration;
@@ -58,9 +57,9 @@ public class HelpCommand extends SubCommand {
             strings.add(plugin.getConfig().getText(key));
         }
         Collections.sort(strings);
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.help.header"));
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.help.header"));
         for (Object s : strings) {
-            SupportTickets.sendMessage(sender, ChatColor.translateAlternateColorCodes('&', s.toString()));
+            plugin.sendMessage(sender, ChatColor.translateAlternateColorCodes('&', s.toString()));
         }
     }
 }

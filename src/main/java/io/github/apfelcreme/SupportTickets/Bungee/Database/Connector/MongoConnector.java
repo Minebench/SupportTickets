@@ -3,6 +3,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Database.Connector;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
+import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 
 import java.net.UnknownHostException;
@@ -27,19 +28,12 @@ import java.net.UnknownHostException;
  */
 public class MongoConnector {
 
-    private static MongoConnector instance = null;
+    private final SupportTickets plugin;
 
     private MongoClient mongoClient;
 
-    private MongoConnector() {
-
-    }
-
-    public static MongoConnector getInstance() {
-        if (instance == null) {
-            instance = new MongoConnector();
-        }
-        return instance;
+    public MongoConnector(SupportTickets plugin) {
+        this.plugin = plugin;
     }
 
     /**
@@ -48,10 +42,9 @@ public class MongoConnector {
      */
     public DBCollection getCollection() {
         try {
-            mongoClient = new MongoClient(SupportTicketsConfig.getInstance().getMongoHost(),
-                    SupportTicketsConfig.getInstance().getMongoPort());
-            DB database = mongoClient.getDB(SupportTicketsConfig.getInstance().getMongoDatabase());
-            return database.getCollection(SupportTicketsConfig.getInstance().getMongoCollection());
+            mongoClient = new MongoClient(plugin.getConfig().getMongoHost(), plugin.getConfig().getMongoPort());
+            DB database = mongoClient.getDB(plugin.getConfig().getMongoDatabase());
+            return database.getCollection(plugin.getConfig().getMongoCollection());
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }

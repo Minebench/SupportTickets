@@ -1,7 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
@@ -41,13 +40,13 @@ public class ReopenCommand extends SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, String[] args) {
-        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
-        SupportTickets.getDatabaseController().reopenTicket(ticket);
+        plugin.getDatabaseController().reopenTicket(ticket);
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
@@ -58,11 +57,11 @@ public class ReopenCommand extends SubCommand {
                         .replace("{0}", sender.getName()),
                 new Date());
 
-        SupportTickets.getDatabaseController().saveComment(comment);
+        plugin.getDatabaseController().saveComment(comment);
 
-        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.reopen.reopened")
+        plugin.sendTeamMessage(plugin.getConfig().getText("info.reopen.reopened")
                 .replace("{0}", String.valueOf(ticket.getTicketId())));
-        SupportTickets.sendMessage(ticket.getSender(),
+        plugin.sendMessage(ticket.getSender(),
                 plugin.getConfig().getText("info.reopen.yourTicketGotReopened")
                         .replace("{0}", String.valueOf(ticket.getTicketId())));
         plugin.addShownTicket(sender, ticket.getTicketId());

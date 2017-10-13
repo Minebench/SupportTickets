@@ -35,6 +35,12 @@ import java.util.UUID;
  */
 public class BukkitMessageListener implements Listener {
 
+    private final SupportTickets plugin;
+
+    public BukkitMessageListener(SupportTickets plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPluginMessageReceived(PluginMessageEvent event) throws IOException {
 

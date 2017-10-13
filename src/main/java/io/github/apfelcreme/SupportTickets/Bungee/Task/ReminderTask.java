@@ -26,6 +26,12 @@ import java.util.List;
  */
 public class ReminderTask implements Runnable {
 
+    private final SupportTickets plugin;
+
+    public ReminderTask(SupportTickets plugin) {
+        this.plugin = plugin;
+    }
+
     /**
      * When an object implementing interface <code>Runnable</code> is used
      * to create a thread, starting the thread causes the object's
@@ -38,14 +44,14 @@ public class ReminderTask implements Runnable {
      * @see Thread#run()
      */
     public void run() {
-        List<Ticket> tickets = SupportTickets.getDatabaseController()
+        List<Ticket> tickets = plugin.getDatabaseController()
                 .getTickets(Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
         Integer anz = tickets.size();
         if (anz > 0) {
             if (anz == 1) {
-                SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.reminderTask.infoSingular"));
+                plugin.sendTeamMessage(plugin.getConfig().getText("info.reminderTask.infoSingular"));
             } else {
-                SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.reminderTask.infoPlural")
+                plugin.sendTeamMessage(plugin.getConfig().getText("info.reminderTask.infoPlural")
                         .replace("{0}", anz.toString()));
             }
         }

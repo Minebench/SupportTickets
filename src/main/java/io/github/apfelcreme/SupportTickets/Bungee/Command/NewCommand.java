@@ -49,13 +49,13 @@ public class NewCommand extends SubCommand {
         }
         BukkitMessenger.fetchPosition(player, (location) -> {
             Ticket ticket = new Ticket(player.getUniqueId(), mb.toString().trim(), new Date(), location, Ticket.TicketStatus.OPEN);
-            int ticketId = SupportTickets.getDatabaseController().saveTicket(ticket);
-            SupportTickets.sendMessage(player, SupportTicketsConfig.getInstance().getText("info.new.created"));
-            SupportTickets.sendTeamMessage(SupportTicketsConfig.getInstance().getText("info.new.newTicket")
+            int ticketId = plugin.getDatabaseController().saveTicket(ticket);
+            plugin.sendMessage(player, plugin.getConfig().getText("info.new.created"));
+            plugin.sendTeamMessage(plugin.getConfig().getText("info.new.newTicket")
                     .replace("{0}", String.valueOf(ticketId))
                     .replace("{1}", player.getName())
                     .replace("{2}", ticket.getMessage()));
-            ProxyServer.getInstance().getPlayers().stream()
+            plugin.getProxy().getPlayers().stream()
                     .filter(p -> p.hasPermission("SupportTickets.mod"))
                     .forEach(p -> SupportTickets.getInstance().addShownTicket(p, ticket.getTicketId()));
         });

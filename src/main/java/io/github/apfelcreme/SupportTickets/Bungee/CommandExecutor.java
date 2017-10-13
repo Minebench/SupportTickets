@@ -53,18 +53,18 @@ public class CommandExecutor extends Command implements Listener {
         }
 
         if (subCommand == null) {
-            SupportTickets.sendMessage(commandSender, plugin.getConfig().getText("error.unknownCommand")
+            plugin.sendMessage(commandSender, plugin.getConfig().getText("error.unknownCommand")
                     .replace("{0}", strings[0]));
             return;
         }
 
         if (!subCommand.checkPermission(commandSender)) {
-            SupportTickets.sendMessage(commandSender, plugin.getConfig().getText("error.noPermission"));
+            plugin.sendMessage(commandSender, plugin.getConfig().getText("error.noPermission"));
             return;
         }
 
         if (!subCommand.validateInput(strings)) {
-            SupportTickets.sendMessage(commandSender, plugin.getConfig().getText("error.wrongUsage")
+            plugin.sendMessage(commandSender, plugin.getConfig().getText("error.wrongUsage")
                     .replace("{0}", "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage()));
             return;
         }

@@ -31,30 +31,34 @@ import java.util.concurrent.TimeUnit;
  */
 public class PlayerLoginListener implements Listener {
 
+    private final SupportTickets plugin;
+
+    public PlayerLoginListener(SupportTickets plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     public void onPlayerLogin(final PostLoginEvent event) {
-        ProxyServer.getInstance().getScheduler().schedule(SupportTickets.getInstance(), new Runnable() {
-            public void run() {
-                List<Ticket> tickets = SupportTickets.getDatabaseController().getTicketsOpenedBy(event.getPlayer().getUniqueId());
-                Set<Integer> ticketIds = new HashSet<Integer>();
-                for (Ticket ticket : tickets) {
-                    for (Comment comment : ticket.getComments()) {
-                        if (!comment.getSenderHasNoticed()) {
-                            ticketIds.add(ticket.getTicketId());
-                        }
+        ProxyServer.getInstance().getScheduler().schedule(SupportTickets.getInstance(), () -> {
+            List<Ticket> tickets = plugin.getDatabaseController().getTicketsOpenedBy(event.getPlayer().getUniqueId());
+            Set<Integer> ticketIds = new HashSet<>();
+            for (Ticket ticket : tickets) {
+                for (Comment comment : ticket.getComments()) {
+                    if (!comment.getSenderHasNoticed()) {
+                        ticketIds.add(ticket.getTicketId());
                     }
                 }
+            }
 
-                if (ticketIds.size() > 0) {
-                    if (ticketIds.size() == 1) {
-                        SupportTickets.sendMessage(event.getPlayer(),
-                                SupportTicketsConfig.getInstance().getText("info.login.newCommentsSingular")
-                                        .replace("{0}", ticketIds.iterator().next().toString()));
-                    } else {
-                        SupportTickets.sendMessage(event.getPlayer(),
-                                SupportTicketsConfig.getInstance().getText("info.login.newCommentsPlural")
-                                        .replace("{0}", SupportTickets.join(ticketIds.toArray(), ", ", " & ")));
-                    }
+            if (ticketIds.size() > 0) {
+                if (ticketIds.size() == 1) {
+                    plugin.sendMessage(event.getPlayer(),
+                            plugin.getConfig().getText("info.login.newCommentsSingular")
+                                    .replace("{0}", ticketIds.iterator().next().toString()));
+                } else {
+                    plugin.sendMessage(event.getPlayer(),
+                            plugin.getConfig().getText("info.login.newCommentsPlural")
+                                    .replace("{0}", SupportTickets.join(ticketIds.toArray(), ", ", " & ")));
                 }
             }
         }, 2, TimeUnit.SECONDS);

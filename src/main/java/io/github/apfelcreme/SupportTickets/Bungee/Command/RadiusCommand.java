@@ -46,14 +46,14 @@ public class RadiusCommand extends SubCommand {
 
         int radius = args.length > 1 ? Integer.parseInt(args[1]) : 16;
         BukkitMessenger.fetchPosition(player, (location) -> {
-            List<Ticket> tickets = SupportTickets.getDatabaseController().getTicketsInRadius(location, radius);
+            List<Ticket> tickets = plugin.getDatabaseController().getTicketsInRadius(location, radius);
 
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.radius.header")
+            plugin.sendMessage(sender, plugin.getConfig().getText("info.radius.header")
                     .replace("{0}", String.valueOf(radius))
                     .replace("{1}", String.valueOf(tickets.size())));
 
             for (Ticket ticket : tickets) {
-                SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.radius.element")
+                plugin.sendMessage(sender, plugin.getConfig().getText("info.radius.element")
                         .replace("{0}", String.valueOf(ticket.getTicketId()))
                         .replace("{1}", plugin.isPlayerOnline(ticket.getSender())
                                 ? plugin.getConfig().getText("info.radius.online")

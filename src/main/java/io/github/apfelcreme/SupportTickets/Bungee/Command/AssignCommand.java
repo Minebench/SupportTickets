@@ -42,14 +42,14 @@ public class AssignCommand extends SubCommand {
     public void execute(CommandSender sender, final String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
 
-        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
             return;
         }
 
@@ -62,7 +62,7 @@ public class AssignCommand extends SubCommand {
         } else {
             to = player.getName();
         }
-        SupportTickets.getDatabaseController().assignTicket(ticket, to);
+        plugin.getDatabaseController().assignTicket(ticket, to);
 
         Comment comment = new Comment(
                 ticket.getTicketId(),
@@ -71,11 +71,11 @@ public class AssignCommand extends SubCommand {
                 new Date()
         );
 
-        SupportTickets.getDatabaseController().saveComment(comment);
-        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.assign.assigned")
+        plugin.getDatabaseController().saveComment(comment);
+        plugin.sendTeamMessage(plugin.getConfig().getText("info.assign.assigned")
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", to));
-        SupportTickets.sendMessage(ticket.getSender(), plugin.getConfig().getText("info.assign.yourTicketGotAssigned")
+        plugin.sendMessage(ticket.getSender(), plugin.getConfig().getText("info.assign.yourTicketGotAssigned")
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", to));
 

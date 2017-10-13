@@ -1,7 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
@@ -42,19 +41,19 @@ public class CloseCommand extends SubCommand {
     public void execute(CommandSender sender, final String[] args) {
         final ProxiedPlayer player = (ProxiedPlayer) sender;
 
-        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
             return;
         }
 
         if (!ticket.getSender().equals(player.getUniqueId()) && !player.hasPermission("SupportTickets.mod")) {
-            SupportTickets.sendMessage(player, plugin.getConfig().getText("error.notYourTicket"));
+            plugin.sendMessage(player, plugin.getConfig().getText("error.notYourTicket"));
             return;
         }
 
@@ -71,16 +70,16 @@ public class CloseCommand extends SubCommand {
                         .replace("{1}", reason),
                 new Date());
 
-        SupportTickets.getDatabaseController().saveComment(comment);
+        plugin.getDatabaseController().saveComment(comment);
 
-        SupportTickets.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
-        SupportTickets.sendMessage(ticket.getSender(),
+        plugin.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
+        plugin.sendMessage(ticket.getSender(),
                 plugin.getConfig().getText("info.close.yourTicketGotClosed")
                         .replace("{0}", String.valueOf(ticket.getTicketId()))
                         .replace("{1}", player.getName())
                         .replace("{2}", reason));
 
-        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.close.closed")
+        plugin.sendTeamMessage(plugin.getConfig().getText("info.close.closed")
                 .replace("{0}", String.valueOf(ticket.getTicketId()))
                 .replace("{1}", player.getName())
                 .replace("{2}", reason));

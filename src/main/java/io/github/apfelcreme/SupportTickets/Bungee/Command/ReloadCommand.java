@@ -38,7 +38,7 @@ public class ReloadCommand extends SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, String[] args) {
-        plugin.getConfig().reload();
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.reload.reloaded"));
+        plugin.loadConfig();
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.reload.reloaded"));
     }
 }

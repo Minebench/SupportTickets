@@ -41,18 +41,18 @@ public class UnassignCommand extends SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, String[] args) {
-        Ticket ticket = SupportTickets.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
+        Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
             return;
         }
 
-        SupportTickets.getDatabaseController().unassignTicket(ticket);
+        plugin.getDatabaseController().unassignTicket(ticket);
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
@@ -62,11 +62,11 @@ public class UnassignCommand extends SubCommand {
                 plugin.getConfig().getText("info.unassign.unassignedComment"),
                 new Date());
 
-        SupportTickets.getDatabaseController().saveComment(comment);
+        plugin.getDatabaseController().saveComment(comment);
 
-        SupportTickets.sendTeamMessage(plugin.getConfig().getText("info.unassign.unassigned")
+        plugin.sendTeamMessage(plugin.getConfig().getText("info.unassign.unassigned")
                 .replace("{0}", String.valueOf(ticket.getTicketId())));
-        SupportTickets.sendMessage(ticket.getSender(),
+        plugin.sendMessage(ticket.getSender(),
                 plugin.getConfig().getText("info.unassign.yourTicketGotUnassigned")
                         .replace("{0}", String.valueOf(ticket.getTicketId())));
         plugin.addShownTicket(sender, ticket.getTicketId());

@@ -59,7 +59,7 @@ public class ListCommand extends SubCommand {
             try {
                 messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
-                SupportTickets.sendMessage(sender, plugin.getConfig().getText("error.wrongEnumArgument")
+                plugin.sendMessage(sender, plugin.getConfig().getText("error.wrongEnumArgument")
                         .replace("{0}", args[1])
                         .replace("{1}", StringUtils.join(Ticket.TicketStatus.values(), ", "))
                 );
@@ -71,10 +71,10 @@ public class ListCommand extends SubCommand {
         //load the tickets
         List<Ticket> tickets;
         if (sender.hasPermission("SupportTickets.mod")) {
-            tickets = SupportTickets.getDatabaseController().getTickets(statuses);
+            tickets = plugin.getDatabaseController().getTickets(statuses);
         } else {
             UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
-            tickets = SupportTickets.getDatabaseController().getPlayerTickets(senderId, statuses);
+            tickets = plugin.getDatabaseController().getPlayerTickets(senderId, statuses);
         }
 
         if (statuses.length == 1) {
@@ -88,7 +88,7 @@ public class ListCommand extends SubCommand {
             page = maxPages - 1;
         }
 
-        SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.header")
+        plugin.sendMessage(sender, plugin.getConfig().getText("info.list.header")
                 .replace("{0}", String.valueOf(page + 1))
                 .replace("{1}", String.valueOf(maxPages))
                 .replace("{2}", messageStatus.toString())
@@ -96,7 +96,7 @@ public class ListCommand extends SubCommand {
 
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.element")
+            plugin.sendMessage(sender, plugin.getConfig().getText("info.list.element")
                     .replace("{0}", String.valueOf(ticket.getTicketId()))
                     .replace("{1}", plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
@@ -115,7 +115,7 @@ public class ListCommand extends SubCommand {
             } else {
                 usage = usage.replace("[[<status>]", messageStatus.toString().toLowerCase());
             }
-            SupportTickets.sendMessage(sender, plugin.getConfig().getText("info.list.footer")
+            plugin.sendMessage(sender, plugin.getConfig().getText("info.list.footer")
                     .replace("{0}", "/ticket " + getName() + " " + usage));
         }
     }
