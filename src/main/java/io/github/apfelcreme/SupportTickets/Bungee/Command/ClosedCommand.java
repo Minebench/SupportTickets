@@ -43,7 +43,7 @@ public class ClosedCommand extends SubCommand {
         if (args.length > 1) {
             target = plugin.getUUIDByName(args[1]);
             if (target == null) {
-                plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownPlayer"));
+                plugin.sendMessage(sender, "error.unknownPlayer");
                 return;
             }
         }
@@ -69,25 +69,22 @@ public class ClosedCommand extends SubCommand {
             page = 0;
         }
 
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.closed.header")
-                .replace("{0}", args[1])
-                .replace("{1}", String.valueOf(page + 1))
-                .replace("{2}", String.valueOf(maxPages))
-                .replace("{3}", String.valueOf(tickets.size())));
+        plugin.sendMessage(sender, "info.closed.header",
+                args[1], String.valueOf(page + 1), String.valueOf(maxPages), String.valueOf(tickets.size()));
 
         for (int i = page * pageSize; i < (page + 1 ) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
-            plugin.sendMessage(sender, plugin.getConfig().getText("info.list.element")
-                    .replace("{0}", String.valueOf(ticket.getTicketId()))
-                    .replace("{1}", plugin.isPlayerOnline(ticket.getSender())
+            plugin.sendMessage(sender, "info.list.element",
+                    String.valueOf(ticket.getTicketId()),
+                    plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
-                            : plugin.getConfig().getText("info.list.offline"))
-                    .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
-                    .replace("{3}", ticket.getAssigned() != null ? ticket.getAssigned() : "*")
-                    .replace("{4}", ticket.getMessage())
-                    .replace("{5}", Integer.toString(ticket.getComments().size())));
+                            : plugin.getConfig().getText("info.list.offline"),
+                    plugin.getNameByUUID(ticket.getSender()),
+                    ticket.getAssigned() != null ? ticket.getAssigned() : "*",
+                    ticket.getMessage(),
+                    Integer.toString(ticket.getComments().size()));
             plugin.addShownTicket(sender, ticket.getTicketId());
         }
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.closed.footer"));
+        plugin.sendMessage(sender, "info.closed.footer");
     }
 }

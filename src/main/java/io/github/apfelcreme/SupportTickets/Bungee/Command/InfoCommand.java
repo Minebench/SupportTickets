@@ -43,24 +43,22 @@ public class InfoCommand extends SubCommand {
     public void execute(CommandSender sender, String[] args) {
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.info")
-                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                .replace("{1}", plugin.getNameByUUID(ticket.getSender())));
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.date")
-                .replace("{0}", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate())));
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.comments")
-                .replace("{0}", String.valueOf(ticket.getComments().size()))
-                .replace("{1}", String.valueOf(ticket.getTicketId())));
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.info.location")
-                .replace("{0}", ticket.getLocation().getServer())
-                .replace("{1}", new DecimalFormat("0").format(ticket.getLocation().getLocationX()))
-                .replace("{2}", new DecimalFormat("0").format(ticket.getLocation().getLocationY()))
-                .replace("{3}", new DecimalFormat("0").format(ticket.getLocation().getLocationZ()))
-                .replace("{4}", ticket.getLocation().getWorldName()));
+        plugin.sendMessage(sender, "info.info.info",
+                String.valueOf(ticket.getTicketId()), plugin.getNameByUUID(ticket.getSender()));
+        plugin.sendMessage(sender, "info.info.date",
+                new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate()));
+        plugin.sendMessage(sender, "info.info.comments",
+                String.valueOf(ticket.getComments().size()), String.valueOf(ticket.getTicketId()));
+        plugin.sendMessage(sender, "info.info.location",
+                ticket.getLocation().getServer(),
+                new DecimalFormat("0").format(ticket.getLocation().getLocationX()),
+                new DecimalFormat("0").format(ticket.getLocation().getLocationY()),
+                new DecimalFormat("0").format(ticket.getLocation().getLocationZ()),
+                ticket.getLocation().getWorldName());
 
         plugin.addShownTicket(sender, ticket.getTicketId());
     }

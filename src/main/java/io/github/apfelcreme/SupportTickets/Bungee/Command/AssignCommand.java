@@ -44,12 +44,12 @@ public class AssignCommand extends SubCommand {
 
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(player, "error.unknownTicket");
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            plugin.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(player, "error.ticketAlreadyClosed");
             return;
         }
 
@@ -67,17 +67,15 @@ public class AssignCommand extends SubCommand {
         Comment comment = new Comment(
                 ticket.getTicketId(),
                 player.getUniqueId(),
-                plugin.getConfig().getText("info.assign.assignedComment").replace("{0}", to),
+                SupportTickets.replace(plugin.getConfig().getText("info.assign.assignedComment"), to),
                 new Date()
         );
 
         plugin.getDatabaseController().saveComment(comment);
-        plugin.sendTeamMessage(plugin.getConfig().getText("info.assign.assigned")
-                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                .replace("{1}", to));
-        plugin.sendMessage(ticket.getSender(), plugin.getConfig().getText("info.assign.yourTicketGotAssigned")
-                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                .replace("{1}", to));
+        plugin.sendTeamMessage("info.assign.assigned",
+                String.valueOf(ticket.getTicketId()), to);
+        plugin.sendMessage(ticket.getSender(), "info.assign.yourTicketGotAssigned",
+                String.valueOf(ticket.getTicketId()), to);
 
         plugin.addShownTicket(sender, ticket.getTicketId());
     }

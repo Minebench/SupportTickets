@@ -42,7 +42,7 @@ public class WarpCommand extends SubCommand {
      */
     public void execute(CommandSender sender, String[] args) {
         if (!(sender instanceof ProxiedPlayer)) {
-            plugin.sendMessage(sender, ChatColor.RED + "This command can only be run by a player!");
+            plugin.sendMessage(sender, "error.playerCommand");
             return;
         }
 
@@ -50,39 +50,39 @@ public class WarpCommand extends SubCommand {
 
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(player, "error.unknownTicket");
             return;
         }
 
         if (ticket.getLocation() == null) {
-            plugin.sendMessage(sender, ChatColor.RED + "This ticket does not have a location!");
+            plugin.sendMessage(sender, "error.noLocation");
             return;
         }
 
 //      BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
         BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
 
-        plugin.sendMessage(player, plugin.getConfig().getText("info.warp.warped")
-                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                .replace("{2}", "")
-                .replace("{3}", plugin.getNameByUUID(ticket.getSender()))
-                .replace("{4}", ticket.getMessage())
-                .replace("{5}", String.valueOf(ticket.getComments().size())));
+        plugin.sendMessage(player, "info.warp.warped",
+                String.valueOf(ticket.getTicketId()),
+                new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "",
+                plugin.getNameByUUID(ticket.getSender()),
+                ticket.getMessage(),
+                String.valueOf(ticket.getComments().size()));
 
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
-                .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                .replace("{1}", "")
-                .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
-                .replace("{3}", ticket.getMessage()));
+        plugin.sendMessage(sender, "info.view.comment",
+                new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "",
+                plugin.getNameByUUID(ticket.getSender()),
+                ticket.getMessage());
 
         for (Comment comment : ticket.getComments()) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
-                    .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()))
-                    .replace("{1}", comment.getSenderHasNoticed() ?
-                            "" : plugin.getConfig().getText("info.view.new"))
-                    .replace("{2}", plugin.getNameByUUID(comment.getSender()))
-                    .replace("{3}", comment.getComment()));
+            plugin.sendMessage(sender, "info.view.comment",
+                   new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()),
+                   comment.getSenderHasNoticed() ?
+                            "" : plugin.getConfig().getText("info.view.new"),
+                    plugin.getNameByUUID(comment.getSender()),
+                    comment.getComment());
 
             if (!comment.getSenderHasNoticed() && player.getUniqueId().equals(ticket.getSender())) {
                 plugin.getDatabaseController().setCommentRead(comment);

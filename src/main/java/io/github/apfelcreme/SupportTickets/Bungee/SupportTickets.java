@@ -175,36 +175,39 @@ public class SupportTickets extends Plugin {
      * sends a message to a player
      *
      * @param receiver the player
-     * @param text     the message
+     * @param key      the language key of the message to send
+     * @param repl     an optional array of string to replace via their index
      */
-    public void sendMessage(CommandSender receiver, String text) {
-        if (receiver != null && text != null) {
-            receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + text));
+    public void sendMessage(CommandSender receiver, String key, String... repl) {
+        if (receiver != null && key != null) {
+            receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + replace(getConfig().getText(key), repl)));
         }
     }
 
     /**
      * sends a message to a player
      *
-     * @param uuid the players uuid
-     * @param text the message
+     * @param uuid  the players uuid
+     * @param key   the language key of the text to send
+     * @param repl  an optional array of string to replace via their index
      */
-    public void sendMessage(UUID uuid, String text) {
+    public void sendMessage(UUID uuid, String key, String... repl) {
         ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
         if (player != null) {
-            sendMessage(player, text);
+            sendMessage(player, key, repl);
         }
     }
 
     /**
      * sends a message to all players with the permission "SupportTickets.receiveBukkitTeamMessage"
      *
-     * @param message a text
+     * @param key   the language key of the text to send
+     * @param repl  an optional array of string to replace via their index
      */
-    public void sendTeamMessage(String message) {
+    public void sendTeamMessage(String key, String... repl) {
         for (ProxiedPlayer receiver : ProxyServer.getInstance().getPlayers()) {
             if (receiver.hasPermission("SupportTickets.mod")) {
-                sendMessage(receiver, message);
+                sendMessage(receiver, key, repl);
             }
         }
     }
@@ -388,6 +391,20 @@ public class SupportTickets extends Plugin {
      */
     public static boolean isNumeric(String string) {
         return Pattern.matches("([0-9])*", string);
+    }
+
+    /**
+     * replace parameters in a text in the style of {<index>}
+     *
+     * @param text  the text to replace in
+     * @param repl  the replacements
+     * @return  the replaced string
+     */
+    public static String replace(String text, String... repl) {
+        for (int i = 0; i < repl.length; i++) {
+            text = text.replace("{" + i + "}", repl[i]);
+        }
+        return text;
     }
 
     /**

@@ -1,11 +1,11 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.config.Configuration;
 
-import java.util.*;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -40,26 +40,21 @@ public class HelpCommand extends SubCommand {
     public void execute(CommandSender sender, String[] args) {
         Configuration configurationSection =
                 plugin.getConfig().getLanguageConfiguration().getSection("texts.info.help.commands");
-        List<String> keys = new ArrayList<>();
-        List<String> strings = new ArrayList<>();
+        Map<String, String> keys = new TreeMap<>();
 
         for (String key : configurationSection.getSection("user").getKeys()) {
-            keys.add("info.help.commands.user."+key);
+            keys.put(key.toLowerCase(), "info.help.commands.user." + key);
         }
 
         if (sender.hasPermission("SupportTickets.mod")) {
             for (String key : configurationSection.getSection("mod").getKeys()) {
-                keys.add("info.help.commands.mod."+key);
+                keys.put(key.toLowerCase(), "info.help.commands.mod." + key);
             }
         }
-        for (String key : keys) {
-            System.out.println(key);
-            strings.add(plugin.getConfig().getText(key));
-        }
-        Collections.sort(strings);
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.help.header"));
-        for (Object s : strings) {
-            plugin.sendMessage(sender, ChatColor.translateAlternateColorCodes('&', s.toString()));
+
+        plugin.sendMessage(sender, "info.help.header");
+        for (String languageKey : keys.values()) {
+            plugin.sendMessage(sender, languageKey);
         }
     }
 }

@@ -53,30 +53,24 @@ public class CommandExecutor extends Command implements Listener {
         }
 
         if (subCommand == null) {
-            plugin.sendMessage(commandSender, plugin.getConfig().getText("error.unknownCommand")
-                    .replace("{0}", strings[0]));
+            plugin.sendMessage(commandSender, "error.unknownCommand", strings[0]);
             return;
         }
 
         if (!subCommand.checkPermission(commandSender)) {
-            plugin.sendMessage(commandSender, plugin.getConfig().getText("error.noPermission"));
+            plugin.sendMessage(commandSender, "error.noPermission");
             return;
         }
 
         if (!subCommand.validateInput(strings)) {
-            plugin.sendMessage(commandSender, plugin.getConfig().getText("error.wrongUsage")
-                    .replace("{0}", "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage()));
+            plugin.sendMessage(commandSender, "error.wrongUsage",  "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage());
             return;
         }
 
         final SubCommand finalSubCommand = subCommand;
 
         // execute the subcommand in a thread
-        plugin.getProxy().getScheduler().runAsync(plugin, new Runnable() {
-            public void run() {
-                finalSubCommand.execute(commandSender, strings);
-            }
-        });
+        plugin.getProxy().getScheduler().runAsync(plugin, () -> finalSubCommand.execute(commandSender, strings));
     }
 
     public Map<String, SubCommand> getSubCommands() {

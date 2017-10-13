@@ -39,6 +39,6 @@ public class ReloadCommand extends SubCommand {
      */
     public void execute(CommandSender sender, String[] args) {
         plugin.loadConfig();
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.reload.reloaded"));
+        plugin.sendMessage(sender, "info.reload.reloaded");
     }
 }

@@ -59,9 +59,8 @@ public class ListCommand extends SubCommand {
             try {
                 messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
-                plugin.sendMessage(sender, plugin.getConfig().getText("error.wrongEnumArgument")
-                        .replace("{0}", args[1])
-                        .replace("{1}", StringUtils.join(Ticket.TicketStatus.values(), ", "))
+                plugin.sendMessage(sender, "error.wrongEnumArgument",
+                        args[1], StringUtils.join(Ticket.TicketStatus.values(), ", ")
                 );
                 return;
             }
@@ -88,23 +87,20 @@ public class ListCommand extends SubCommand {
             page = maxPages - 1;
         }
 
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.list.header")
-                .replace("{0}", String.valueOf(page + 1))
-                .replace("{1}", String.valueOf(maxPages))
-                .replace("{2}", messageStatus.toString())
-        );
+        plugin.sendMessage(sender, "info.list.header",
+                String.valueOf(page + 1), String.valueOf(maxPages), messageStatus.toString());
 
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
-            plugin.sendMessage(sender, plugin.getConfig().getText("info.list.element")
-                    .replace("{0}", String.valueOf(ticket.getTicketId()))
-                    .replace("{1}", plugin.isPlayerOnline(ticket.getSender())
+            plugin.sendMessage(sender, "info.list.element",
+                    String.valueOf(ticket.getTicketId()),
+                    plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
-                            : plugin.getConfig().getText("info.list.offline"))
-                    .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
-                    .replace("{3}", ticket.getAssigned() != null ? ticket.getAssigned() : "*")
-                    .replace("{4}", ticket.getMessage())
-                    .replace("{5}", Integer.toString(ticket.getComments().size())));
+                            : plugin.getConfig().getText("info.list.offline"),
+                    plugin.getNameByUUID(ticket.getSender()),
+                    ticket.getAssigned() != null ? ticket.getAssigned() : "*",
+                    ticket.getMessage(),
+                    Integer.toString(ticket.getComments().size()));
             plugin.addShownTicket(sender, ticket.getTicketId());
         }
 
@@ -115,8 +111,7 @@ public class ListCommand extends SubCommand {
             } else {
                 usage = usage.replace("[[<status>]", messageStatus.toString().toLowerCase());
             }
-            plugin.sendMessage(sender, plugin.getConfig().getText("info.list.footer")
-                    .replace("{0}", "/ticket " + getName() + " " + usage));
+            plugin.sendMessage(sender, "info.list.footer", "/ticket " + getName() + " " + usage);
         }
     }
 

@@ -42,7 +42,7 @@ public class ReopenCommand extends SubCommand {
     public void execute(CommandSender sender, String[] args) {
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
@@ -53,17 +53,14 @@ public class ReopenCommand extends SubCommand {
         Comment comment = new Comment(
                 ticket.getTicketId(),
                 senderId,
-                plugin.getConfig().getText("info.reopen.reopenComment")
-                        .replace("{0}", sender.getName()),
+                SupportTickets.replace(plugin.getConfig().getText("info.reopen.reopenComment"), sender.getName()),
                 new Date());
 
         plugin.getDatabaseController().saveComment(comment);
 
-        plugin.sendTeamMessage(plugin.getConfig().getText("info.reopen.reopened")
-                .replace("{0}", String.valueOf(ticket.getTicketId())));
-        plugin.sendMessage(ticket.getSender(),
-                plugin.getConfig().getText("info.reopen.yourTicketGotReopened")
-                        .replace("{0}", String.valueOf(ticket.getTicketId())));
+        plugin.sendTeamMessage("info.reopen.reopened", String.valueOf(ticket.getTicketId()));
+        plugin.sendMessage(ticket.getSender(), "info.reopen.yourTicketGotReopened",
+                String.valueOf(ticket.getTicketId()));
         plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

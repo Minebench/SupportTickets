@@ -43,17 +43,17 @@ public class CloseCommand extends SubCommand {
 
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(player, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(player, "error.unknownTicket");
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            plugin.sendMessage(player, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(player, "error.ticketAlreadyClosed");
             return;
         }
 
         if (!ticket.getSender().equals(player.getUniqueId()) && !player.hasPermission("SupportTickets.mod")) {
-            plugin.sendMessage(player, plugin.getConfig().getText("error.notYourTicket"));
+            plugin.sendMessage(player, "error.notYourTicket");
             return;
         }
 
@@ -65,24 +65,18 @@ public class CloseCommand extends SubCommand {
         Comment comment = new Comment(
                 ticket.getTicketId(),
                 player.getUniqueId(),
-                plugin.getConfig().getText("info.close.closeComment")
-                        .replace("{0}", player.getName())
-                        .replace("{1}", reason),
+                SupportTickets.replace(plugin.getConfig().getText("info.close.closeComment"),
+                        player.getName(), reason),
                 new Date());
 
         plugin.getDatabaseController().saveComment(comment);
 
         plugin.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
-        plugin.sendMessage(ticket.getSender(),
-                plugin.getConfig().getText("info.close.yourTicketGotClosed")
-                        .replace("{0}", String.valueOf(ticket.getTicketId()))
-                        .replace("{1}", player.getName())
-                        .replace("{2}", reason));
+        plugin.sendMessage(ticket.getSender(), "info.close.yourTicketGotClosed",
+                String.valueOf(ticket.getTicketId()) , player.getName(), reason);
 
-        plugin.sendTeamMessage(plugin.getConfig().getText("info.close.closed")
-                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                .replace("{1}", player.getName())
-                .replace("{2}", reason));
+        plugin.sendTeamMessage("info.close.closed",
+                String.valueOf(ticket.getTicketId()), player.getName(), reason);
 
         plugin.addShownTicket(sender, ticket.getTicketId());
     }

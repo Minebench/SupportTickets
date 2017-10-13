@@ -1,8 +1,10 @@
 texts:
   prefix: '&7[&9PE&7]'
   error:
+    noLocation: '&c Dises Ticket hat keinen Ort!'
     noPermission: '&c Du hast keine ausreichende Berechtigung!'
     notYourTicket: '&c Dieses Ticket wurde nicht von dir geöffnet!'
+    playerCommand: '&c Dieser Befehl kann nur von einem Spieler ausgeführt werden!'
     ticketAlreadyClosed: '&c Das Ticket wurde bereits geschlossen'
     unknownCommand: '&c Die Funktion {0} existiert nicht!'
     unknownPlayer: '&c Der angegebene Spieler existiert nicht!'

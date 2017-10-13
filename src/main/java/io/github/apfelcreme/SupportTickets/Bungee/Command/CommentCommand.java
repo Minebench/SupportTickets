@@ -43,19 +43,19 @@ public class CommentCommand extends SubCommand {
 
         Ticket ticket =  plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(sender, "error.ticketAlreadyClosed");
             return;
         }
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
         if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod")) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.notYourTicket"));
+            plugin.sendMessage(sender, "error.notYourTicket");
             return;
         }
 
@@ -68,16 +68,11 @@ public class CommentCommand extends SubCommand {
 
         plugin.getDatabaseController().saveComment(comment);
 
-        plugin.sendTeamMessage(plugin.getConfig().getText("info.comment.commented")
-                .replace("{0}", sender.getName())
-                .replace("{1}", String.valueOf(ticket.getTicketId()))
-                .replace("{2}", message));
+        plugin.sendTeamMessage("info.comment.commented",
+                sender.getName(), String.valueOf(ticket.getTicketId()), message);
 
-        plugin.sendMessage(ticket.getSender(),
-                plugin.getConfig().getText("info.comment.yourTicketGotCommented")
-                        .replace("{0}", String.valueOf(ticket.getTicketId()))
-                        .replace("{1}", sender.getName())
-                        .replace("{2}", message));
+        plugin.sendMessage(ticket.getSender(),"info.comment.yourTicketGotCommented",
+                String.valueOf(ticket.getTicketId()), sender.getName(), message);
         plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

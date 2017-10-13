@@ -43,12 +43,12 @@ public class UnassignCommand extends SubCommand {
     public void execute(CommandSender sender, String[] args) {
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.ticketAlreadyClosed"));
+            plugin.sendMessage(sender, "error.ticketAlreadyClosed");
             return;
         }
 
@@ -64,11 +64,9 @@ public class UnassignCommand extends SubCommand {
 
         plugin.getDatabaseController().saveComment(comment);
 
-        plugin.sendTeamMessage(plugin.getConfig().getText("info.unassign.unassigned")
-                .replace("{0}", String.valueOf(ticket.getTicketId())));
-        plugin.sendMessage(ticket.getSender(),
-                plugin.getConfig().getText("info.unassign.yourTicketGotUnassigned")
-                        .replace("{0}", String.valueOf(ticket.getTicketId())));
+        plugin.sendTeamMessage("info.unassign.unassigned", String.valueOf(ticket.getTicketId()));
+        plugin.sendMessage(ticket.getSender(), "info.unassign.yourTicketGotUnassigned",
+                String.valueOf(ticket.getTicketId()));
         plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

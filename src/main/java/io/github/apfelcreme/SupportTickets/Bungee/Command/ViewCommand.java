@@ -43,35 +43,34 @@ public class ViewCommand extends SubCommand {
     public void execute(CommandSender sender, final String[] args) {
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.unknownTicket"));
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
         if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod")) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("error.notYourTicket"));
+            plugin.sendMessage(sender, "error.notYourTicket");
             return;
         }
 
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.view.ticket")
-                .replace("{0}", String.valueOf(ticket.getTicketId()))
-                .replace("{1}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                .replace("{2}", plugin.getNameByUUID(ticket.getSender())));
+        plugin.sendMessage(sender, "info.view.ticket",
+                String.valueOf(ticket.getTicketId()),
+                new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                plugin.getNameByUUID(ticket.getSender()));
 
-        plugin.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
-                .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()))
-                .replace("{1}", "")
-                .replace("{2}", plugin.getNameByUUID(ticket.getSender()))
-                .replace("{3}", ticket.getMessage()));
+        plugin.sendMessage(sender, "info.view.comment",
+                new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "",
+                plugin.getNameByUUID(ticket.getSender()),
+                ticket.getMessage());
 
         for (Comment comment : ticket.getComments()) {
-            plugin.sendMessage(sender, plugin.getConfig().getText("info.view.comment")
-                    .replace("{0}", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()))
-                    .replace("{1}", comment.getSenderHasNoticed() ?
-                            "" : plugin.getConfig().getText("info.view.new"))
-                    .replace("{2}", plugin.getNameByUUID(comment.getSender()))
-                    .replace("{3}", comment.getComment()));
+            plugin.sendMessage(sender, "info.view.comment",
+                    new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()),
+                    comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
+                    plugin.getNameByUUID(comment.getSender()),
+                    comment.getComment());
 
             if (!comment.getSenderHasNoticed() && senderId.equals(ticket.getSender())) {
                 plugin.getDatabaseController().setCommentRead(comment);
