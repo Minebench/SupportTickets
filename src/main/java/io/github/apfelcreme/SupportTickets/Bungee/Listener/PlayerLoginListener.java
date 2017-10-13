@@ -55,7 +55,7 @@ public class PlayerLoginListener implements Listener {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsSingular",
                             ticketIds.iterator().next().toString());
                 } else {
-                    plugin.sendMessage(event.getPlayer(), "info.login.newCommentsPlural"),
+                    plugin.sendMessage(event.getPlayer(), "info.login.newCommentsPlural",
                             SupportTickets.join(ticketIds.toArray(), ", ", " & "));
                 }
             }
