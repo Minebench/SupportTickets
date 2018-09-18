@@ -39,12 +39,13 @@ public class BukkitMessageListener implements Listener {
 
     public BukkitMessageListener(SupportTickets plugin) {
         this.plugin = plugin;
+        plugin.getProxy().registerChannel("tickets:position");
     }
 
     @EventHandler
     public void onPluginMessageReceived(PluginMessageEvent event) throws IOException {
 
-        if (!event.getTag().equals("SupportTickets")) {
+        if (!event.getTag().startsWith("tickets:")) {
             return;
         }
         if (!(event.getSender() instanceof Server)) {
@@ -53,7 +54,7 @@ public class BukkitMessageListener implements Listener {
 
         ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
         String subChannel = in.readUTF();
-        if (subChannel.equals("POSITIONANSWER")) {
+        if (subChannel.equals("tickets:position")) {
             UUID uuid = UUID.fromString(in.readUTF());
             BukkitPositionAnswer answer = BukkitMessenger.getQueuedPositionAnswer(uuid);
             if (answer == null) {

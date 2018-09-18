@@ -47,9 +47,8 @@ public class BukkitMessenger {
         if (target != null) {
             queuedPositionRequests.put(player.getUniqueId(), answer);
             ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("POSITIONREQUEST");
             out.writeUTF(player.getUniqueId().toString());
-            target.sendData("SupportTickets", out.toByteArray());
+            target.sendData("tickets:requestpos", out.toByteArray());
         }
     }
 
@@ -71,7 +70,6 @@ public class BukkitMessenger {
                     }
 
                     ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                    out.writeUTF("WARP");
                     out.writeUTF(uuid.toString());
                     out.writeUTF(location.getWorldName());
                     out.writeDouble(location.getLocationX());
@@ -79,7 +77,7 @@ public class BukkitMessenger {
                     out.writeDouble(location.getLocationZ());
                     out.writeDouble(location.getYaw());
                     out.writeDouble(location.getPitch());
-                    serverInfo.sendData("SupportTickets", out.toByteArray());
+                    serverInfo.sendData("tickets:warp", out.toByteArray());
                 } else {
                     SupportTickets.getInstance().getLogger().log(Level.WARNING, "No server found for '" + location.getServer() + "'!");
                 }

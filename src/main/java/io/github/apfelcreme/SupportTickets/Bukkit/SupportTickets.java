@@ -35,11 +35,8 @@ public class SupportTickets extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // register the Plugin channels for the bungee communication
-        getServer().getMessenger().registerOutgoingPluginChannel(this, "SupportTickets");
-        getServer().getMessenger().registerIncomingPluginChannel(this, "SupportTickets",
-                new BungeeMessageListener(this));
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        new BungeeMessageListener(this); // registers itself
     }
 
     public void addToQueue(UUID playerId, Location location) {

@@ -35,22 +35,24 @@ public class BungeeMessageListener implements PluginMessageListener {
 
     public BungeeMessageListener(SupportTickets plugin) {
         this.plugin = plugin;
+        plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "tickets:warp", this);
+        plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "tickets:requestpos", this);
+        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "tickets:position");
     }
 
     public void onPluginMessageReceived(String s, Player p, final byte[] bytes) {
-        if (!s.equals("SupportTickets")) {
+        if (!s.startsWith("tickets:")) {
             return;
         }
 
         ByteArrayDataInput in = ByteStreams.newDataInput(bytes);
-        String subChannel = in.readUTF();
-        if (subChannel.equals("WARP")) {
+        if (s.equals("tickets:warp")) {
             UUID uuid = UUID.fromString(in.readUTF());
             Location location = new Location(plugin.getServer().getWorld(in.readUTF()),
                     in.readDouble(), in.readDouble(), in.readDouble(),
                     (float) in.readDouble(), (float) in.readDouble());
             warp(uuid, location);
-        } else if (subChannel.equals("POSITIONREQUEST")) {
+        } else if (s.equals("tickets:requestpos")) {
             UUID uuid = UUID.fromString(in.readUTF());
             answerPositionRequest(uuid);
         }
@@ -68,7 +70,6 @@ public class BungeeMessageListener implements PluginMessageListener {
         try {
             Player player = plugin.getServer().getPlayer(uuid);
             if (player != null) {
-                out.writeUTF("POSITIONANSWER");
                 out.writeUTF(uuid.toString());
                 out.writeUTF(plugin.getServer().getIp() + ":" + plugin.getServer().getPort());
                 out.writeUTF(player.getWorld().getName());
@@ -77,7 +78,7 @@ public class BungeeMessageListener implements PluginMessageListener {
                 out.writeDouble(player.getLocation().getZ());
                 out.writeDouble((double) player.getLocation().getYaw());
                 out.writeDouble((double) player.getLocation().getPitch());
-                player.sendPluginMessage(plugin, "SupportTickets", b.toByteArray());
+                player.sendPluginMessage(plugin, "tickets:position", b.toByteArray());
                 out.close();
                 b.close();
             }
