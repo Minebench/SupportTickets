@@ -53,8 +53,7 @@ public class BukkitMessageListener implements Listener {
         }
 
         ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
-        String subChannel = in.readUTF();
-        if (subChannel.equals("tickets:position")) {
+        if (event.getTag().equals("tickets:position")) {
             UUID uuid = UUID.fromString(in.readUTF());
             BukkitPositionAnswer answer = BukkitMessenger.getQueuedPositionAnswer(uuid);
             if (answer == null) {
