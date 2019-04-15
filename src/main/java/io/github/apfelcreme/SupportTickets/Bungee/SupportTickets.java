@@ -127,7 +127,7 @@ public class SupportTickets extends Plugin {
 
 //                                       Class extends SubCommand   name        arguments                 permission              aliases...
         ticketCommand.registerSubCommand(new AssignCommand(this,    "assign",   "<#> [<player>]",         "SupportTickets.mod"));
-        ticketCommand.registerSubCommand(new CloseCommand(this,     "close",    "<#> <reason>",           "SupportTickets.user"));
+        ticketCommand.registerSubCommand(new CloseCommand(this,     "close",    "<#> [<reason>]",           "SupportTickets.user"));
         ticketCommand.registerSubCommand(new ClosedCommand(this,    "closed",   "<player> [<#page>]",     "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new CommentCommand(this,   "comment",  "<#> <comment>",          "SupportTickets.user",  "log"));
         ticketCommand.registerSubCommand(new HelpCommand(this,      "help"));
