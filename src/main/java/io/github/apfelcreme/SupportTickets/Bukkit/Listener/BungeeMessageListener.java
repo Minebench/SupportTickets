@@ -97,7 +97,7 @@ public class BungeeMessageListener implements PluginMessageListener {
         plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             Player player = plugin.getServer().getPlayer(uuid);
             if (player != null) {
-                player.teleport(location);
+                player.teleportAsync(location);
             } else {
                 plugin.addToQueue(uuid, location);
             }
