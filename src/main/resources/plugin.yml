@@ -3,3 +3,6 @@ version: '${minecraft.plugin.version}'
 api-version: 1.13
 main: io.github.apfelcreme.SupportTickets.Bukkit.SupportTickets
 author: Lord36
+softdepend:
+  - UUIDB
+  - ServerClusters

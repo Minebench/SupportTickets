@@ -65,19 +65,32 @@ public class BukkitMessenger {
             try {
                 ServerInfo serverInfo = SupportTickets.getServer(location.getServer());
                 if (serverInfo != null) {
-                    if (!player.getServer().getInfo().equals(serverInfo) && serverInfo.getAddress().getAddress().isReachable(2000)) {
-                        player.connect(serverInfo);
-                    }
+                    if (SupportTickets.getInstance().getServerClusters() != null) {
+                        SupportTickets.getInstance().getServerClusters().getTeleportUtils().teleportToLocation(
+                                player,
+                                serverInfo,
+                                location.getWorldName(),
+                                location.getLocationX(),
+                                location.getLocationY(),
+                                location.getLocationZ(),
+                                (float) location.getYaw(),
+                                (float) location.getPitch()
+                        );
+                    } else {
+                        if (!player.getServer().getInfo().equals(serverInfo) && serverInfo.getAddress().getAddress().isReachable(2000)) {
+                            player.connect(serverInfo);
+                        }
 
-                    ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                    out.writeUTF(uuid.toString());
-                    out.writeUTF(location.getWorldName());
-                    out.writeDouble(location.getLocationX());
-                    out.writeDouble(location.getLocationY());
-                    out.writeDouble(location.getLocationZ());
-                    out.writeDouble(location.getYaw());
-                    out.writeDouble(location.getPitch());
-                    serverInfo.sendData("tickets:warp", out.toByteArray());
+                        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                        out.writeUTF(uuid.toString());
+                        out.writeUTF(location.getWorldName());
+                        out.writeDouble(location.getLocationX());
+                        out.writeDouble(location.getLocationY());
+                        out.writeDouble(location.getLocationZ());
+                        out.writeDouble(location.getYaw());
+                        out.writeDouble(location.getPitch());
+                        serverInfo.sendData("tickets:warp", out.toByteArray());
+                    }
                 } else {
                     SupportTickets.getInstance().getLogger().log(Level.WARNING, "No server found for '" + location.getServer() + "'!");
                 }

@@ -1,5 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee;
 
+import de.themoep.serverclusters.bungee.ServerClusters;
 import io.github.apfelcreme.SupportTickets.Bungee.Command.*;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MySQLConnector;
@@ -70,6 +71,11 @@ public class SupportTickets extends Plugin {
     private UUIDDBPlugin uuidDb = null;
 
     /**
+     * support ServerClusters
+     */
+    private ServerClusters serverClusters = null;
+
+    /**
      * The plugin's config
      */
     private SupportTicketsConfig config;
@@ -106,6 +112,10 @@ public class SupportTickets extends Plugin {
 
         if (getProxy().getPluginManager().getPlugin("UUIDDB") != null) {
             uuidDb = (UUIDDBPlugin) getProxy().getPluginManager().getPlugin("UUIDDB");
+        }
+
+        if (getProxy().getPluginManager().getPlugin("ServerClusters") != null) {
+            serverClusters = (ServerClusters) getProxy().getPluginManager().getPlugin("ServerClusters");
         }
 
         // initialize the uuid cache
@@ -456,5 +466,9 @@ public class SupportTickets extends Plugin {
         Set<Integer> senderTickets = shownTicketsCache.get(sender.getName().toLowerCase());
 
         return senderTickets != null ? senderTickets : new HashSet<Integer>();
+    }
+
+    public ServerClusters getServerClusters() {
+        return serverClusters;
     }
 }
