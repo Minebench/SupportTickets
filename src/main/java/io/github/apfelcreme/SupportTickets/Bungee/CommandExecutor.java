@@ -156,17 +156,18 @@ public class CommandExecutor extends Command implements Listener {
                 String[] args = subCommand.getUsage().split(" ");
                 if (args.length > 0) {
                     int i = parts.length - 3;
-
-                    if (args[i].contains("player")) {
-                        for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
-                            if (cursor.endsWith(" ") || player.getName().startsWith(parts[parts.length - 1])) {
-                                event.getSuggestions().add(player.getName());
+                    if (i < args.length) {
+                        if (args[i].contains("player")) {
+                            for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
+                                if (cursor.endsWith(" ") || player.getName().startsWith(parts[parts.length - 1])) {
+                                    event.getSuggestions().add(player.getName());
+                                }
                             }
-                        }
-                    } else if (args[i].contains("<#>")) {
-                        for (Integer ticketId : plugin.getLastShownTickets((CommandSender) event.getSender())) {
-                            if (cursor.endsWith(" ") || ticketId.toString().startsWith(parts[parts.length - 1])) {
-                                event.getSuggestions().add(ticketId.toString());
+                        } else if (args[i].contains("<#>")) {
+                            for (Integer ticketId : plugin.getLastShownTickets((CommandSender) event.getSender())) {
+                                if (cursor.endsWith(" ") || ticketId.toString().startsWith(parts[parts.length - 1])) {
+                                    event.getSuggestions().add(ticketId.toString());
+                                }
                             }
                         }
                     }
