@@ -6,6 +6,7 @@ import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -57,7 +58,7 @@ public class CloseCommand extends SubCommand {
             return;
         }
 
-        String reason = String.join(" ", args);
+        String reason = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
         Comment comment = new Comment(
                 ticket.getTicketId(),
                 player.getUniqueId(),
