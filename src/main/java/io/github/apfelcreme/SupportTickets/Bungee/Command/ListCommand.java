@@ -4,11 +4,12 @@ import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.apache.commons.lang.StringUtils;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -60,7 +61,7 @@ public class ListCommand extends SubCommand {
                 messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
                 plugin.sendMessage(sender, "error.wrongEnumArgument",
-                        args[1], StringUtils.join(Ticket.TicketStatus.values(), ", ")
+                        args[1], Arrays.stream(Ticket.TicketStatus.values()).map(Enum::toString).collect(Collectors.joining(", "))
                 );
                 return;
             }

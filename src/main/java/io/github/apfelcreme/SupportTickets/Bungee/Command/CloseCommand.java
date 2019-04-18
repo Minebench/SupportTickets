@@ -58,7 +58,7 @@ public class CloseCommand extends SubCommand {
             return;
         }
 
-        String reason = String.join(" ", Arrays.copyOfRange(args, 3, args.length));
+        String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
         Comment comment = new Comment(
                 ticket.getTicketId(),
                 player.getUniqueId(),
