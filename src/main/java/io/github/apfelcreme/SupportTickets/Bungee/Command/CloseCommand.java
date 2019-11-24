@@ -8,6 +8,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -40,40 +41,41 @@ public class CloseCommand extends SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, final String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
 
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(player, "error.unknownTicket");
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            plugin.sendMessage(player, "error.ticketAlreadyClosed");
+            plugin.sendMessage(sender, "error.ticketAlreadyClosed");
             return;
         }
 
-        if (!ticket.getSender().equals(player.getUniqueId()) && !player.hasPermission("SupportTickets.mod")) {
-            plugin.sendMessage(player, "error.notYourTicket");
+        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+
+        if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod")) {
+            plugin.sendMessage(sender, "error.notYourTicket");
             return;
         }
 
         String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
         Comment comment = new Comment(
                 ticket.getTicketId(),
-                player.getUniqueId(),
+                senderId,
                 SupportTickets.replace(plugin.getConfig().getText("info.close.closeComment"),
-                        player.getName(), reason),
+                        sender.getName(), reason),
                 new Date());
 
         plugin.getDatabaseController().saveComment(comment);
 
-        plugin.getDatabaseController().closeTicket(ticket, player.getUniqueId(), reason);
+        plugin.getDatabaseController().closeTicket(ticket, senderId, reason);
         plugin.sendMessage(ticket.getSender(), "info.close.yourTicketGotClosed",
-                String.valueOf(ticket.getTicketId()) , player.getName(), reason);
+                String.valueOf(ticket.getTicketId()) , sender.getName(), reason);
 
         plugin.sendTeamMessage("info.close.closed",
-                String.valueOf(ticket.getTicketId()), player.getName(), reason);
+                String.valueOf(ticket.getTicketId()), sender.getName(), reason);
 
         plugin.addShownTicket(sender, ticket.getTicketId());
     }
