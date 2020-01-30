@@ -39,7 +39,6 @@ public class BukkitMessageListener implements Listener {
 
     public BukkitMessageListener(SupportTickets plugin) {
         this.plugin = plugin;
-        plugin.getProxy().registerChannel("tickets:position");
     }
 
     @EventHandler
@@ -49,6 +48,7 @@ public class BukkitMessageListener implements Listener {
             return;
         }
         if (!(event.getSender() instanceof Server)) {
+            event.setCancelled(true);
             return;
         }
 
