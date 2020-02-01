@@ -147,6 +147,8 @@ public class SupportTickets extends Plugin {
         getProxy().getPluginManager().registerCommand(this, ticketCommand);
 
         // register the Plugin channels for the bukkit <-> bungee communication
+        getProxy().registerChannel("tickets:requestpos");
+        getProxy().registerChannel("tickets:warp");
         getProxy().getPluginManager().registerListener(this, new BukkitMessageListener(this));
 
         // register the listeners
