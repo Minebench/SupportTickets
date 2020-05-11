@@ -8,9 +8,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -35,7 +33,7 @@ public class CommandExecutor extends Command implements Listener {
 
     private final SupportTickets plugin;
 
-    private final Map<String, SubCommand> subCommands = new HashMap<>();
+    private final Map<String, SubCommand> subCommands = new LinkedHashMap<>();
 
     public CommandExecutor(SupportTickets plugin, String name, String permission, String... aliases) {
         super(name, permission, aliases);
@@ -95,7 +93,22 @@ public class CommandExecutor extends Command implements Listener {
     }
 
     private SubCommand getSubCommand(String name) {
-        return subCommands.get(name.toLowerCase());
+        SubCommand subCommand = subCommands.get(name.toLowerCase());
+        if (subCommand == null) {
+            for (SubCommand sub : subCommands.values()) {
+                if (sub.getName().startsWith(name.toLowerCase())) {
+                    subCommand = sub;
+                }
+            }
+        }
+        if (subCommand == null) {
+            for (Map.Entry<String, SubCommand> entry : subCommands.entrySet()) {
+                if (entry.getKey().startsWith(name.toLowerCase())) {
+                    subCommand = entry.getValue();
+                }
+            }
+        }
+        return subCommand;
     }
 
     @EventHandler
