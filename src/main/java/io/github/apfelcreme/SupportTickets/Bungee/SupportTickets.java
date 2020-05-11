@@ -141,7 +141,7 @@ public class SupportTickets extends Plugin {
         ticketCommand.registerSubCommand(new TopCommand(this,       "top",      "",                       "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new UnassignCommand(this,  "unassign", "<#>",                    "SupportTickets.mod"));
         ticketCommand.registerSubCommand(new ViewCommand(this,      "view",     "<#>",                    "SupportTickets.user"));
-        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#>",                    "SupportTickets.mod",   "goto", "tp"));
+        ticketCommand.registerSubCommand(new WarpCommand(this,      "warp",     "<#> [<#comment>]",       "SupportTickets.mod",   "goto", "tp"));
 
         // register the command
         getProxy().getPluginManager().registerCommand(this, ticketCommand);
