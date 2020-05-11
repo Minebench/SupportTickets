@@ -9,6 +9,7 @@ texts:
     unknownCommand: '&c Die Funktion {0} existiert nicht!'
     unknownPlayer: '&c Der angegebene Spieler existiert nicht!'
     unknownTicket: '&c Es existiert kein Ticket mit der angegebenen Nummer!'
+    unknownComment: '&c Es existiert kein Kommentar mit der angegebenen Nummer!'
     wrongUsage: '&c Falsche Eingabe! Probiere {0}!'
     wrongEnumArgument: '&c {0} ist kein valider Wert. Verfügbar: {1}'
   info:

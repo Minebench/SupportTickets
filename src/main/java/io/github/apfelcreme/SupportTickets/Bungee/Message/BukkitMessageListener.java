@@ -14,6 +14,7 @@ import net.md_5.bungee.event.EventHandler;
 
 import java.io.IOException;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -55,7 +56,7 @@ public class BukkitMessageListener implements Listener {
         ByteArrayDataInput in = ByteStreams.newDataInput(event.getData());
         if (event.getTag().equals("tickets:position")) {
             UUID uuid = UUID.fromString(in.readUTF());
-            BukkitPositionAnswer answer = BukkitMessenger.getQueuedPositionAnswer(uuid);
+            Consumer answer = BukkitMessenger.getQueuedPositionAnswer(uuid);
             if (answer == null) {
                 return;
             }
@@ -73,7 +74,7 @@ public class BukkitMessageListener implements Listener {
             Location location = new Location(server, in.readUTF(), in.readDouble(), in.readDouble(),
                     in.readDouble(), in.readDouble(), in.readDouble());
 
-            answer.onAnswer(location);
+            answer.accept(location);
         }
     }
 }

@@ -3,10 +3,10 @@ package io.github.apfelcreme.SupportTickets.Bungee.Command;
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
+import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
-import org.bukkit.ChatColor;
 
 import java.text.SimpleDateFormat;
 
@@ -54,7 +54,18 @@ public class WarpCommand extends SubCommand {
             return;
         }
 
-        if (ticket.getLocation() == null) {
+        Location location = ticket.getLocation();
+        if (args.length > 2) {
+            int commentNumber = Integer.parseInt(args[2]);
+            if (ticket.getComments().size() < commentNumber) {
+                plugin.sendMessage(player, "error.unknownComment");
+                return;
+            }
+
+            location = ticket.getComments().get(commentNumber - 1).getLocation();
+        }
+
+        if (location == null) {
             plugin.sendMessage(sender, "error.noLocation");
             return;
         }

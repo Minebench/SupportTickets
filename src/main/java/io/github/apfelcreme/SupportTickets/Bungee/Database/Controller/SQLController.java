@@ -387,14 +387,21 @@ public class SQLController implements DatabaseController {
 
                 preparedStatement = connection.prepareStatement(
                         "INSERT INTO " + plugin.getConfig().getCommentTable() +
-                                " (ticket_id, player_id, time_stamp, comment, sender_has_noticed) VALUES" +
+                                " (ticket_id, player_id, time_stamp, comment, server, world, loc_X, loc_Y, loc_Z, yaw, pitch, sender_has_noticed) VALUES" +
                                 "(?, (Select player_id from " + plugin.getConfig().getPlayerTable() +
-                                " where uuid = ?), ?, ?, ?)");
+                                " where uuid = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setInt(1, comment.getTicketId());
                 preparedStatement.setString(2, comment.getSender().toString());
                 preparedStatement.setLong(3, comment.getDate().getTime());
                 preparedStatement.setString(4, comment.getComment());
-                preparedStatement.setBoolean(5, comment.getSenderHasNoticed());
+                preparedStatement.setString(5, comment.getLocation().getServer());
+                preparedStatement.setString(6, comment.getLocation().getWorldName());
+                preparedStatement.setDouble(7, comment.getLocation().getLocationX());
+                preparedStatement.setDouble(8, comment.getLocation().getLocationY());
+                preparedStatement.setDouble(9, comment.getLocation().getLocationZ());
+                preparedStatement.setDouble(10, comment.getLocation().getYaw());
+                preparedStatement.setDouble(11, comment.getLocation().getPitch());
+                preparedStatement.setBoolean(12, comment.getSenderHasNoticed());
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -478,15 +485,42 @@ public class SQLController implements DatabaseController {
         statement.setInt(1, resultSet.getInt("ticket_id"));
         resultSet = statement.executeQuery();
         while (resultSet.next()) {
+            Location location = null;
+            if (hasLocation(resultSet)) {
+                location = new Location(
+                        resultSet.getString("server"),
+                        resultSet.getString("world"),
+                        resultSet.getDouble("loc_X"),
+                        resultSet.getDouble("loc_Y"),
+                        resultSet.getDouble("loc_Z"),
+                        resultSet.getFloat("yaw"),
+                        resultSet.getFloat("pitch")
+                );
+            }
             Comment comment = new Comment(
                     resultSet.getInt("comment_id"),
                     ticket.getTicketId(),
                     UUID.fromString(resultSet.getString("uuid")),
                     resultSet.getString("comment"),
                     resultSet.getBoolean("sender_has_noticed"),
-                    new Date(resultSet.getLong("time_stamp")));
+                    new Date(resultSet.getLong("time_stamp")),
+                    location);
             ticket.getComments().add(comment);
         }
         return ticket;
+    }
+
+    private static boolean hasLocation(ResultSet resultSet) {
+        try {
+            return resultSet.getString("server") != null
+                    && resultSet.getString("world") != null
+                    && resultSet.getObject("loc_X") != null
+                    && resultSet.getObject("loc_Y") != null
+                    && resultSet.getObject("loc_Z") != null
+                    && resultSet.getObject("yaw") != null
+                    && resultSet.getObject("pitch") != null;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

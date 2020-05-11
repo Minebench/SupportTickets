@@ -118,6 +118,13 @@ public class MySQLConnector {
                             "ticket_id INTEGER, " +
                             "player_id INTEGER, " +
                             "time_stamp BIGINT, " +
+                            "server VARCHAR(30), " +
+                            "world VARCHAR(30), " +
+                            "loc_X DOUBLE, " +
+                            "loc_Y DOUBLE, " +
+                            "loc_Z DOUBLE, " +
+                            "yaw FLOAT, " +
+                            "pitch FLOAT, " +
                             "sender_has_noticed TINYINT(1) DEFAULT 0, " +
                             "comment VARCHAR(255) NOT NULL, " +
                             "FOREIGN KEY (ticket_id) references " + plugin.getConfig().getTicketTable() + " (ticket_id), " +

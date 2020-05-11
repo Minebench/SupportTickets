@@ -29,18 +29,20 @@ public class Comment {
     private final String comment;
     private final boolean senderHasNoticed;
     private final Date date;
+    private final Location location;
 
-    public Comment(int commentId, int ticketId, UUID sender, String comment, boolean senderHasNoticed, Date date) {
+    public Comment(int commentId, int ticketId, UUID sender, String comment, boolean senderHasNoticed, Date date, Location location) {
         this.commentId = commentId;
         this.ticketId = ticketId;
         this.sender = sender;
         this.comment = comment;
         this.senderHasNoticed = senderHasNoticed;
         this.date = date;
+        this.location = location;
     }
 
-    public Comment(int ticketId, UUID sender, String comment, Date date) {
-        this(-1, ticketId, sender, comment, false, date);
+    public Comment(int ticketId, UUID sender, String comment, Date date, Location location) {
+        this(-1, ticketId, sender, comment, false, date, location);
     }
 
     /**
@@ -97,6 +99,15 @@ public class Comment {
         return date;
     }
 
+    /**
+     * returns the location that the comment was saved at
+     *
+     * @return the location that the comment was saved at; might be null for console comments
+     */
+    public Location getLocation() {
+        return location;
+    }
+
     @Override
     public String toString() {
         return "Comment{" +
@@ -108,5 +119,4 @@ public class Comment {
                 ", date=" + date +
                 '}';
     }
-
 }

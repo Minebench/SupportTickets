@@ -1,5 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
@@ -46,21 +47,25 @@ public class ReopenCommand extends SubCommand {
             return;
         }
 
-        plugin.getDatabaseController().reopenTicket(ticket);
+        BukkitMessenger.fetchPosition(sender, (location) -> {
+            plugin.getDatabaseController().reopenTicket(ticket);
 
-        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+            UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
-        Comment comment = new Comment(
-                ticket.getTicketId(),
-                senderId,
-                SupportTickets.replace(plugin.getConfig().getText("info.reopen.reopenComment"), sender.getName()),
-                new Date());
+            Comment comment = new Comment(
+                    ticket.getTicketId(),
+                    senderId,
+                    SupportTickets.replace(plugin.getConfig().getText("info.reopen.reopenComment"), sender.getName()),
+                    new Date(),
+                    location
+            );
 
-        plugin.getDatabaseController().saveComment(comment);
+            plugin.getDatabaseController().saveComment(comment);
 
-        plugin.sendTeamMessage("info.reopen.reopened", String.valueOf(ticket.getTicketId()));
-        plugin.sendMessage(ticket.getSender(), "info.reopen.yourTicketGotReopened",
-                String.valueOf(ticket.getTicketId()));
-        plugin.addShownTicket(sender, ticket.getTicketId());
+            plugin.sendTeamMessage("info.reopen.reopened", String.valueOf(ticket.getTicketId()));
+            plugin.sendMessage(ticket.getSender(), "info.reopen.yourTicketGotReopened",
+                    String.valueOf(ticket.getTicketId()));
+            plugin.addShownTicket(sender, ticket.getTicketId());
+        });
     }
 }

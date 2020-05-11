@@ -303,6 +303,13 @@ public class MongoController implements DatabaseController {
             commentObject.put("sender", comment.getSender().toString());
             commentObject.put("comment", comment.getComment());
             commentObject.put("date", comment.getDate().getTime());
+            ticketObject.put("server", comment.getLocation().getServer());
+            ticketObject.put("world", comment.getLocation().getWorldName());
+            ticketObject.put("loc_X", comment.getLocation().getLocationX());
+            ticketObject.put("loc_Y", comment.getLocation().getLocationY());
+            ticketObject.put("loc_Z", comment.getLocation().getLocationZ());
+            ticketObject.put("yaw", comment.getLocation().getYaw());
+            ticketObject.put("pitch", comment.getLocation().getPitch());
             commentObject.put("sender_has_noticed", false);
             comments.add(commentObject);
             ticketObject.put("comments", comments);
@@ -386,16 +393,39 @@ public class MongoController implements DatabaseController {
         if (comments != null) {
             for (Object o : comments) {
                 BasicDBObject commentObject = (BasicDBObject) o;
+                Location location = null;
+                if (hasLocation(dbObject)) {
+                    location = new Location(
+                            (String) dbObject.get("server"),
+                            (String) dbObject.get("world"),
+                            (double) dbObject.get("loc_X"),
+                            (double) dbObject.get("loc_Y"),
+                            (double) dbObject.get("loc_Z"),
+                            (double) dbObject.get("yaw"),
+                            (double) dbObject.get("pitch")
+                    );
+                }
                 Comment comment = new Comment(
                         commentObject.getInt("comment_id"),
                         ticket.getTicketId(),
                         UUID.fromString(commentObject.getString("sender")),
                         commentObject.getString("comment"),
                         commentObject.getBoolean("sender_has_noticed"),
-                        new Date(commentObject.getLong("date")));
+                        new Date(commentObject.getLong("date")),
+                        location);
                 ticket.getComments().add(comment);
             }
         }
         return ticket;
+    }
+
+    private static boolean hasLocation(DBObject dbObject) {
+        return dbObject.containsField("server")
+                && dbObject.containsField("world")
+                && dbObject.containsField("loc_X")
+                && dbObject.containsField("loc_Y")
+                && dbObject.containsField("loc_Z")
+                && dbObject.containsField("yaw")
+                && dbObject.containsField("pitch");
     }
 }

@@ -1,5 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
@@ -60,23 +61,27 @@ public class CloseCommand extends SubCommand {
             return;
         }
 
-        String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length));
-        Comment comment = new Comment(
-                ticket.getTicketId(),
-                senderId,
-                SupportTickets.replace(plugin.getConfig().getText("info.close.closeComment"),
-                        sender.getName(), reason),
-                new Date());
+        BukkitMessenger.fetchPosition(sender, (location) -> {
+            String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
+            Comment comment = new Comment(
+                    ticket.getTicketId(),
+                    senderId,
+                    SupportTickets.replace(plugin.getConfig().getText("info.close.closeComment"),
+                            sender.getName(), reason),
+                    new Date(),
+                    location
+            );
 
-        plugin.getDatabaseController().saveComment(comment);
+            plugin.getDatabaseController().saveComment(comment);
 
-        plugin.getDatabaseController().closeTicket(ticket, senderId, reason);
-        plugin.sendMessage(ticket.getSender(), "info.close.yourTicketGotClosed",
-                String.valueOf(ticket.getTicketId()) , sender.getName(), reason);
+            plugin.getDatabaseController().closeTicket(ticket, senderId, reason);
+            plugin.sendMessage(ticket.getSender(), "info.close.yourTicketGotClosed",
+                    String.valueOf(ticket.getTicketId()), sender.getName(), reason);
 
-        plugin.sendTeamMessage("info.close.closed",
-                String.valueOf(ticket.getTicketId()), sender.getName(), reason);
+            plugin.sendTeamMessage("info.close.closed",
+                    String.valueOf(ticket.getTicketId()), sender.getName(), reason);
 
-        plugin.addShownTicket(sender, ticket.getTicketId());
+            plugin.addShownTicket(sender, ticket.getTicketId());
+        });
     }
 }

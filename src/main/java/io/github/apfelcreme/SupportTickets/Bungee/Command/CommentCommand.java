@@ -1,13 +1,16 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -59,20 +62,18 @@ public class CommentCommand extends SubCommand {
             return;
         }
 
-        String message = "";
-        for (int i = 2; i < args.length; i++) {
-            message += args[i] + " ";
-        }
-        message = message.trim();
-        Comment comment = new Comment(ticket.getTicketId(), senderId, message, new Date());
+        BukkitMessenger.fetchPosition(sender, (location) -> {
+            String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
+            Comment comment = new Comment(ticket.getTicketId(), senderId, message, new Date(), location);
 
-        plugin.getDatabaseController().saveComment(comment);
+            plugin.getDatabaseController().saveComment(comment);
 
-        plugin.sendTeamMessage("info.comment.commented",
-                sender.getName(), String.valueOf(ticket.getTicketId()), message);
+            plugin.sendTeamMessage("info.comment.commented",
+                    sender.getName(), String.valueOf(ticket.getTicketId()), message);
 
-        plugin.sendMessage(ticket.getSender(),"info.comment.yourTicketGotCommented",
-                String.valueOf(ticket.getTicketId()), sender.getName(), message);
-        plugin.addShownTicket(sender, ticket.getTicketId());
+            plugin.sendMessage(ticket.getSender(), "info.comment.yourTicketGotCommented",
+                    String.valueOf(ticket.getTicketId()), sender.getName(), message);
+            plugin.addShownTicket(sender, ticket.getTicketId());
+        });
     }
 }

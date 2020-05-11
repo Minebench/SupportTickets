@@ -1,12 +1,13 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -53,30 +54,30 @@ public class AssignCommand extends SubCommand {
             return;
         }
 
-        String to = "";
-        if (args.length > 2) {
-            for (int i = 2; i < args.length; i++) {
-                to += args[i] + " ";
+        BukkitMessenger.fetchPosition(sender, (location) -> {
+            String to;
+            if (args.length > 2) {
+                to =  String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
+            } else {
+                to = player.getName();
             }
-            to = to.trim();
-        } else {
-            to = player.getName();
-        }
-        plugin.getDatabaseController().assignTicket(ticket, to);
+            plugin.getDatabaseController().assignTicket(ticket, to);
 
-        Comment comment = new Comment(
-                ticket.getTicketId(),
-                player.getUniqueId(),
-                SupportTickets.replace(plugin.getConfig().getText("info.assign.assignedComment"), to),
-                new Date()
-        );
+            Comment comment = new Comment(
+                    ticket.getTicketId(),
+                    player.getUniqueId(),
+                    SupportTickets.replace(plugin.getConfig().getText("info.assign.assignedComment"), to),
+                    new Date(),
+                    location
+            );
 
-        plugin.getDatabaseController().saveComment(comment);
-        plugin.sendTeamMessage("info.assign.assigned",
-                String.valueOf(ticket.getTicketId()), to);
-        plugin.sendMessage(ticket.getSender(), "info.assign.yourTicketGotAssigned",
-                String.valueOf(ticket.getTicketId()), to);
+            plugin.getDatabaseController().saveComment(comment);
+            plugin.sendTeamMessage("info.assign.assigned",
+                    String.valueOf(ticket.getTicketId()), to);
+            plugin.sendMessage(ticket.getSender(), "info.assign.yourTicketGotAssigned",
+                    String.valueOf(ticket.getTicketId()), to);
 
-        plugin.addShownTicket(sender, ticket.getTicketId());
+            plugin.addShownTicket(sender, ticket.getTicketId());
+        });
     }
 }

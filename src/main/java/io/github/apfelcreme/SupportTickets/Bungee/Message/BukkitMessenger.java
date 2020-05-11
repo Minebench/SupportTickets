@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
+import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 
 /**
@@ -34,21 +36,28 @@ import java.util.logging.Level;
  */
 public class BukkitMessenger {
 
-    private static Map<UUID, BukkitPositionAnswer> queuedPositionRequests = new ConcurrentHashMap<>();
+    private static Map<UUID, Consumer<Location>> queuedPositionRequests = new ConcurrentHashMap<>();
 
     /**
-     * calls bukkit to fetch a players positon. the message is sent with it,
+     * calls bukkit to fetch a sender's positon. the message is sent with it,
      * so it can be read in the BukkitMessageListener later on
-     * @param player  the player
+     * @param sender the sender
      * @param answer what to do when the answer arrives
      */
-    public static void fetchPosition(ProxiedPlayer player, BukkitPositionAnswer answer) {
-        ServerInfo target = player.getServer().getInfo();
-        if (target != null) {
-            queuedPositionRequests.put(player.getUniqueId(), answer);
-            ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF(player.getUniqueId().toString());
-            target.sendData("tickets:requestpos", out.toByteArray());
+    public static void fetchPosition(CommandSender sender, Consumer<Location> answer) {
+        if (sender instanceof ProxiedPlayer) {
+            ProxiedPlayer player = (ProxiedPlayer) sender;
+            ServerInfo target = player.getServer().getInfo();
+            if (target != null) {
+                queuedPositionRequests.put(player.getUniqueId(), answer);
+                ByteArrayDataOutput out = ByteStreams.newDataOutput();
+                out.writeUTF(player.getUniqueId().toString());
+                target.sendData("tickets:requestpos", out.toByteArray());
+            } else {
+                answer.accept(null);
+            }
+        } else {
+            answer.accept(null);
         }
     }
 
@@ -100,7 +109,7 @@ public class BukkitMessenger {
         }
     }
 
-    static BukkitPositionAnswer getQueuedPositionAnswer(UUID uuid) {
+    static Consumer<Location> getQueuedPositionAnswer(UUID uuid) {
         return queuedPositionRequests.get(uuid);
     }
 }

@@ -1,7 +1,7 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
@@ -52,21 +52,25 @@ public class UnassignCommand extends SubCommand {
             return;
         }
 
-        plugin.getDatabaseController().unassignTicket(ticket);
+        BukkitMessenger.fetchPosition(sender, (location) -> {
+            plugin.getDatabaseController().unassignTicket(ticket);
 
-        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+            UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
-        Comment comment = new Comment(
-                ticket.getTicketId(),
-                senderId,
-                plugin.getConfig().getText("info.unassign.unassignedComment"),
-                new Date());
+            Comment comment = new Comment(
+                    ticket.getTicketId(),
+                    senderId,
+                    plugin.getConfig().getText("info.unassign.unassignedComment"),
+                    new Date(),
+                    location
+            );
 
-        plugin.getDatabaseController().saveComment(comment);
+            plugin.getDatabaseController().saveComment(comment);
 
-        plugin.sendTeamMessage("info.unassign.unassigned", String.valueOf(ticket.getTicketId()));
-        plugin.sendMessage(ticket.getSender(), "info.unassign.yourTicketGotUnassigned",
-                String.valueOf(ticket.getTicketId()));
-        plugin.addShownTicket(sender, ticket.getTicketId());
+            plugin.sendTeamMessage("info.unassign.unassigned", String.valueOf(ticket.getTicketId()));
+            plugin.sendMessage(ticket.getSender(), "info.unassign.yourTicketGotUnassigned",
+                    String.valueOf(ticket.getTicketId()));
+            plugin.addShownTicket(sender, ticket.getTicketId());
+        });
     }
 }
