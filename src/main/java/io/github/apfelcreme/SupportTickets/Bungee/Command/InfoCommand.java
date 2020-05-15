@@ -1,13 +1,10 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -50,7 +47,7 @@ public class InfoCommand extends SubCommand {
         plugin.sendMessage(sender, "info.info.text",
                 "ticket", String.valueOf(ticket.getTicketId()),
                 "sender", plugin.getNameByUUID(ticket.getSender()),
-                "date", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate()),
+                "date", SupportTickets.formatDate(ticket.getDate()),
                 "comments", String.valueOf(ticket.getComments().size()),
                 "server", ticket.getLocation().getServer(),
                 "x", new DecimalFormat("0").format(ticket.getLocation().getLocationX()),

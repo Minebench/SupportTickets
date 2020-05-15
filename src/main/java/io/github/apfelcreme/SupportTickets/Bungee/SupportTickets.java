@@ -24,6 +24,10 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -461,6 +465,26 @@ public class SupportTickets extends Plugin {
             getInstance().getLogger().log(Level.SEVERE, "Error while getting server '" + server + "'!", e);
         }
         return null;
+    }
+
+    /**
+     * Format a date to a human readable string. Will try to be as short as possible by
+     * removing the date and only showing time if on the same day, month or year
+     *
+     * @param date
+     * @return
+     */
+    public static String formatDate(Date date) {
+        Calendar now = Calendar.getInstance();
+        Calendar dateCal = Calendar.getInstance();
+        dateCal.setTime(date);
+        String format = "HH:mm";
+        if (now.get(Calendar.YEAR) != dateCal.get(Calendar.YEAR)) {
+            format = "dd.MM.yy " + format;
+        } else if (now.get(Calendar.DAY_OF_YEAR) != dateCal.get(Calendar.DAY_OF_YEAR)) {
+            format = "dd.MM " + format;
+        }
+        return new SimpleDateFormat(format).format(date);
     }
 
     public SupportTicketsConfig getConfig() {

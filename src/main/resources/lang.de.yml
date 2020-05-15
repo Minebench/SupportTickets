@@ -55,7 +55,7 @@ texts:
         &9 Server: &f{server}&9, &f{x}&9/&f{y}&9/&f{z}&9, Welt: &9{world}'
       actions: ' [&5tp](/ti warp {ticket}) [&7assign](/ti assign {ticket}) [&7comment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'
     list:
-      element: ' [&6#{id}](/ti view {id}) {online}&f{sender}&7 -> &f{assigned}: &7{message} &7({comments})'
+      element: ' [&6#{id}](hover=Klicke zum Anzeigen\n&3{date} command=/ti view {id}) {online}&f{sender}&7 -> &f{assigned}: &7{message} &7({comments})'
       online: '&2+'
       offline: '&c-'
       footer: '&9 {previous}{next}'
@@ -72,7 +72,7 @@ texts:
       footer: '&9 Für andere Seiten: [&f/ti opened <Spieler> <#>](suggest_command=/ti opened )'
       header: '&9 Von &f{player}&9 geöffnete Tickets: (&f{page}&9/&f{maxpages}&9)&f - &9insgesamt: &f{amount}'
     radius:
-      element: '&9{status} &6 #{ticket} {online}&f{sender}&7 -> &f{assigned}: &7{message} &7({comments})'
+      element: '&9{status} &6[#{ticket}](hover=Klicke zum Anzeigen\n&3{date} command=/ti view {id}) {online}&f{sender}&7 -> &f{assigned}: &7{message} &7({comments})'
       online: '&2+'
       offline: '&c-'
       header: '&9 Tickets im Umkreis von &6{radius}&9 Blöcken: (&f{tickets}&9)'

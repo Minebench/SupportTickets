@@ -1,13 +1,11 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 /**
@@ -56,11 +54,11 @@ public class ViewCommand extends SubCommand {
 
         plugin.sendMessage(sender, "info.view.header",
                 "ticket", String.valueOf(ticket.getTicketId()),
-                "date", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "date", SupportTickets.formatDate(ticket.getDate()),
                 "sender", plugin.getNameByUUID(ticket.getSender()));
 
         plugin.sendMessage(sender, "info.view.comment",
-                "date", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "date", SupportTickets.formatDate(ticket.getDate()),
                 "new", "",
                 "sender", plugin.getNameByUUID(ticket.getSender()),
                 "message", ticket.getMessage());
@@ -68,7 +66,7 @@ public class ViewCommand extends SubCommand {
         int i = 1;
         for (Comment comment : ticket.getComments()) {
             plugin.sendMessage(sender, "info.view.comment",
-                    "date", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()),
+                    "date", SupportTickets.formatDate(comment.getDate()),
                     "new", comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
                     "sender", plugin.getNameByUUID(comment.getSender()),
                     "message", comment.getComment(),

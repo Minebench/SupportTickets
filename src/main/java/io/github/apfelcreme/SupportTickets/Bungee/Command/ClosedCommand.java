@@ -79,6 +79,7 @@ public class ClosedCommand extends SubCommand {
             Ticket ticket = tickets.get(i);
             plugin.sendMessage(sender, "info.list.element",
                     "id", String.valueOf(ticket.getTicketId()),
+                    "date", SupportTickets.formatDate(ticket.getDate()),
                     "online", plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
                             : plugin.getConfig().getText("info.list.offline"),

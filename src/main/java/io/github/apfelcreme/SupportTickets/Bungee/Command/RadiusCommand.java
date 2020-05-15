@@ -2,13 +2,10 @@ package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.Date;
 import java.util.List;
 
 /*
@@ -55,6 +52,7 @@ public class RadiusCommand extends SubCommand {
             for (Ticket ticket : tickets) {
                 plugin.sendMessage(sender, "info.radius.element",
                         "ticket", String.valueOf(ticket.getTicketId()),
+                        "date", SupportTickets.formatDate(ticket.getDate()),
                         "online", plugin.isPlayerOnline(ticket.getSender())
                                 ? plugin.getConfig().getText("info.radius.online")
                                 : plugin.getConfig().getText("info.radius.offline"),
