@@ -195,7 +195,7 @@ public class SupportTickets extends Plugin {
      */
     public void sendMessage(CommandSender receiver, String key, String... repl) {
         if (receiver != null && key != null) {
-            receiver.sendMessage(new MineDown("{prefix}" + getConfig().getText(key))
+            receiver.sendMessage(new MineDown(getConfig().getText(key))
                     .placeholderPrefix("{")
                     .placeholderSuffix("}")
                     .replace("prefix", getPrefix())

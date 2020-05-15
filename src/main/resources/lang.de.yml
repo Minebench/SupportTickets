@@ -1,34 +1,34 @@
 texts:
   prefix: '&7[&9TI&7]'
   error:
-    noLocation: '&c Dises Ticket hat keinen Ort!'
-    noPermission: '&c Du hast keine ausreichende Berechtigung!'
-    notYourTicket: '&c Dieses Ticket wurde nicht von dir geöffnet!'
-    playerCommand: '&c Dieser Befehl kann nur von einem Spieler ausgeführt werden!'
-    ticketAlreadyClosed: '&c Das Ticket wurde bereits geschlossen'
-    unknownCommand: '&c Die Funktion {input} existiert nicht!'
-    unknownPlayer: '&c Der angegebene Spieler existiert nicht!'
-    unknownTicket: '&c Es existiert kein Ticket mit der angegebenen Nummer!'
-    unknownComment: '&c Es existiert kein Kommentar mit der angegebenen Nummer!'
-    wrongUsage: '&c Falsche Eingabe! Probiere [{usage}](suggest_command=/{usage})!'
-    wrongEnumArgument: '&c {input} ist kein valider Wert. Verfügbar: {available}'
+    noLocation: '{prefix}&c Dises Ticket hat keinen Ort!'
+    noPermission: '{prefix}&c Du hast keine ausreichende Berechtigung!'
+    notYourTicket: '{prefix}&c Dieses Ticket wurde nicht von dir geöffnet!'
+    playerCommand: '{prefix}&c Dieser Befehl kann nur von einem Spieler ausgeführt werden!'
+    ticketAlreadyClosed: '{prefix}&c Das Ticket wurde bereits geschlossen'
+    unknownCommand: '{prefix}&c Die Funktion {input} existiert nicht!'
+    unknownPlayer: '{prefix}&c Der angegebene Spieler existiert nicht!'
+    unknownTicket: '{prefix}&c Es existiert kein Ticket mit der angegebenen Nummer!'
+    unknownComment: '{prefix}&c Es existiert kein Kommentar mit der angegebenen Nummer!'
+    wrongUsage: '{prefix}&c Falsche Eingabe! Probiere [{usage}](suggest_command=/{usage})!'
+    wrongEnumArgument: '{prefix}&c {input} ist kein valider Wert. Verfügbar: {available}'
   info:
     assign:
-      assigned: '&9 Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{1}&9 zugewiesen'
+      assigned: '{prefix}&9 Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{1}&9 zugewiesen'
       assignedComment: '&7Das Ticket wurde &f{assigned}&7 zugewiesen'
-      yourTicketGotAssigned: '&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{assigned}&9 zugewiesen'
+      yourTicketGotAssigned: '{prefix}&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{assigned}&9 zugewiesen'
     close:
-      closed: '&9 Ticket [&6#{ticket}](/ti view {ticket})&9 geschlossen von &f{sender}&9: &7{reason}'
+      closed: '{prefix}&9 Ticket [&6#{ticket}](/ti view {ticket})&9 geschlossen von &f{sender}&9: &7{reason}'
       closeComment: '&7Ticket geschlossen: {reason}'
-      yourTicketGotClosed: '&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 geschlossen: &7{reason}'
+      yourTicketGotClosed: '{prefix}&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 geschlossen: &7{reason}'
     closed:
-      footer: '&9 Für andere Seiten: &f/pe closed <Spieler> <#>'
-      header: '&9 Von &f{player}&9 geschlossene Tickets: (&f{page}&9/&f{maxpages}&9)&f - &9insgesamt: &7{amount}'
+      footer: '&9Für andere Seiten: &f/pe closed <Spieler> <#>'
+      header: '{prefix}&9 Von &f{player}&9 geschlossene Tickets: (&f{page}&9/&f{maxpages}&9)&f - &9insgesamt: &7{amount}'
     comment:
-      commented: '&f {sender}&9 hat Ticket [&6#{ticket}](/ti view {ticket})&9 kommentiert: &7{message}'
-      yourTicketGotCommented: '&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 kommentiert: &7{message}'
+      commented: '{prefix}&f {sender}&9 hat Ticket [&6#{ticket}](/ti view {ticket})&9 kommentiert: &7{message}'
+      yourTicketGotCommented: '{prefix}&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 kommentiert: &7{message}'
     help:
-      header: '&6 Folgende Funktionen stehen dir zur Verfügung'
+      header: '{prefix}&9 Folgende Funktionen stehen dir zur Verfügung'
       commands:
         mod:
           assign: '&8 - [&6assign <#> <Ziel>](suggest_command=/ti assign ):&e Weise das &6Ticket&e einem &6Ziel&e zu'
@@ -49,7 +49,7 @@ texts:
           view: '&8 - [&6view <#>](suggest_command=/ti view ):&e Schau dir ein &6Tickets&e genau an'
     info:
       text: |-
-        &9 Ticket &6#{ticket}&9, geöffnet von &f{sender}&6'
+        {prefix}&9 Ticket &6#{ticket}&9, geöffnet von &f{sender}&6'
         &9 Geöffnet: &f{date}'
         &9 Kommentare: &f{comments} [&7&o/ti view {ticket}](/ti view {ticket}'
         &9 Server: &f{server}&9, &f{x}&9/&f{y}&9/&f{z}&9, Welt: &9{world}'
@@ -61,42 +61,42 @@ texts:
       footer: '&9 {previous}{next}'
       previous: '&f[Vorherige Seite](/ti list {status} {previouspage})'
       next: ' &f[Nächste Seite](/ti list {status} {nextpage})'
-      header: '&9 {status} Tickets: (&f{page}&9/&f{maxpages}&9)'
+      header: '{prefix}&9 {status} Tickets: (&f{page}&9/&f{maxpages}&9)'
     login:
-      newCommentsPlural: '&9 Während du abwesend warst, wurden einige deiner Tickets kommentiert: &f{tickets}&9. Schau sie dir mit [&f/ti view <#>](suggest_command=/ti view )&9 an!'
-      newCommentsSingular: '&9 Während du abwesend warst, wurde dein Ticket &6#{ticket}&9 kommentiert. Schau es dir mit [&f/ti view {ticket}](/ti view {ticket})&9 an!'
+      newCommentsPlural: '{prefix}&9 Während du abwesend warst, wurden einige deiner Tickets kommentiert: &f{tickets}&9. Schau sie dir mit [&f/ti view <#>](suggest_command=/ti view )&9 an!'
+      newCommentsSingular: '{prefix}&9 Während du abwesend warst, wurde dein Ticket &6#{ticket}&9 kommentiert. Schau es dir mit [&f/ti view {ticket}](/ti view {ticket})&9 an!'
     new:
-      created: '&b Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! &7Mit [&f/ti show](/ti show)&b kannst du deine Tickets einsehen.'
-      newTicket: '&9 Neues Ticket &6#{ticket} &9von &f{sender}&7: &7{message}'
+      created: '{prefix}&b Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! &7Mit [&f/ti show](/ti show)&b kannst du deine Tickets einsehen.'
+      newTicket: '{prefix}&9 Neues Ticket &6#{ticket} &9von &f{sender}&7: &7{message}'
     opened:
-      footer: '&9 Für andere Seiten: [&f/ti opened <Spieler> <#>](suggest_command=/ti opened )'
-      header: '&9 Von &f{player}&9 geöffnete Tickets: (&f{page}&9/&f{maxpages}&9)&f - &9insgesamt: &f{amount}'
+      footer: '&9Für andere Seiten: [&f/ti opened <Spieler> <#>](suggest_command=/ti opened )'
+      header: '{prefix}&9 Von &f{player}&9 geöffnete Tickets: (&f{page}&9/&f{maxpages}&9)&f - &9insgesamt: &f{amount}'
     radius:
       element: '&9{status} &6[#{ticket}](hover=Klicke zum Anzeigen\n&3{date} command=/ti view {id}) {online}&f{sender}&7 -> &f{assigned}: &7{message} &7({comments})'
       online: '&2+'
       offline: '&c-'
-      header: '&9 Tickets im Umkreis von &6{radius}&9 Blöcken: (&f{tickets}&9)'
+      header: '{prefix}&9 Tickets im Umkreis von &6{radius}&9 Blöcken: (&f{tickets}&9)'
     reload:
-      reloaded: '&6 Die Config wurde neu geladen'
+      reloaded: '{prefix}&6 Die Config wurde neu geladen'
     reminderTask:
-      infoPlural: '&b Es sind derzeit {tickets} Tickets geöffnet'
-      infoSingular: '&b Es ist derzeit ein Ticket geöffnet'
+      infoPlural: '{prefix}&b Es sind derzeit {tickets} Tickets geöffnet'
+      infoSingular: '{prefix}&b Es ist derzeit ein Ticket geöffnet'
     reopen:
-      reopened: '&9 Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 wieder geöffnet'
+      reopened: '{prefix}&9 Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 wieder geöffnet'
       reopenComment: '&7Ticket wieder geöffnet'
-      yourTicketGotReopened: '&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von %f{sender} wieder geöffnet'
+      yourTicketGotReopened: '{prefix}&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von %f{sender} wieder geöffnet'
     top:
-      header: '&9 Diese &f{amount}&9 Teamler sind die Aktivsten: '
+      header: '{prefix}&9 Diese &f{amount}&9 Teamler sind die Aktivsten: '
       element: '&9 {place}. &f{name}: &7{tickets} geschlossene Tickets'
     unassign:
-      unassigned: '&9 Die Zuweisung von Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender} &9  aufgehoben'
+      unassigned: '{prefix}&9 Die Zuweisung von Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender} &9  aufgehoben'
       unassignedComment: '&7Die Zuweisung dieses Tickets wurde aufgehoben'
-      yourTicketGotUnassigned: '&9 Die Zuweisung deines Tickets [&6#{ticket}](/ti view {ticket})&9 wurde aufgehoben'
+      yourTicketGotUnassigned: '{prefix}&9 Die Zuweisung deines Tickets [&6#{ticket}](/ti view {ticket})&9 wurde aufgehoben'
     view:
       comment: ' [&7#{number}](/ti warp {ticket} {number}) &3{date} &f{new}{sender}: &7{message}'
-      header: '&9 Ticket &6#{ticket}&9 von &6{sender}&9:'
+      header: '{prefix}&9 Ticket &6#{ticket}&9 von &6{sender}&9:'
       new: ' &2(Neu)'
       actions: ' [&5tp](/ti warp {ticket}) [&7assign](/ti assign {ticket}) [&7comment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'
     warp:
-      warped: ' &9Teleportiere zu Ticket [&6#{ticket}](/ti view {ticket}) von &6{sender}&9:'
+      warped: '{prefix} &9Teleportiere zu Ticket [&6#{ticket}](/ti view {ticket}) von &6{sender}&9:'
       
