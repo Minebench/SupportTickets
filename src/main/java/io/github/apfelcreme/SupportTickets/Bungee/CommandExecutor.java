@@ -51,7 +51,7 @@ public class CommandExecutor extends Command implements Listener {
         }
 
         if (subCommand == null) {
-            plugin.sendMessage(commandSender, "error.unknownCommand", strings[0]);
+            plugin.sendMessage(commandSender, "error.unknownCommand", "input", strings[0]);
             return;
         }
 
@@ -61,7 +61,7 @@ public class CommandExecutor extends Command implements Listener {
         }
 
         if (!subCommand.validateInput(strings)) {
-            plugin.sendMessage(commandSender, "error.wrongUsage",  "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage());
+            plugin.sendMessage(commandSender, "error.wrongUsage",  "usage", "/" + getName() + " " + subCommand.getName() + " " + subCommand.getUsage());
             return;
         }
 

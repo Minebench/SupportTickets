@@ -54,27 +54,33 @@ public class ViewCommand extends SubCommand {
             return;
         }
 
-        plugin.sendMessage(sender, "info.view.ticket",
-                String.valueOf(ticket.getTicketId()),
-                new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
-                plugin.getNameByUUID(ticket.getSender()));
+        plugin.sendMessage(sender, "info.view.header",
+                "ticket", String.valueOf(ticket.getTicketId()),
+                "date", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "sender", plugin.getNameByUUID(ticket.getSender()));
 
         plugin.sendMessage(sender, "info.view.comment",
-                new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
-                "",
-                plugin.getNameByUUID(ticket.getSender()),
-                ticket.getMessage());
+                "date", new SimpleDateFormat("dd.MM.yy HH:mm").format(ticket.getDate()),
+                "new", "",
+                "sender", plugin.getNameByUUID(ticket.getSender()),
+                "message", ticket.getMessage());
 
+        int i = 1;
         for (Comment comment : ticket.getComments()) {
             plugin.sendMessage(sender, "info.view.comment",
-                    new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()),
-                    comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
-                    plugin.getNameByUUID(comment.getSender()),
-                    comment.getComment());
+                    "date", new SimpleDateFormat("dd.MM.yy HH:mm").format(comment.getDate()),
+                    "new", comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
+                    "sender", plugin.getNameByUUID(comment.getSender()),
+                    "message", comment.getComment(),
+                    "number", String.valueOf(i));
 
             if (!comment.getSenderHasNoticed() && senderId.equals(ticket.getSender())) {
                 plugin.getDatabaseController().setCommentRead(comment);
             }
+            i++;
+        }
+        if (sender.hasPermission("SupportTickets.mod")) {
+            plugin.sendMessage(sender, "info.view.actions","ticket", String.valueOf(ticket.getTicketId()));
         }
         plugin.addShownTicket(sender, ticket.getTicketId());
     }

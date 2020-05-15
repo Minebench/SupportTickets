@@ -67,7 +67,7 @@ public class CloseCommand extends SubCommand {
                     ticket.getTicketId(),
                     senderId,
                     SupportTickets.replace(plugin.getConfig().getText("info.close.closeComment"),
-                            sender.getName(), reason),
+                            "sender", sender.getName(), "reason", reason),
                     new Date(),
                     location
             );
@@ -76,10 +76,10 @@ public class CloseCommand extends SubCommand {
 
             plugin.getDatabaseController().closeTicket(ticket, senderId, reason);
             plugin.sendMessage(ticket.getSender(), "info.close.yourTicketGotClosed",
-                    String.valueOf(ticket.getTicketId()), sender.getName(), reason);
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName(), "reason", reason);
 
             plugin.sendTeamMessage("info.close.closed",
-                    String.valueOf(ticket.getTicketId()), sender.getName(), reason);
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName(), "reason", reason);
 
             plugin.addShownTicket(sender, ticket.getTicketId());
         });

@@ -55,16 +55,17 @@ public class ReopenCommand extends SubCommand {
             Comment comment = new Comment(
                     ticket.getTicketId(),
                     senderId,
-                    SupportTickets.replace(plugin.getConfig().getText("info.reopen.reopenComment"), sender.getName()),
+                    SupportTickets.replace(plugin.getConfig().getText("info.reopen.reopenComment"), "sender", sender.getName()),
                     new Date(),
                     location
             );
 
             plugin.getDatabaseController().saveComment(comment);
 
-            plugin.sendTeamMessage("info.reopen.reopened", String.valueOf(ticket.getTicketId()));
+            plugin.sendTeamMessage("info.reopen.reopened",
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName());
             plugin.sendMessage(ticket.getSender(), "info.reopen.yourTicketGotReopened",
-                    String.valueOf(ticket.getTicketId()));
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName());
             plugin.addShownTicket(sender, ticket.getTicketId());
         });
     }

@@ -61,7 +61,8 @@ public class ListCommand extends SubCommand {
                 messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
             } catch (IllegalArgumentException e) {
                 plugin.sendMessage(sender, "error.wrongEnumArgument",
-                        args[1], Arrays.stream(Ticket.TicketStatus.values()).map(Enum::toString).collect(Collectors.joining(", "))
+                        "input", args[1],
+                        "available", Arrays.stream(Ticket.TicketStatus.values()).map(Enum::toString).collect(Collectors.joining(", "))
                 );
                 return;
             }
@@ -89,30 +90,32 @@ public class ListCommand extends SubCommand {
         }
 
         plugin.sendMessage(sender, "info.list.header",
-                String.valueOf(page + 1), String.valueOf(maxPages), messageStatus.toString());
+                "page", String.valueOf(page + 1),
+                "maxpages", String.valueOf(maxPages),
+                "status", messageStatus.toString());
 
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
             plugin.sendMessage(sender, "info.list.element",
-                    String.valueOf(ticket.getTicketId()),
-                    plugin.isPlayerOnline(ticket.getSender())
+                    "id", String.valueOf(ticket.getTicketId()),
+                    "online", plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
                             : plugin.getConfig().getText("info.list.offline"),
-                    plugin.getNameByUUID(ticket.getSender()),
-                    ticket.getAssigned() != null ? ticket.getAssigned() : "*",
-                    ticket.getMessage(),
-                    Integer.toString(ticket.getComments().size()));
+                    "sender", plugin.getNameByUUID(ticket.getSender()),
+                    "assigned", ticket.getAssigned() != null ? ticket.getAssigned() : "*",
+                    "message", ticket.getMessage(),
+                    "comments", Integer.toString(ticket.getComments().size()));
             plugin.addShownTicket(sender, ticket.getTicketId());
         }
 
         if (tickets.size() > pageSize) {
-            String usage = getUsage().replace("[<#page>]]", "<#>");
-            if (messageStatus == Ticket.TicketStatus.OPEN) {
-                usage = usage.replace("[[<status>] ", "");
-            } else {
-                usage = usage.replace("[[<status>]", messageStatus.toString().toLowerCase());
-            }
-            plugin.sendMessage(sender, "info.list.footer", "/ticket " + getName() + " " + usage);
+            plugin.sendMessage(sender, "info.list.footer",
+                    "previous", page > 0 ? plugin.getConfig().getText("info.list.previous") : "",
+                    "next", (page + 1) * pageSize < tickets.size() ? plugin.getConfig().getText("info.list.next") : "",
+                    "status", messageStatus.toString(),
+                    "previouspage", String.valueOf(page), // page is already human-page -1
+                    "nextpage", String.valueOf(page + 2)
+            );
         }
     }
 

@@ -50,9 +50,9 @@ public class NewCommand extends SubCommand {
         BukkitMessenger.fetchPosition(player, (location) -> {
             Ticket ticket = new Ticket(player.getUniqueId(), mb.toString().trim(), new Date(), location, Ticket.TicketStatus.OPEN);
             int ticketId = plugin.getDatabaseController().saveTicket(ticket);
-            plugin.sendMessage(player, "info.new.created");
+            plugin.sendMessage(player, "info.new.created", "ticket", String.valueOf(ticketId), "message", ticket.getMessage());
             plugin.sendTeamMessage("info.new.newTicket",
-                    String.valueOf(ticketId), player.getName(), ticket.getMessage());
+                    "ticket", String.valueOf(ticketId), "sender", player.getName(), "message", ticket.getMessage());
             plugin.getProxy().getPlayers().stream()
                     .filter(p -> p.hasPermission("SupportTickets.mod"))
                     .forEach(p -> SupportTickets.getInstance().addShownTicket(p, ticket.getTicketId()));

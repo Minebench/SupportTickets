@@ -51,7 +51,7 @@ public class ReminderTask implements Runnable {
             if (anz == 1) {
                 plugin.sendTeamMessage("info.reminderTask.infoSingular");
             } else {
-                plugin.sendTeamMessage("info.reminderTask.infoPlural", anz.toString());
+                plugin.sendTeamMessage("info.reminderTask.infoPlural", "tickets", anz.toString());
             }
         }
     }

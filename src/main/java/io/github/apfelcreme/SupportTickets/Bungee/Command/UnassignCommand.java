@@ -67,9 +67,10 @@ public class UnassignCommand extends SubCommand {
 
             plugin.getDatabaseController().saveComment(comment);
 
-            plugin.sendTeamMessage("info.unassign.unassigned", String.valueOf(ticket.getTicketId()));
+            plugin.sendTeamMessage("info.unassign.unassigned",
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName());
             plugin.sendMessage(ticket.getSender(), "info.unassign.yourTicketGotUnassigned",
-                    String.valueOf(ticket.getTicketId()));
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName());
             plugin.addShownTicket(sender, ticket.getTicketId());
         });
     }

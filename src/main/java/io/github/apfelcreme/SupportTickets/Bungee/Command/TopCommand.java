@@ -52,16 +52,16 @@ public class TopCommand extends SubCommand {
         ValueComparator comparator = new ValueComparator(playerCloses);
         TreeMap<UUID, Integer> sortedMap = new TreeMap<>(comparator);
         sortedMap.putAll(playerCloses);
-        plugin.sendMessage(sender,"info.top.header", String.valueOf(plugin.getConfig().getTopListSize()));
+        plugin.sendMessage(sender,"info.top.header", "amount", String.valueOf(plugin.getConfig().getTopListSize()));
 
         int i = 1;
         Iterator<Map.Entry<UUID, Integer>> sortedIt = sortedMap.entrySet().iterator();
         while (sortedIt.hasNext() && i <= plugin.getConfig().getTopListSize()){
             Map.Entry<UUID, Integer> entry = sortedIt.next();
             plugin.sendMessage(sender,"info.top.element",
-                    String.valueOf(i),
-                    plugin.getNameByUUID(entry.getKey()),
-                    String.valueOf(entry.getValue()));
+                    "place", String.valueOf(i),
+                    "name", plugin.getNameByUUID(entry.getKey()),
+                    "tickets", String.valueOf(entry.getValue()));
             i++;
         }
     }

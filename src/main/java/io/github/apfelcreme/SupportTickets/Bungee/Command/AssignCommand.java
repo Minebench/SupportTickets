@@ -66,7 +66,7 @@ public class AssignCommand extends SubCommand {
             Comment comment = new Comment(
                     ticket.getTicketId(),
                     player.getUniqueId(),
-                    SupportTickets.replace(plugin.getConfig().getText("info.assign.assignedComment"), to),
+                    SupportTickets.replace(plugin.getConfig().getText("info.assign.assignedComment"), "assigned", to),
                     new Date(),
                     location
             );
@@ -75,7 +75,7 @@ public class AssignCommand extends SubCommand {
             plugin.sendTeamMessage("info.assign.assigned",
                     String.valueOf(ticket.getTicketId()), to);
             plugin.sendMessage(ticket.getSender(), "info.assign.yourTicketGotAssigned",
-                    String.valueOf(ticket.getTicketId()), to);
+                    "ticket", String.valueOf(ticket.getTicketId()), "assigned", to);
 
             plugin.addShownTicket(sender, ticket.getTicketId());
         });

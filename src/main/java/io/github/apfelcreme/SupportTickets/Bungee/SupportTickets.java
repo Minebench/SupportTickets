@@ -1,9 +1,9 @@
 package io.github.apfelcreme.SupportTickets.Bungee;
 
+import de.themoep.minedown.MineDown;
+import de.themoep.minedown.Replacer;
 import de.themoep.serverclusters.bungee.ServerClusters;
 import io.github.apfelcreme.SupportTickets.Bungee.Command.*;
-import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
-import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MySQLConnector;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.DatabaseController;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.MongoController;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.SQLController;
@@ -12,7 +12,6 @@ import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessageListener;
 import io.github.apfelcreme.SupportTickets.Bungee.Task.ReminderTask;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
-import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -28,6 +27,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -191,7 +191,12 @@ public class SupportTickets extends Plugin {
      */
     public void sendMessage(CommandSender receiver, String key, String... repl) {
         if (receiver != null && key != null) {
-            receiver.sendMessage(TextComponent.fromLegacyText(getPrefix() + replace(getConfig().getText(key), repl)));
+            receiver.sendMessage(new MineDown("{prefix}" + getConfig().getText(key))
+                    .placeholderPrefix("{")
+                    .placeholderSuffix("}")
+                    .replace("prefix", getPrefix())
+                    .replace(getReplacementsWithIndexes(repl))
+                    .toComponent());
         }
     }
 
@@ -412,10 +417,26 @@ public class SupportTickets extends Plugin {
      * @return  the replaced string
      */
     public static String replace(String text, String... repl) {
-        for (int i = 0; i < repl.length; i++) {
-            text = text.replace("{" + i + "}", repl[i]);
+        return new Replacer()
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
+                .replace(getReplacementsWithIndexes(repl))
+                .replaceIn(text);
+    }
+
+    /**
+     * creates a map from a replacement array which includes legacy index replacements
+     *
+     * @param repl the replacements
+     * @return the replacement map
+     */
+    private static Map<String, String> getReplacementsWithIndexes(String... repl) {
+        Map<String, String> replacements = new LinkedHashMap<>();
+        for (int i = 0; i + 1 < repl.length; i+=2) {
+            replacements.put(repl[i], repl[i+1]);
+            replacements.put(String.valueOf(i / 2), repl[i+1]);
         }
-        return text;
+        return replacements;
     }
 
     /**

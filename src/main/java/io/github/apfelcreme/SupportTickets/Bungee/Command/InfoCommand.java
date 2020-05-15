@@ -47,19 +47,19 @@ public class InfoCommand extends SubCommand {
             return;
         }
 
-        plugin.sendMessage(sender, "info.info.info",
-                String.valueOf(ticket.getTicketId()), plugin.getNameByUUID(ticket.getSender()));
-        plugin.sendMessage(sender, "info.info.date",
-                new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate()));
-        plugin.sendMessage(sender, "info.info.comments",
-                String.valueOf(ticket.getComments().size()), String.valueOf(ticket.getTicketId()));
-        plugin.sendMessage(sender, "info.info.location",
-                ticket.getLocation().getServer(),
-                new DecimalFormat("0").format(ticket.getLocation().getLocationX()),
-                new DecimalFormat("0").format(ticket.getLocation().getLocationY()),
-                new DecimalFormat("0").format(ticket.getLocation().getLocationZ()),
-                ticket.getLocation().getWorldName());
-
+        plugin.sendMessage(sender, "info.info.text",
+                "ticket", String.valueOf(ticket.getTicketId()),
+                "sender", plugin.getNameByUUID(ticket.getSender()),
+                "date", new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ticket.getDate()),
+                "comments", String.valueOf(ticket.getComments().size()),
+                "server", ticket.getLocation().getServer(),
+                "x", new DecimalFormat("0").format(ticket.getLocation().getLocationX()),
+                "y", new DecimalFormat("0").format(ticket.getLocation().getLocationY()),
+                "z", new DecimalFormat("0").format(ticket.getLocation().getLocationZ()),
+                "world", ticket.getLocation().getWorldName());
+        if (sender.hasPermission("SupportTickets.mod")) {
+            plugin.sendMessage(sender, "info.info.actions","ticket", String.valueOf(ticket.getTicketId()));
+        }
         plugin.addShownTicket(sender, ticket.getTicketId());
     }
 }

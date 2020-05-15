@@ -55,10 +55,10 @@ public class PlayerLoginListener implements Listener {
             if (ticketIds.size() > 0) {
                 if (ticketIds.size() == 1) {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsSingular",
-                            ticketIds.iterator().next().toString());
+                            "ticket", ticketIds.iterator().next().toString());
                 } else {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsPlural",
-                            SupportTickets.join(ticketIds.toArray(), ", ", " & "));
+                            "tickets", SupportTickets.join(ticketIds.toArray(), ", ", " & "));
                 }
             }
         }, 2, TimeUnit.SECONDS);

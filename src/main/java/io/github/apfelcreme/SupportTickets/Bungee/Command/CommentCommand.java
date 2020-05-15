@@ -69,10 +69,10 @@ public class CommentCommand extends SubCommand {
             plugin.getDatabaseController().saveComment(comment);
 
             plugin.sendTeamMessage("info.comment.commented",
-                    sender.getName(), String.valueOf(ticket.getTicketId()), message);
+                    "sender", sender.getName(), "ticket", String.valueOf(ticket.getTicketId()), "message", message);
 
             plugin.sendMessage(ticket.getSender(), "info.comment.yourTicketGotCommented",
-                    String.valueOf(ticket.getTicketId()), sender.getName(), message);
+                    "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName(), "message", message);
             plugin.addShownTicket(sender, ticket.getTicketId());
         });
     }

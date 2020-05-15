@@ -70,19 +70,22 @@ public class ClosedCommand extends SubCommand {
         }
 
         plugin.sendMessage(sender, "info.closed.header",
-                args[1], String.valueOf(page + 1), String.valueOf(maxPages), String.valueOf(tickets.size()));
+                "player", args[1],
+                "page", String.valueOf(page + 1),
+                "maxpages", String.valueOf(maxPages),
+                "amount", String.valueOf(tickets.size()));
 
         for (int i = page * pageSize; i < (page + 1 ) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
             plugin.sendMessage(sender, "info.list.element",
-                    String.valueOf(ticket.getTicketId()),
-                    plugin.isPlayerOnline(ticket.getSender())
+                    "id", String.valueOf(ticket.getTicketId()),
+                    "online", plugin.isPlayerOnline(ticket.getSender())
                             ? plugin.getConfig().getText("info.list.online")
                             : plugin.getConfig().getText("info.list.offline"),
-                    plugin.getNameByUUID(ticket.getSender()),
-                    ticket.getAssigned() != null ? ticket.getAssigned() : "*",
-                    ticket.getMessage(),
-                    Integer.toString(ticket.getComments().size()));
+                    "sender", plugin.getNameByUUID(ticket.getSender()),
+                    "assigned", ticket.getAssigned() != null ? ticket.getAssigned() : "*",
+                    "message", ticket.getMessage(),
+                    "comments", Integer.toString(ticket.getComments().size()));
             plugin.addShownTicket(sender, ticket.getTicketId());
         }
         plugin.sendMessage(sender, "info.closed.footer");

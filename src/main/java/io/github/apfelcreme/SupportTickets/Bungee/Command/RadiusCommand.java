@@ -49,20 +49,20 @@ public class RadiusCommand extends SubCommand {
             List<Ticket> tickets = plugin.getDatabaseController().getTicketsInRadius(location, radius);
 
             plugin.sendMessage(sender, "info.radius.header",
-                    String.valueOf(radius),
-                    String.valueOf(tickets.size()));
+                    "radius", String.valueOf(radius),
+                    "tickets", String.valueOf(tickets.size()));
 
             for (Ticket ticket : tickets) {
                 plugin.sendMessage(sender, "info.radius.element",
-                        String.valueOf(ticket.getTicketId()),
-                        plugin.isPlayerOnline(ticket.getSender())
+                        "ticket", String.valueOf(ticket.getTicketId()),
+                        "online", plugin.isPlayerOnline(ticket.getSender())
                                 ? plugin.getConfig().getText("info.radius.online")
                                 : plugin.getConfig().getText("info.radius.offline"),
-                        plugin.getNameByUUID(ticket.getSender()),
-                        ticket.getAssigned() != null ? ticket.getAssigned() : "*",
-                        ticket.getMessage(),
-                        String.valueOf(ticket.getComments().size()),
-                        String.valueOf(ticket.getTicketStatus()));
+                        "sender", plugin.getNameByUUID(ticket.getSender()),
+                        "assigned", ticket.getAssigned() != null ? ticket.getAssigned() : "*",
+                        "message", ticket.getMessage(),
+                        "comments", String.valueOf(ticket.getComments().size()),
+                        "status", String.valueOf(ticket.getTicketStatus()));
                 plugin.addShownTicket(sender, ticket.getTicketId());
             }
         });
