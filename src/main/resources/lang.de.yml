@@ -25,7 +25,7 @@ texts:
       footer: '&9Für andere Seiten: &f/pe closed <Spieler> <#>'
       header: '{prefix}&9 Von &f{player}&9 geschlossene Tickets: (&f{page}&9/&f{maxpages}&9)&f - &9insgesamt: &7{amount}'
     comment:
-      commented: '{prefix}&f {sender}&9 hat Ticket [&6#{ticket}](/ti view {ticket})&9 kommentiert: &7{message}'
+      commented: '{prefix}&f {sender}&9 hat Ticket [&6#{ticket}](/ti view {ticket}) [&9kommentiert](/ti warp {ticket} {number}): &7{message}'
       yourTicketGotCommented: '{prefix}&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde von &f{sender}&9 kommentiert: &7{message}'
     help:
       header: '{prefix}&9 Folgende Funktionen stehen dir zur Verfügung'
@@ -93,7 +93,7 @@ texts:
       unassignedComment: '&7Die Zuweisung dieses Tickets wurde aufgehoben'
       yourTicketGotUnassigned: '{prefix}&9 Die Zuweisung deines Tickets [&6#{ticket}](/ti view {ticket})&9 wurde aufgehoben'
     view:
-      comment: ' [&7#{number}](/ti warp {ticket} {number}) &3{date} &f{new}{sender}: &7{message}'
+      comment: ' [&7{number}](/ti warp {ticket} {number}) &3{date} &f{new}{sender}: &7{message}'
       header: '{prefix}&9 Ticket &6#{ticket}&9 von &6{sender}&9:'
       new: ' &2(Neu)'
       actions: ' [&5tp](/ti warp {ticket}) [&7assign](/ti assign {ticket}) [&7comment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'

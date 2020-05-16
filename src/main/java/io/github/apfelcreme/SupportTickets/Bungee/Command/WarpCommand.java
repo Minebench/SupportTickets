@@ -80,14 +80,17 @@ public class WarpCommand extends SubCommand {
                 "comments", String.valueOf(ticket.getComments().size()));
 
         plugin.sendMessage(sender, "info.view.comment",
+                "ticket", String.valueOf(ticket.getTicketId()),
                 "date", SupportTickets.formatDate(ticket.getDate()),
                 "new", "",
                 "sender", plugin.getNameByUUID(ticket.getSender()),
-                "message", ticket.getMessage());
+                "message", ticket.getMessage(),
+                "number", "");
 
         int i = 1;
         for (Comment comment : ticket.getComments()) {
             plugin.sendMessage(sender, "info.view.comment",
+                    "ticket", String.valueOf(ticket.getTicketId()),
                    "date", SupportTickets.formatDate(comment.getDate()),
                     "new", comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
                     "sender", plugin.getNameByUUID(comment.getSender()),
