@@ -53,7 +53,7 @@ texts:
         &9 Geöffnet: &f{date}'
         &9 Kommentare: &f{comments} [&7&o/ti view {ticket}](/ti view {ticket}'
         &9 Server: &f{server}&9, &f{x}&9/&f{y}&9/&f{z}&9, Welt: &9{world}'
-      actions: ' [&5tp](/ti warp {ticket}) [&7assign](/ti assign {ticket}) [&7comment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'
+      actions: ' [&5tp](/ti warp {ticket}) [&fassign](/ti assign {ticket}) [&fcomment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'
     list:
       element: ' [&6#{id}](hover=Klicke zum Anzeigen\n&3{date} command=/ti view {id}) {online}&f{sender}&7 -> &f{assigned}: &7{message} &7({comments})'
       online: '&2+'
@@ -96,7 +96,7 @@ texts:
       comment: ' [&7{number}](/ti warp {ticket} {number}) &3{date} &f{new}{sender}: &7{message}'
       header: '{prefix}&9 Ticket &6#{ticket}&9 von &6{sender}&9:'
       new: ' &2(Neu)'
-      actions: ' [&5tp](/ti warp {ticket}) [&7assign](/ti assign {ticket}) [&7comment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'
+      actions: ' [&5tp](/ti warp {ticket}) [&fassign](/ti assign {ticket}) [&fcomment](suggest_command=/ti comment {ticket} ) [&cclose](suggest_command=/ti close {ticket} )'
     warp:
       warped: '{prefix} &9Teleportiere zu Ticket [&6#{ticket}](/ti view {ticket}) von &6{sender}&9:'
       
