@@ -68,6 +68,7 @@ public class CloseCommand extends SubCommand {
                     senderId,
                     SupportTickets.replace(plugin.getConfig().getText("info.close.closeComment"),
                             "sender", sender.getName(), "reason", reason),
+                    ticket.getSender().equals(senderId),
                     new Date(),
                     location
             );

@@ -52,15 +52,16 @@ public class UnassignCommand extends SubCommand {
             return;
         }
 
+        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
+
         BukkitMessenger.fetchPosition(sender, (location) -> {
             plugin.getDatabaseController().unassignTicket(ticket);
-
-            UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
             Comment comment = new Comment(
                     ticket.getTicketId(),
                     senderId,
                     plugin.getConfig().getText("info.unassign.unassignedComment"),
+                    ticket.getSender().equals(senderId),
                     new Date(),
                     location
             );

@@ -41,8 +41,8 @@ public class Comment {
         this.location = location;
     }
 
-    public Comment(int ticketId, UUID sender, String comment, Date date, Location location) {
-        this(-1, ticketId, sender, comment, false, date, location);
+    public Comment(int ticketId, UUID sender, String comment, boolean senderHasNoticed, Date date, Location location) {
+        this(-1, ticketId, sender, comment, senderHasNoticed, date, location);
     }
 
     /**

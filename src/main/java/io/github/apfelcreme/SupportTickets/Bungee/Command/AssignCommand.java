@@ -9,6 +9,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -41,32 +42,34 @@ public class AssignCommand extends SubCommand {
      * @param args   the string arguments in an array
      */
     public void execute(CommandSender sender, final String[] args) {
-        final ProxiedPlayer player = (ProxiedPlayer) sender;
 
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
         if (ticket == null) {
-            plugin.sendMessage(player, "error.unknownTicket");
+            plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }
 
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
-            plugin.sendMessage(player, "error.ticketAlreadyClosed");
+            plugin.sendMessage(sender, "error.ticketAlreadyClosed");
             return;
         }
+
+        UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
         BukkitMessenger.fetchPosition(sender, (location) -> {
             String to;
             if (args.length > 2) {
                 to =  String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
             } else {
-                to = player.getName();
+                to = sender.getName();
             }
             plugin.getDatabaseController().assignTicket(ticket, to);
 
             Comment comment = new Comment(
                     ticket.getTicketId(),
-                    player.getUniqueId(),
+                    senderId,
                     SupportTickets.replace(plugin.getConfig().getText("info.assign.assignedComment"), "assigned", to),
+                    ticket.getSender().equals(senderId),
                     new Date(),
                     location
             );

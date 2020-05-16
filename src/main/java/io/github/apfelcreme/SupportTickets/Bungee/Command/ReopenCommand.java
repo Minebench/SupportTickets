@@ -56,6 +56,7 @@ public class ReopenCommand extends SubCommand {
                     ticket.getTicketId(),
                     senderId,
                     SupportTickets.replace(plugin.getConfig().getText("info.reopen.reopenComment"), "sender", sender.getName()),
+                    ticket.getSender().equals(senderId),
                     new Date(),
                     location
             );

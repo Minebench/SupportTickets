@@ -64,7 +64,7 @@ public class CommentCommand extends SubCommand {
 
         BukkitMessenger.fetchPosition(sender, (location) -> {
             String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
-            Comment comment = new Comment(ticket.getTicketId(), senderId, message, new Date(), location);
+            Comment comment = new Comment(ticket.getTicketId(), senderId, message, ticket.getSender().equals(senderId), new Date(), location);
 
             plugin.getDatabaseController().saveComment(comment);
 
