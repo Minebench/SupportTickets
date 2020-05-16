@@ -3,14 +3,14 @@ package io.github.apfelcreme.SupportTickets.Bungee.Listener;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
+import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,22 +43,24 @@ public class PlayerLoginListener implements Listener {
     public void onPlayerLogin(final PostLoginEvent event) {
         ProxyServer.getInstance().getScheduler().schedule(SupportTickets.getInstance(), () -> {
             List<Ticket> tickets = plugin.getDatabaseController().getTicketsOpenedBy(event.getPlayer().getUniqueId());
-            Set<Integer> ticketIds = new HashSet<>();
+            List<String> ticketEntries = new ArrayList<>();
+            String entry = plugin.getConfig().getText("info.log.ticketEntry");
             for (Ticket ticket : tickets) {
                 for (Comment comment : ticket.getComments()) {
                     if (!comment.getSenderHasNoticed()) {
-                        ticketIds.add(ticket.getTicketId());
+                        ticketEntries.add(SupportTickets.replace(entry, "ticket", String.valueOf(ticket.getTicketId())));
+                        break;
                     }
                 }
             }
 
-            if (ticketIds.size() > 0) {
-                if (ticketIds.size() == 1) {
+            if (ticketEntries.size() > 0) {
+                if (ticketEntries.size() == 1) {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsSingular",
-                            "ticket", ticketIds.iterator().next().toString());
+                            "ticket", ticketEntries.get(0));
                 } else {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsPlural",
-                            "tickets", SupportTickets.join(ticketIds.toArray(), ", ", " & "));
+                            "tickets", SupportTickets.join(ticketEntries.toArray(), ChatColor.WHITE + ", ", ChatColor.WHITE + " & "));
                 }
             }
         }, 2, TimeUnit.SECONDS);
