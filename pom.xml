@@ -61,15 +61,8 @@
             </plugin>
             <plugin>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.2.3</version>
                 <configuration>
-                    <artifactSet>
-                        <includes>
-                            <include>org.slf4j:*</include>
-                            <include>com.zaxxer:HikariCP</include>
-                            <include>org.mongodb:mongo-java-driver</include>
-                        </includes>
-                    </artifactSet>
                     <relocations>
                         <relocation>
                             <pattern>org.slf4j</pattern>
