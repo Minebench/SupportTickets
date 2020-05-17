@@ -1,5 +1,7 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Listener;
 
+import com.google.common.collect.ImmutableMap;
+import de.themoep.minedown.MineDown;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
@@ -57,10 +59,10 @@ public class PlayerLoginListener implements Listener {
             if (ticketEntries.size() > 0) {
                 if (ticketEntries.size() == 1) {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsSingular",
-                            "ticket", ticketEntries.get(0));
+                            ImmutableMap.of("ticket", MineDown.parse(ticketEntries.get(0))));
                 } else {
                     plugin.sendMessage(event.getPlayer(), "info.login.newCommentsPlural",
-                            "tickets", SupportTickets.join(ticketEntries.toArray(), ChatColor.WHITE + ", ", ChatColor.WHITE + " & "));
+                            ImmutableMap.of("tickets", MineDown.parse(SupportTickets.join(ticketEntries.toArray(), ChatColor.WHITE + ", ", ChatColor.WHITE + " & "))));
                 }
             }
         }, 2, TimeUnit.SECONDS);

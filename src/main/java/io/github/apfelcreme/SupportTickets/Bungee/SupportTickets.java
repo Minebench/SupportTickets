@@ -12,6 +12,7 @@ import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessageListener;
 import io.github.apfelcreme.SupportTickets.Bungee.Task.ReminderTask;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
@@ -194,6 +195,24 @@ public class SupportTickets extends Plugin {
      * @param repl     an optional array of string to replace via their index
      */
     public void sendMessage(CommandSender receiver, String key, String... repl) {
+        if (receiver != null && key != null) {
+            receiver.sendMessage(new MineDown(getConfig().getText(key))
+                    .placeholderPrefix("{")
+                    .placeholderSuffix("}")
+                    .replace("prefix", getPrefix())
+                    .replace(getReplacementsWithIndexes(repl))
+                    .toComponent());
+        }
+    }
+
+    /**
+     * sends a message to a player
+     *
+     * @param receiver the player
+     * @param key      the language key of the message to send
+     * @param repl     an optional array of string to replace via their index
+     */
+    public void sendMessage(CommandSender receiver, String key, Map<String, BaseComponent[]> repl) {
         if (receiver != null && key != null) {
             receiver.sendMessage(new MineDown(getConfig().getText(key))
                     .placeholderPrefix("{")
@@ -439,6 +458,23 @@ public class SupportTickets extends Plugin {
         for (int i = 0; i + 1 < repl.length; i+=2) {
             replacements.put(repl[i], repl[i+1]);
             replacements.put(String.valueOf(i / 2), repl[i+1]);
+        }
+        return replacements;
+    }
+
+    /**
+     * creates a map from a replacement array which includes legacy index replacements
+     *
+     * @param repl the replacements
+     * @return the replacement map
+     */
+    private static Map<String, BaseComponent[]> getReplacementsWithIndexes(Map<String, BaseComponent[]> repl) {
+        Map<String, BaseComponent[]> replacements = new LinkedHashMap<>();
+        int i = 0;
+        for (Map.Entry<String, BaseComponent[]> entry : repl.entrySet()) {
+            replacements.put(entry.getKey(), entry.getValue());
+            replacements.put(String.valueOf(i), entry.getValue());
+            i++;
         }
         return replacements;
     }
