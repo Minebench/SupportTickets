@@ -76,7 +76,7 @@ public class AssignCommand extends SubCommand {
 
             plugin.getDatabaseController().saveComment(comment);
             plugin.sendTeamMessage("info.assign.assigned",
-                    String.valueOf(ticket.getTicketId()), to);
+                    "ticket", String.valueOf(ticket.getTicketId()), "assigned", to);
             plugin.sendMessage(ticket.getSender(), "info.assign.yourTicketGotAssigned",
                     "ticket", String.valueOf(ticket.getTicketId()), "assigned", to);
 

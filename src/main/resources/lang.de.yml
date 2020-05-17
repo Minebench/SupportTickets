@@ -14,7 +14,7 @@ texts:
     wrongEnumArgument: '{prefix}&c {input} ist kein valider Wert. Verfügbar: {available}'
   info:
     assign:
-      assigned: '{prefix}&9 Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{1}&9 zugewiesen'
+      assigned: '{prefix}&9 Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{assigned}&9 zugewiesen'
       assignedComment: '&7Das Ticket wurde &f{assigned}&7 zugewiesen'
       yourTicketGotAssigned: '{prefix}&9 Dein Ticket [&6#{ticket}](/ti view {ticket})&9 wurde &f{assigned}&9 zugewiesen'
     close:
