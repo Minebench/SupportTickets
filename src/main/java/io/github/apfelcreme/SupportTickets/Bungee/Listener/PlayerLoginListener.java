@@ -44,7 +44,7 @@ public class PlayerLoginListener implements Listener {
         ProxyServer.getInstance().getScheduler().schedule(SupportTickets.getInstance(), () -> {
             List<Ticket> tickets = plugin.getDatabaseController().getTicketsOpenedBy(event.getPlayer().getUniqueId());
             List<String> ticketEntries = new ArrayList<>();
-            String entry = plugin.getConfig().getText("info.log.ticketEntry");
+            String entry = plugin.getConfig().getText("info.login.ticketEntry");
             for (Ticket ticket : tickets) {
                 for (Comment comment : ticket.getComments()) {
                     if (!comment.getSenderHasNoticed()) {
