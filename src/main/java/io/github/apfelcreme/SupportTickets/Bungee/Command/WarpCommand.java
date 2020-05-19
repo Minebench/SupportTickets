@@ -55,7 +55,7 @@ public class WarpCommand extends SubCommand {
         Location location = ticket.getLocation();
         if (args.length > 2) {
             int commentNumber = Integer.parseInt(args[2]);
-            if (ticket.getComments().size() < commentNumber) {
+            if (ticket.getComments().size() < commentNumber || commentNumber <= 0) {
                 plugin.sendMessage(player, "error.unknownComment");
                 return;
             }
@@ -69,7 +69,7 @@ public class WarpCommand extends SubCommand {
         }
 
 //      BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
-        BukkitMessenger.warp(player.getUniqueId(), ticket.getLocation());
+        BukkitMessenger.warp(player.getUniqueId(), location);
 
         plugin.sendMessage(player, "info.warp.warped",
                 "ticket", String.valueOf(ticket.getTicketId()),
