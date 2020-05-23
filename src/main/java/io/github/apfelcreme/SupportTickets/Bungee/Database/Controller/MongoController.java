@@ -310,7 +310,7 @@ public class MongoController implements DatabaseController {
             commentObject.put("loc_Z", comment.getLocation().getLocationZ());
             commentObject.put("yaw", comment.getLocation().getYaw());
             commentObject.put("pitch", comment.getLocation().getPitch());
-            commentObject.put("sender_has_noticed", false);
+            commentObject.put("sender_has_noticed", comment.getSenderHasNoticed());
             comments.add(commentObject);
             ticketObject.put("comments", comments);
             collection.update(query, ticketObject);
