@@ -44,8 +44,9 @@ texts:
           close: '&8 - [&6close <#> <Grund>](suggest_command=/ti close ):&e Schliesse das &6Ticket&e mit einem &6Grund'
           comment: '&8 - [&6comment <#> <Text>](suggest_command=/ti comment ):&6 Kommentiere&e ein &6Ticket'
           help: '&8 - [&6help](/ti help):&e Zeige eine Ansicht aller Funktionen an'
-          new: '&8 - [&6new <Text>](suggest_command=/ti new ):&e Erstelle ein neüs Ticket mit einer &6Nachricht&e'
+          new: '&8 - [&6new <Text>](suggest_command=/ti new ):&e Erstelle ein neues Ticket mit einer &6Nachricht&e'
           list: '&8 - [&6list](/ti list):&e Zeige eine Liste der von dir erstellen Tickets an'
+          markread: '&8 - [&6markread](/ti markread):&e Alle Tickets und Kommentare als gelesen markieren'
           view: '&8 - [&6view <#>](suggest_command=/ti view ):&e Schau dir ein &6Tickets&e genau an'
     info:
       text: |-
@@ -66,6 +67,10 @@ texts:
       ticketEntry: '[&6#{ticket}](/ti view {ticket})'
       newCommentsPlural: '{prefix}&9 Während du abwesend warst, wurden einige deiner Tickets kommentiert: {tickets}&9. Schau sie dir mit [&f/ti view <#>](suggest_command=/ti view )&9 an!'
       newCommentsSingular: '{prefix}&9 Während du abwesend warst, wurde dein Ticket {ticket}&9 kommentiert. Schau es dir mit [&f/ti view {ticket}](/ti view {ticket})&9 an!'
+    markread:
+      ticketEntry: '[&6#{ticket}](/ti view {ticket})'
+      marked: '{prefix}&9 {comments} in den folgen Tickets als gelesen markiert: {tickets}&9.'
+      none:  '{prefix}&c Keine ungelesenen Tickets gefunden.'
     new:
       created: '{prefix}&b Das Ticket wurde erfolgreich gestellt. Bitte erstelle keine weiteren Tickets, ein Team-Mitglied wird sich schnellstmöglich um dein Anliegen kümmern! &7Mit [&f/ti show](/ti show)&b kannst du deine Tickets einsehen.'
       newTicket: '{prefix}&9 Neues Ticket &6#{ticket} &9von &f{sender}&7: &7{message}'
