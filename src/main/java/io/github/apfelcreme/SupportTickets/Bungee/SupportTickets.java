@@ -193,13 +193,25 @@ public class SupportTickets extends Plugin {
      *
      * @param receiver the player
      * @param key      the language key of the message to send
-     * @param repl     an optional array of string to replace via their index
+     * @param repl     an optional array of string to replace
      */
     public void sendMessage(CommandSender receiver, String key, String... repl) {
+        sendMessage(receiver, key, null, repl);
+    }
+
+    /**
+     * sends a message to a player
+     *
+     * @param receiver the player
+     * @param key      the language key of the message to send
+     * @param repl     an optional array of string to replace via their index
+     */
+    public void sendMessage(CommandSender receiver, String key, Map<String, BaseComponent[]> compRepl, String... repl) {
         if (receiver != null && key != null) {
             receiver.sendMessage(new MineDown(getConfig().getText(key))
                     .placeholderPrefix("{")
                     .placeholderSuffix("}")
+                    .replace(compRepl)
                     .replace("prefix", getPrefix())
                     .replace(getReplacementsWithIndexes(repl))
                     .toComponent());

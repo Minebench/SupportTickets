@@ -1,5 +1,7 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import com.google.common.collect.ImmutableMap;
+import de.themoep.minedown.MineDown;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
@@ -110,12 +112,17 @@ public class ListCommand extends SubCommand {
         }
 
         if (tickets.size() > pageSize) {
-            plugin.sendMessage(sender, "info.list.footer",
-                    "previous", page > 0 ? plugin.getConfig().getText("info.list.previous") : "",
-                    "next", (page + 1) * pageSize < tickets.size() ? plugin.getConfig().getText("info.list.next") : "",
+            String[] repl = {
                     "status", messageStatus.toString(),
                     "previouspage", String.valueOf(page), // page is already human-page -1
                     "nextpage", String.valueOf(page + 2)
+            };
+            plugin.sendMessage(sender, "info.list.footer",
+                    ImmutableMap.of(
+                            "previous", MineDown.parse(page > 0 ? SupportTickets.replace(plugin.getConfig().getText("info.list.previous"), repl) : ""),
+                            "next", MineDown.parse((page + 1) * pageSize < tickets.size() ? SupportTickets.replace(plugin.getConfig().getText("info.list.next"), repl) : "")
+                    ),
+                    repl
             );
         }
     }
