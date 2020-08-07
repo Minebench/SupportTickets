@@ -5,7 +5,7 @@ import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
-import java.util.Comparator;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class OpenedCommand extends SubCommand {
         }
         List<Ticket> tickets = plugin.getDatabaseController().getTicketsOpenedBy(target).stream()
                 .filter(t -> sender.hasPermission("SupportTickets.mod.server." + t.getLocation().getServer()))
-                .sorted(Comparator.reverseOrder())
+                .sorted(Collections.reverseOrder())
                 .collect(Collectors.toList());
 
         //display the results
