@@ -251,14 +251,25 @@ public class SupportTickets extends Plugin {
     }
 
     /**
-     * sends a message to all players with the permission "SupportTickets.receiveBukkitTeamMessage"
+     * sends a message to all players with the permission "SupportTickets.mod"
      *
      * @param key   the language key of the text to send
      * @param repl  an optional array of string to replace via their index
      */
     public void sendTeamMessage(String key, String... repl) {
+        sendMessage("SupportTickets.mod", key, repl);
+    }
+
+    /**
+     * sends a message to all players with a specified permission
+     *
+     * @param permission    the permission
+     * @param key           the language key of the text to send
+     * @param repl          an optional array of string to replace via their index
+     */
+    public void sendMessage(String permission, String key, String... repl) {
         for (ProxiedPlayer receiver : ProxyServer.getInstance().getPlayers()) {
-            if (receiver.hasPermission("SupportTickets.mod")) {
+            if (receiver.hasPermission(permission)) {
                 sendMessage(receiver, key, repl);
             }
         }

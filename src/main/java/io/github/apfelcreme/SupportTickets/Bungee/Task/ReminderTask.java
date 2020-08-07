@@ -3,6 +3,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Task;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.List;
 
@@ -46,12 +47,18 @@ public class ReminderTask implements Runnable {
     public void run() {
         List<Ticket> tickets = plugin.getDatabaseController()
                 .getTickets(Ticket.TicketStatus.OPEN, Ticket.TicketStatus.ASSIGNED, Ticket.TicketStatus.REOPENED);
-        Integer anz = tickets.size();
-        if (anz > 0) {
-            if (anz == 1) {
-                plugin.sendTeamMessage("info.reminderTask.infoSingular");
-            } else {
-                plugin.sendTeamMessage("info.reminderTask.infoPlural", "tickets", anz.toString());
+        if (tickets.size() == 1) {
+            plugin.sendMessage("SupportTickets.mod.server." + tickets.get(0).getLocation().getServer(), "info.reminderTask.infoSingular");
+        } else if (tickets.size() > 1) {
+            for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
+                if (player.hasPermission("SupportTickets.mod")) {
+                    long filteredAnz = tickets.stream().filter(t -> player.hasPermission("SupportTickets.mod.server." + t.getLocation().getServer())).count();
+                    if (filteredAnz == 1) {
+                        plugin.sendMessage(player, "info.reminderTask.infoSingular");
+                    } else if (filteredAnz > 1) {
+                        plugin.sendMessage(player, "info.reminderTask.infoPlural", "tickets", String.valueOf(filteredAnz));
+                    }
+                }
             }
         }
     }

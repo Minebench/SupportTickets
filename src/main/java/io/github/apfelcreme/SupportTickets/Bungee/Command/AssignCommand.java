@@ -49,6 +49,11 @@ public class AssignCommand extends SubCommand {
             return;
         }
 
+        if (!sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            plugin.sendMessage(sender, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
+            return;
+        }
+
         if (ticket.getTicketStatus() == Ticket.TicketStatus.CLOSED) {
             plugin.sendMessage(sender, "error.ticketAlreadyClosed");
             return;

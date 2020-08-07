@@ -50,18 +50,20 @@ public class RadiusCommand extends SubCommand {
                     "tickets", String.valueOf(tickets.size()));
 
             for (Ticket ticket : tickets) {
-                plugin.sendMessage(sender, "info.radius.element",
-                        "ticket", String.valueOf(ticket.getTicketId()),
-                        "date", SupportTickets.formatDate(ticket.getDate()),
-                        "online", plugin.isPlayerOnline(ticket.getSender())
-                                ? plugin.getConfig().getText("info.radius.online")
-                                : plugin.getConfig().getText("info.radius.offline"),
-                        "sender", plugin.getNameByUUID(ticket.getSender()),
-                        "assigned", ticket.getAssigned() != null ? ticket.getAssigned() : "*",
-                        "message", ticket.getMessage(),
-                        "comments", String.valueOf(ticket.getComments().size()),
-                        "status", String.valueOf(ticket.getTicketStatus()));
-                plugin.addShownTicket(sender, ticket.getTicketId());
+                if (sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+                    plugin.sendMessage(sender, "info.radius.element",
+                            "ticket", String.valueOf(ticket.getTicketId()),
+                            "date", SupportTickets.formatDate(ticket.getDate()),
+                            "online", plugin.isPlayerOnline(ticket.getSender())
+                                    ? plugin.getConfig().getText("info.radius.online")
+                                    : plugin.getConfig().getText("info.radius.offline"),
+                            "sender", plugin.getNameByUUID(ticket.getSender()),
+                            "assigned", ticket.getAssigned() != null ? ticket.getAssigned() : "*",
+                            "message", ticket.getMessage(),
+                            "comments", String.valueOf(ticket.getComments().size()),
+                            "status", String.valueOf(ticket.getTicketStatus()));
+                    plugin.addShownTicket(sender, ticket.getTicketId());
+                }
             }
         });
     }

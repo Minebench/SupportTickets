@@ -44,6 +44,11 @@ public class InfoCommand extends SubCommand {
             return;
         }
 
+        if (!sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            plugin.sendMessage(sender, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
+            return;
+        }
+
         plugin.sendMessage(sender, "info.info.text",
                 "ticket", String.valueOf(ticket.getTicketId()),
                 "sender", plugin.getNameByUUID(ticket.getSender()),

@@ -62,6 +62,11 @@ public class CommentCommand extends SubCommand {
             return;
         }
 
+        if (!sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            plugin.sendMessage(sender, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
+            return;
+        }
+
         BukkitMessenger.fetchPosition(sender, (location) -> {
             String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
             Comment comment = new Comment(ticket.getTicketId(), senderId, message, ticket.getSender().equals(senderId), new Date(), location);

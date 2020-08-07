@@ -42,7 +42,7 @@ public class UnassignCommand extends SubCommand {
      */
     public void execute(CommandSender sender, String[] args) {
         Ticket ticket = plugin.getDatabaseController().loadTicket(Integer.parseInt(args[1]));
-        if (ticket == null) {
+        if (ticket == null || !sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
             plugin.sendMessage(sender, "error.unknownTicket");
             return;
         }

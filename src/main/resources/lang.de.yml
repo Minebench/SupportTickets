@@ -3,6 +3,7 @@ texts:
   error:
     noLocation: '{prefix}&c Dises Ticket hat keinen Ort!'
     noPermission: '{prefix}&c Du hast keine ausreichende Berechtigung!'
+    noPermissionOnServer: '{prefix}&c Du hast keine ausreichende Berechtigung für Tickets auf dem Server {server}!'
     notYourTicket: '{prefix}&c Dieses Ticket wurde nicht von dir geöffnet!'
     playerCommand: '{prefix}&c Dieser Befehl kann nur von einem Spieler ausgeführt werden!'
     ticketAlreadyClosed: '{prefix}&c Das Ticket wurde bereits geschlossen'

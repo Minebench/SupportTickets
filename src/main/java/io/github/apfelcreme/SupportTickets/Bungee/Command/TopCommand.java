@@ -43,10 +43,12 @@ public class TopCommand extends SubCommand {
         List<Ticket> tickets = plugin.getDatabaseController().getTickets(Ticket.TicketStatus.CLOSED);
         Map<UUID, Integer> playerCloses = new HashMap<>();
         for (Ticket ticket : tickets) {
-            if (!playerCloses.containsKey(ticket.getClosed())) {
-                playerCloses.put(ticket.getClosed(), 0);
+            if (sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+                if (!playerCloses.containsKey(ticket.getClosed())) {
+                    playerCloses.put(ticket.getClosed(), 0);
+                }
+                playerCloses.put(ticket.getClosed(), playerCloses.get(ticket.getClosed()) + 1);
             }
-            playerCloses.put(ticket.getClosed(), playerCloses.get(ticket.getClosed()) + 1);
         }
 
         ValueComparator comparator = new ValueComparator(playerCloses);

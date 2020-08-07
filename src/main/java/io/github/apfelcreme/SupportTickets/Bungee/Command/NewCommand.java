@@ -51,10 +51,10 @@ public class NewCommand extends SubCommand {
             Ticket ticket = new Ticket(player.getUniqueId(), mb.toString().trim(), new Date(), location, Ticket.TicketStatus.OPEN);
             int ticketId = plugin.getDatabaseController().saveTicket(ticket);
             plugin.sendMessage(player, "info.new.created", "ticket", String.valueOf(ticketId), "message", ticket.getMessage());
-            plugin.sendTeamMessage("info.new.newTicket",
+            plugin.sendMessage("SupportTickets.mod.server." + ticket.getLocation().getServer(), "info.new.newTicket",
                     "ticket", String.valueOf(ticketId), "sender", player.getName(), "message", ticket.getMessage());
             plugin.getProxy().getPlayers().stream()
-                    .filter(p -> p.hasPermission("SupportTickets.mod"))
+                    .filter(p -> p.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer()))
                     .forEach(p -> SupportTickets.getInstance().addShownTicket(p, ticket.getTicketId()));
         });
     }

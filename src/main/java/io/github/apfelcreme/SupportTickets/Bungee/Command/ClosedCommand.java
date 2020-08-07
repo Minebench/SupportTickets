@@ -8,6 +8,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -54,9 +55,10 @@ public class ClosedCommand extends SubCommand {
         }
 
         //load the tickets
-        List<Ticket> tickets =
-                plugin.getDatabaseController().getTicketsClosedBy(target);
-        tickets.sort(Comparator.reverseOrder());
+        List<Ticket> tickets = plugin.getDatabaseController().getTicketsClosedBy(target).stream()
+                .filter(t -> sender.hasPermission("SupportTickets.mod.server." + t.getLocation().getServer()))
+                .sorted(Comparator.reverseOrder())
+                .collect(Collectors.toList());
 
         //display the results
         int pageSize = plugin.getConfig().getPageSize();

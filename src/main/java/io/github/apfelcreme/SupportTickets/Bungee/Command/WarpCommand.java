@@ -52,6 +52,11 @@ public class WarpCommand extends SubCommand {
             return;
         }
 
+        if (!player.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            plugin.sendMessage(player, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
+            return;
+        }
+
         Location location = ticket.getLocation();
         if (args.length > 2) {
             int commentNumber = Integer.parseInt(args[2]);
@@ -65,6 +70,11 @@ public class WarpCommand extends SubCommand {
 
         if (location == null) {
             plugin.sendMessage(sender, "error.noLocation");
+            return;
+        }
+
+        if (!sender.hasPermission("SupportTickets.mod.server." + location.getServer())) {
+            plugin.sendMessage(player, "error.noPermissionOnServer", "server", location.getServer());
             return;
         }
 

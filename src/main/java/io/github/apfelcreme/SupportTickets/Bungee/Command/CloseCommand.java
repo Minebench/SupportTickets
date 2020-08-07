@@ -61,6 +61,11 @@ public class CloseCommand extends SubCommand {
             return;
         }
 
+        if (!sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            plugin.sendMessage(sender, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
+            return;
+        }
+
         BukkitMessenger.fetchPosition(sender, (location) -> {
             String reason = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
             Comment comment = new Comment(

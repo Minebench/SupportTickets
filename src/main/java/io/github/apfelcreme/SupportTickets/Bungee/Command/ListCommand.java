@@ -74,7 +74,9 @@ public class ListCommand extends SubCommand {
         //load the tickets
         List<Ticket> tickets;
         if (sender.hasPermission("SupportTickets.mod")) {
-            tickets = plugin.getDatabaseController().getTickets(statuses);
+            tickets = plugin.getDatabaseController().getTickets(statuses).stream()
+                    .filter(t -> sender.hasPermission("SupportTickets.mod.server." + t.getLocation().getServer()))
+                    .collect(Collectors.toList());
         } else {
             UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
             tickets = plugin.getDatabaseController().getPlayerTickets(senderId, statuses);

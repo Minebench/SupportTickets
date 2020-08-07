@@ -47,6 +47,11 @@ public class ReopenCommand extends SubCommand {
             return;
         }
 
+        if (!sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            plugin.sendMessage(sender, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
+            return;
+        }
+
         BukkitMessenger.fetchPosition(sender, (location) -> {
             plugin.getDatabaseController().reopenTicket(ticket);
 

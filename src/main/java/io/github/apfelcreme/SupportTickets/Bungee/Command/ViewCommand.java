@@ -47,7 +47,7 @@ public class ViewCommand extends SubCommand {
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
-        if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod")) {
+        if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
             plugin.sendMessage(sender, "error.notYourTicket");
             return;
         }
