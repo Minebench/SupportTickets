@@ -56,8 +56,8 @@ public class CloseCommand extends SubCommand {
 
         UUID senderId = sender instanceof ProxiedPlayer ? ((ProxiedPlayer) sender).getUniqueId() : new UUID(0, 0);
 
-        if (!ticket.getSender().equals(senderId)) {
-            if (sender.hasPermission("SupportTickets.mod") && !sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+        if (!ticket.getSender().equals(senderId) && !sender.hasPermission("SupportTickets.mod.server." + ticket.getLocation().getServer())) {
+            if (sender.hasPermission("SupportTickets.mod")) {
                 plugin.sendMessage(sender, "error.noPermissionOnServer", "server", ticket.getLocation().getServer());
             } else {
                 plugin.sendMessage(sender, "error.notYourTicket");
