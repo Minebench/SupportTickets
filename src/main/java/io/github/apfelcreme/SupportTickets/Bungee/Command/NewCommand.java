@@ -1,11 +1,10 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Event.TicketOpenEvent;
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
-import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Date;
@@ -50,6 +49,11 @@ public class NewCommand extends SubCommand {
         BukkitMessenger.fetchPosition(player, (location) -> {
             Ticket ticket = new Ticket(player.getUniqueId(), mb.toString().trim(), new Date(), location, Ticket.TicketStatus.OPEN);
             int ticketId = plugin.getDatabaseController().saveTicket(ticket);
+            ticket.setTicketId(ticketId);
+
+            TicketOpenEvent openEvent = new TicketOpenEvent(ticket, player);
+            plugin.getProxy().getPluginManager().callEvent(openEvent);
+
             plugin.sendMessage(player, "info.new.created", "ticket", String.valueOf(ticketId), "message", ticket.getMessage());
             plugin.sendMessage("SupportTickets.mod.server." + ticket.getLocation().getServer(), "info.new.newTicket",
                     "ticket", String.valueOf(ticketId), "sender", player.getName(), "message", ticket.getMessage());

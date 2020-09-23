@@ -1,5 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Event.TicketCommentEvent;
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
@@ -70,7 +71,11 @@ public class CommentCommand extends SubCommand {
             String message = String.join(" ", Arrays.copyOfRange(args, 2, args.length)).trim();
             Comment comment = new Comment(ticket.getTicketId(), senderId, message, ticket.getSender().equals(senderId), new Date(), location);
 
+            ticket.getComments().add(comment);
             plugin.getDatabaseController().saveComment(comment);
+
+            TicketCommentEvent commentEvent = new TicketCommentEvent(ticket, sender, comment);
+            plugin.getProxy().getPluginManager().callEvent(commentEvent);
 
             plugin.sendTeamMessage("info.comment.commented",
                     "sender", sender.getName(),

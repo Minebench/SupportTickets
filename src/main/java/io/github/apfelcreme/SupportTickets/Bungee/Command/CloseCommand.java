@@ -1,5 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Command;
 
+import io.github.apfelcreme.SupportTickets.Bungee.Event.TicketCloseEvent;
 import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessenger;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
@@ -77,9 +78,14 @@ public class CloseCommand extends SubCommand {
                     location
             );
 
+            ticket.getComments().add(comment);
             plugin.getDatabaseController().saveComment(comment);
 
             plugin.getDatabaseController().closeTicket(ticket, senderId, reason);
+
+            TicketCloseEvent closeEvent = new TicketCloseEvent(ticket, sender, reason);
+            plugin.getProxy().getPluginManager().callEvent(closeEvent);
+
             plugin.sendMessage(ticket.getSender(), "info.close.yourTicketGotClosed",
                     "ticket", String.valueOf(ticket.getTicketId()), "sender", sender.getName(), "reason", reason);
 
