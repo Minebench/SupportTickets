@@ -73,13 +73,15 @@ public class MongoController implements DatabaseController {
             ticketObject.put("message", ticket.getMessage());
             ticketObject.put("status", Ticket.TicketStatus.OPEN.toInt());
             ticketObject.put("time_stamp", ticket.getDate().getTime());
-            ticketObject.put("server", ticket.getLocation().getServer());
-            ticketObject.put("world", ticket.getLocation().getWorldName());
-            ticketObject.put("loc_X", ticket.getLocation().getLocationX());
-            ticketObject.put("loc_Y", ticket.getLocation().getLocationY());
-            ticketObject.put("loc_Z", ticket.getLocation().getLocationZ());
-            ticketObject.put("yaw", ticket.getLocation().getYaw());
-            ticketObject.put("pitch", ticket.getLocation().getPitch());
+            if (ticket.getLocation() != null) {
+                ticketObject.put("server", ticket.getLocation().getServer());
+                ticketObject.put("world", ticket.getLocation().getWorldName());
+                ticketObject.put("loc_X", ticket.getLocation().getLocationX());
+                ticketObject.put("loc_Y", ticket.getLocation().getLocationY());
+                ticketObject.put("loc_Z", ticket.getLocation().getLocationZ());
+                ticketObject.put("yaw", ticket.getLocation().getYaw());
+                ticketObject.put("pitch", ticket.getLocation().getPitch());
+            }
 
             collection.insert(ticketObject);
 
@@ -303,13 +305,15 @@ public class MongoController implements DatabaseController {
             commentObject.put("sender", comment.getSender().toString());
             commentObject.put("comment", comment.getComment());
             commentObject.put("date", comment.getDate().getTime());
-            commentObject.put("server", comment.getLocation().getServer());
-            commentObject.put("world", comment.getLocation().getWorldName());
-            commentObject.put("loc_X", comment.getLocation().getLocationX());
-            commentObject.put("loc_Y", comment.getLocation().getLocationY());
-            commentObject.put("loc_Z", comment.getLocation().getLocationZ());
-            commentObject.put("yaw", comment.getLocation().getYaw());
-            commentObject.put("pitch", comment.getLocation().getPitch());
+            if (comment.getLocation() != null) {
+                commentObject.put("server", comment.getLocation().getServer());
+                commentObject.put("world", comment.getLocation().getWorldName());
+                commentObject.put("loc_X", comment.getLocation().getLocationX());
+                commentObject.put("loc_Y", comment.getLocation().getLocationY());
+                commentObject.put("loc_Z", comment.getLocation().getLocationZ());
+                commentObject.put("yaw", comment.getLocation().getYaw());
+                commentObject.put("pitch", comment.getLocation().getPitch());
+            }
             commentObject.put("sender_has_noticed", comment.getSenderHasNoticed());
             comments.add(commentObject);
             ticketObject.put("comments", comments);
@@ -363,7 +367,7 @@ public class MongoController implements DatabaseController {
                 UUID.fromString((String) dbObject.get("sender")),
                 (String) dbObject.get("message"),
                 new Date((Long) dbObject.get("time_stamp")),
-                new Location(
+                hasLocation(dbObject) ? new Location(
                         (String) dbObject.get("server"),
                         (String) dbObject.get("world"),
                         (double) dbObject.get("loc_X"),
@@ -371,7 +375,7 @@ public class MongoController implements DatabaseController {
                         (double) dbObject.get("loc_Z"),
                         (double) dbObject.get("yaw"),
                         (double) dbObject.get("pitch")
-                ),
+                ) : null,
                 Ticket.TicketStatus.fromInt((Integer) dbObject.get("status")));
         ticket.setTicketId((Integer) dbObject.get("ticket_id"));
 

@@ -85,20 +85,26 @@ public class SQLController implements DatabaseController {
 
             // insert the ticket itself
             preparedStatement = connection.prepareStatement("INSERT INTO " + plugin.getConfig().getTicketTable() +
-                    " (player_id, message, time_stamp, status, server, world, loc_X, loc_Y, loc_Z, yaw, pitch) VALUES " +
+                    " (player_id, message, time_stamp, status" +
+                    (ticket.getLocation() != null ? ", server, world, loc_X, loc_Y, loc_Z, yaw, pitch" : "") +
+                    ") VALUES " +
                     "((Select player_id from " + plugin.getConfig().getPlayerTable() + " where uuid = ?), " +
-                    "?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS);
+                    "?, ?, ?" +
+                    (ticket.getLocation() != null ? ", ?, ?, ?, ?, ?, ?, ?" : "") +
+                    ");", Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setString(1, ticket.getSender().toString());
             preparedStatement.setString(2, ticket.getMessage());
             preparedStatement.setLong(3, ticket.getDate().getTime());
             preparedStatement.setInt(4, ticket.getTicketStatus().toInt());
-            preparedStatement.setString(5, ticket.getLocation().getServer());
-            preparedStatement.setString(6, ticket.getLocation().getWorldName());
-            preparedStatement.setDouble(7, ticket.getLocation().getLocationX());
-            preparedStatement.setDouble(8, ticket.getLocation().getLocationY());
-            preparedStatement.setDouble(9, ticket.getLocation().getLocationZ());
-            preparedStatement.setDouble(10, ticket.getLocation().getYaw());
-            preparedStatement.setDouble(11, ticket.getLocation().getPitch());
+            if (ticket.getLocation() != null) {
+                preparedStatement.setString(5, ticket.getLocation().getServer());
+                preparedStatement.setString(6, ticket.getLocation().getWorldName());
+                preparedStatement.setDouble(7, ticket.getLocation().getLocationX());
+                preparedStatement.setDouble(8, ticket.getLocation().getLocationY());
+                preparedStatement.setDouble(9, ticket.getLocation().getLocationZ());
+                preparedStatement.setDouble(10, ticket.getLocation().getYaw());
+                preparedStatement.setDouble(11, ticket.getLocation().getPitch());
+            }
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
             if (resultSet.next()) {
@@ -387,21 +393,27 @@ public class SQLController implements DatabaseController {
 
                 preparedStatement = connection.prepareStatement(
                         "INSERT INTO " + plugin.getConfig().getCommentTable() +
-                                " (ticket_id, player_id, time_stamp, comment, server, world, loc_X, loc_Y, loc_Z, yaw, pitch, sender_has_noticed) VALUES" +
+                                " (ticket_id, player_id, time_stamp, comment, sender_has_noticed" +
+                                (comment.getLocation() != null ? ", server, world, loc_X, loc_Y, loc_Z, yaw, pitch" : "") +
+                                ") VALUES" +
                                 "(?, (Select player_id from " + plugin.getConfig().getPlayerTable() +
-                                " where uuid = ?), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                                " where uuid = ?), ?, ?, ?" +
+                                (comment.getLocation() != null ? ", ?, ?, ?, ?, ?, ?, ?" : "") +
+                                ")");
                 preparedStatement.setInt(1, comment.getTicketId());
                 preparedStatement.setString(2, comment.getSender().toString());
                 preparedStatement.setLong(3, comment.getDate().getTime());
                 preparedStatement.setString(4, comment.getComment());
-                preparedStatement.setString(5, comment.getLocation().getServer());
-                preparedStatement.setString(6, comment.getLocation().getWorldName());
-                preparedStatement.setDouble(7, comment.getLocation().getLocationX());
-                preparedStatement.setDouble(8, comment.getLocation().getLocationY());
-                preparedStatement.setDouble(9, comment.getLocation().getLocationZ());
-                preparedStatement.setDouble(10, comment.getLocation().getYaw());
-                preparedStatement.setDouble(11, comment.getLocation().getPitch());
-                preparedStatement.setBoolean(12, comment.getSenderHasNoticed());
+                preparedStatement.setBoolean(5, comment.getSenderHasNoticed());
+                if (comment.getLocation() != null) {
+                    preparedStatement.setString(6, comment.getLocation().getServer());
+                    preparedStatement.setString(7, comment.getLocation().getWorldName());
+                    preparedStatement.setDouble(8, comment.getLocation().getLocationX());
+                    preparedStatement.setDouble(9, comment.getLocation().getLocationY());
+                    preparedStatement.setDouble(10, comment.getLocation().getLocationZ());
+                    preparedStatement.setDouble(11, comment.getLocation().getYaw());
+                    preparedStatement.setDouble(12, comment.getLocation().getPitch());
+                }
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -451,7 +463,7 @@ public class SQLController implements DatabaseController {
                 UUID.fromString(resultSet.getString("uuid")),
                 resultSet.getString("message"),
                 new Date(resultSet.getLong("time_stamp")),
-                new Location(
+                hasLocation(resultSet) ? new Location(
                         resultSet.getString("server"),
                         resultSet.getString("world"),
                         resultSet.getDouble("loc_X"),
@@ -459,8 +471,7 @@ public class SQLController implements DatabaseController {
                         resultSet.getDouble("loc_Z"),
                         resultSet.getFloat("yaw"),
                         resultSet.getFloat("pitch")
-
-                ),
+                ) : null,
                 Ticket.TicketStatus.fromInt(resultSet.getInt("status")));
         ticket.setTicketId(resultSet.getInt("ticket_id"));
 
