@@ -542,7 +542,7 @@ public class SupportTickets extends Plugin {
         if (now.get(Calendar.YEAR) != dateCal.get(Calendar.YEAR)) {
             format = "dd.MM.yy " + format;
         } else if (now.get(Calendar.DAY_OF_YEAR) != dateCal.get(Calendar.DAY_OF_YEAR)) {
-            format = "dd.MM " + format;
+            format = "dd.MM. " + format;
         }
         return new SimpleDateFormat(format).format(date);
     }
