@@ -9,7 +9,9 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -143,16 +145,18 @@ public class CommandExecutor extends Command implements Listener {
         String[] parts = cursor.split(" ");
 
         if (parts.length == 1 && cursor.endsWith(" ")) {
+            Set<String> suggestions = new LinkedHashSet<>();
             for (SubCommand sub : getSubCommands().values()) {
                 if (sub.checkPermission((CommandSender) event.getSender())) {
-                    event.getSuggestions().add(sub.getName());
+                    suggestions.add(sub.getName());
                 }
             }
+            event.getSuggestions().addAll(suggestions);
         } else if (parts.length == 2) {
             if (!cursor.endsWith(" ")) {
-                for (SubCommand sub : getSubCommands().values()) {
-                    if (sub.getName().startsWith(parts[1]) && sub.checkPermission((CommandSender) event.getSender())) {
-                        event.getSuggestions().add(sub.getName());
+                for (Map.Entry<String, SubCommand> sub : getSubCommands().entrySet()) {
+                    if (sub.getKey().startsWith(parts[1].toLowerCase()) && sub.getValue().checkPermission((CommandSender) event.getSender())) {
+                        event.getSuggestions().add(sub.getKey());
                     }
                 }
             } else {
