@@ -123,8 +123,17 @@ public class CommandExecutor extends Command implements Listener {
             return;
         }
 
-        if (!cursor.startsWith("/" + getName())) {
-            return;
+        String command = cursor.substring(1).split(" ", 2)[0];
+        if (!command.equalsIgnoreCase(getName())) {
+            boolean matches = false;
+            for (String alias : getAliases()) {
+                if (command.equalsIgnoreCase(alias)) {
+                    matches = true;
+                    break;
+                }
+            }
+            if (!matches)
+                return;
         }
 
         if (!(event.getSender() instanceof CommandSender)) {
