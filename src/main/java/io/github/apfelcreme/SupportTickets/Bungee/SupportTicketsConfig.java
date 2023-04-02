@@ -198,8 +198,17 @@ public class SupportTicketsConfig {
      *
      * @return the mongo pass
      */
-    public int getMongoPass() {
-        return configuration.getInt("mongo.pass");
+    public String getMongoPass() {
+        return configuration.getString("mongo.pass");
+    }
+
+    /**
+     * returns the mongo auth database
+     *
+     * @return the mongo auth database
+     */
+    public String getMongoAuthDb() {
+        return configuration.getString("mongo.authdb");
     }
 
     /**

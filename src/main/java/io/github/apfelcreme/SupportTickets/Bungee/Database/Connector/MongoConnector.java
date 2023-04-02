@@ -2,6 +2,7 @@ package io.github.apfelcreme.SupportTickets.Bungee.Database.Connector;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
 import com.mongodb.MongoException;
 import com.mongodb.ServerApi;
 import com.mongodb.ServerApiVersion;
@@ -49,12 +50,17 @@ public class MongoConnector {
                 .version(ServerApiVersion.V1)
                 .build();
 
-        MongoClientSettings settings = MongoClientSettings.builder()
-                .applyConnectionString(new ConnectionString("mongodb://" + plugin.getConfig().getMongoUser() + ":" + plugin.getConfig().getMongoPass() + "@" + plugin.getConfig().getMongoHost() + ":" + plugin.getConfig().getMongoPort() + "/"))
-                .serverApi(serverApi)
-                .build();
+        MongoClientSettings.Builder settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString("mongodb://" + plugin.getConfig().getMongoHost() + ":" + plugin.getConfig().getMongoPort() + "/"))
+                .serverApi(serverApi);
+        if (plugin.getConfig().getMongoUser() != null && plugin.getConfig().getMongoAuthDb() != null && !plugin.getConfig().getMongoUser().isEmpty()) {
+            if (plugin.getConfig().getMongoPass() == null) {
+                throw new MongoException("Invalid configuration for mongoauth! To not use mongoauth leave the user empty!");
+            }
+            settings.credential(MongoCredential.createPlainCredential(plugin.getConfig().getMongoUser(), plugin.getConfig().getMongoAuthDb(), plugin.getConfig().getMongoPass().toCharArray()));
+        }
 
-        try (MongoClient mongo = MongoClients.create(settings)) {
+        try (MongoClient mongo = MongoClients.create(settings.build())) {
             this.mongoClient = mongo;
             // get collection
             MongoDatabase db = mongo.getDatabase(plugin.getConfig().getMongoDatabase());

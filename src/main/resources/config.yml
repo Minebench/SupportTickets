@@ -17,7 +17,8 @@ sql:
 mongo:
   host: 'localhost'
   port: 27017
-  user: "user"
-  pass: "password"
+  user: ""
+  pass: ""
+  authdb: ""
   database: 'SupportTickets'
   collection: 'SupportTickets'
