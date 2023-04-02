@@ -185,6 +185,24 @@ public class SupportTicketsConfig {
     }
 
     /**
+     * returns the mongo user name
+     *
+     * @return the mongo user name
+     */
+    public String getMongoUser() {
+        return configuration.getString("mongo.user");
+    }
+
+    /**
+     * returns the mongo pass
+     *
+     * @return the mongo pass
+     */
+    public int getMongoPass() {
+        return configuration.getInt("mongo.pass");
+    }
+
+    /**
      * returns the mongo database name
      *
      * @return the mongo database name

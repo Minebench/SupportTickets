@@ -1,11 +1,16 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Database.Controller;
 
-import com.mongodb.*;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Comment;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,10 +53,10 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public Ticket loadTicket(Integer ticketId) {
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticketId);
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
             return buildTicket(dbCursor.next());
         }
@@ -65,27 +70,27 @@ public class MongoController implements DatabaseController {
      * @return the ticket id
      */
     @Override
-        public int saveTicket(Ticket ticket) {
-            DBCollection collection = connector.getCollection();
-            BasicDBObject ticketObject = new BasicDBObject();
-            ticketObject.put("ticket_id", (int) collection.count());
-            ticketObject.put("sender", ticket.getSender().toString());
-            ticketObject.put("message", ticket.getMessage());
-            ticketObject.put("status", Ticket.TicketStatus.OPEN.toInt());
-            ticketObject.put("time_stamp", ticket.getDate().getTime());
-            if (ticket.getLocation() != null) {
-                ticketObject.put("server", ticket.getLocation().getServer());
-                ticketObject.put("world", ticket.getLocation().getWorldName());
-                ticketObject.put("loc_X", ticket.getLocation().getLocationX());
-                ticketObject.put("loc_Y", ticket.getLocation().getLocationY());
-                ticketObject.put("loc_Z", ticket.getLocation().getLocationZ());
-                ticketObject.put("yaw", ticket.getLocation().getYaw());
-                ticketObject.put("pitch", ticket.getLocation().getPitch());
-            }
+    public int saveTicket(Ticket ticket) {
+        MongoCollection<Document> collection = connector.getCollection();
+        Document ticketObject = new Document();
+        ticketObject.put("ticket_id", (int) collection.countDocuments());
+        ticketObject.put("sender", ticket.getSender().toString());
+        ticketObject.put("message", ticket.getMessage());
+        ticketObject.put("status", Ticket.TicketStatus.OPEN.toInt());
+        ticketObject.put("time_stamp", ticket.getDate().getTime());
+        if (ticket.getLocation() != null) {
+            ticketObject.put("server", ticket.getLocation().getServer());
+            ticketObject.put("world", ticket.getLocation().getWorldName());
+            ticketObject.put("loc_X", ticket.getLocation().getLocationX());
+            ticketObject.put("loc_Y", ticket.getLocation().getLocationY());
+            ticketObject.put("loc_Z", ticket.getLocation().getLocationZ());
+            ticketObject.put("yaw", ticket.getLocation().getYaw());
+            ticketObject.put("pitch", ticket.getLocation().getPitch());
+        }
 
-            collection.insert(ticketObject);
+        collection.insertOne(ticketObject);
 
-            return ticketObject.getInt("ticket_id");
+        return ticketObject.getInteger("ticket_id");
     }
 
     /**
@@ -96,16 +101,16 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void assignTicket(Ticket ticket, String to) {
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
-            DBObject ticketObject = dbCursor.next();
+            Document ticketObject = dbCursor.next();
             ticketObject.put("assigned", to);
             ticketObject.put("assigned_time_stamp", new Date().getTime());
             ticketObject.put("status", Ticket.TicketStatus.ASSIGNED.toInt());
-            collection.update(query, ticketObject);
+            collection.updateOne(query, ticketObject);
         }
     }
 
@@ -116,16 +121,16 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void unassignTicket(Ticket ticket) {
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
-            DBObject ticketObject = dbCursor.next();
-            ticketObject.removeField("assigned");
-            ticketObject.removeField("assigned_time_stamp");
+            Document ticketObject = dbCursor.next();
+            ticketObject.remove("assigned");
+            ticketObject.remove("assigned_time_stamp");
             ticketObject.put("status", Ticket.TicketStatus.OPEN.toInt());
-            collection.update(query, ticketObject);
+            collection.updateOne(query, ticketObject);
         }
 
     }
@@ -140,16 +145,16 @@ public class MongoController implements DatabaseController {
     @Override
     public void closeTicket(Ticket ticket, UUID closer, String reason) {
 
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
-            DBObject ticketObject = dbCursor.next();
+            Document ticketObject = dbCursor.next();
             ticketObject.put("closer", closer.toString());
             ticketObject.put("closed_time_stamp", new Date().getTime());
             ticketObject.put("status", Ticket.TicketStatus.CLOSED.toInt());
-            collection.update(query, ticketObject);
+            collection.updateOne(query, ticketObject);
         }
     }
 
@@ -161,14 +166,14 @@ public class MongoController implements DatabaseController {
     @Override
     public void reopenTicket(Ticket ticket) {
 
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", ticket.getTicketId());
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
-            DBObject ticketObject = dbCursor.next();
+            Document ticketObject = dbCursor.next();
             ticketObject.put("status", Ticket.TicketStatus.REOPENED.toInt());
-            collection.update(query, ticketObject);
+            collection.updateOne(query, ticketObject);
         }
     }
 
@@ -181,14 +186,14 @@ public class MongoController implements DatabaseController {
     @Override
     public List<Ticket> getTickets(Ticket.TicketStatus... ticketStatus) {
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         BasicDBList or = new BasicDBList();
         for (Ticket.TicketStatus status : ticketStatus) {
             or.add(new BasicDBObject("status", status.toInt()));
         }
         query.put("$or", or);
-        DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
+        MongoCursor<Document> dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1)).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -205,10 +210,10 @@ public class MongoController implements DatabaseController {
     public List<Ticket> getTicketsClosedBy(UUID closer) {
 
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("closer", closer.toString());
-        DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
+        MongoCursor<Document> dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1)).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -225,10 +230,10 @@ public class MongoController implements DatabaseController {
     public List<Ticket> getTicketsOpenedBy(UUID opener) {
 
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("sender", opener.toString());
-        DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
+        MongoCursor<Document> dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1)).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -245,7 +250,7 @@ public class MongoController implements DatabaseController {
     @Override
     public List<Ticket> getPlayerTickets(UUID uuid, Ticket.TicketStatus... ticketStatus) {
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("sender", uuid.toString());
         BasicDBList or = new BasicDBList();
@@ -253,7 +258,7 @@ public class MongoController implements DatabaseController {
             or.add(new BasicDBObject("status", status.toInt()));
         }
         query.put("$or", or);
-        DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
+        MongoCursor<Document> dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1)).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -263,7 +268,7 @@ public class MongoController implements DatabaseController {
     @Override
     public List<Ticket> getTicketsInRadius(Location location, int radius) {
         List<Ticket> tickets = new ArrayList<>();
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("server", location.getServer());
         query.put("world", location.getWorldName());
@@ -276,7 +281,7 @@ public class MongoController implements DatabaseController {
         query.put("loc_Z",
                 new BasicDBObject("$gt", location.getLocationZ() - radius)
                         .append("$lt", location.getLocationZ() + radius));
-        DBCursor dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1));
+        MongoCursor<Document> dbCursor = collection.find(query).sort(new BasicDBObject("ticket_id", 1)).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -290,12 +295,12 @@ public class MongoController implements DatabaseController {
      */
     @Override
     public void saveComment(Comment comment) {
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", comment.getTicketId());
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
-            DBObject ticketObject = dbCursor.next();
+            Document ticketObject = dbCursor.next();
             BasicDBList comments = (BasicDBList) ticketObject.get("comments");
             if (comments == null) {
                 comments = new BasicDBList();
@@ -317,7 +322,7 @@ public class MongoController implements DatabaseController {
             commentObject.put("sender_has_noticed", comment.getSenderHasNoticed());
             comments.add(commentObject);
             ticketObject.put("comments", comments);
-            collection.update(query, ticketObject);
+            collection.updateOne(query, ticketObject);
         }
     }
 
@@ -331,12 +336,12 @@ public class MongoController implements DatabaseController {
         if (comment.getCommentId() == -1) {
             return;
         }
-        DBCollection collection = connector.getCollection();
+        MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("ticket_id", comment.getTicketId());
-        DBCursor dbCursor = collection.find(query);
+        MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
-            DBObject ticketObject = dbCursor.next();
+            Document ticketObject = dbCursor.next();
             BasicDBList comments = (BasicDBList) ticketObject.get("comments");
             for (Object comment1 : comments) {
                 BasicDBObject commentObject = (BasicDBObject) comment1;
@@ -345,7 +350,7 @@ public class MongoController implements DatabaseController {
                 }
             }
             ticketObject.put("comments", comments);
-            collection.update(query, ticketObject);
+            collection.updateOne(query, ticketObject);
         }
     }
 
@@ -360,7 +365,7 @@ public class MongoController implements DatabaseController {
      * @param dbObject a dbObject
      * @return a ticket
      */
-    private Ticket buildTicket(DBObject dbObject) {
+    private Ticket buildTicket(Document dbObject) {
 
         // create a ticket object
         Ticket ticket = new Ticket(
@@ -423,13 +428,13 @@ public class MongoController implements DatabaseController {
         return ticket;
     }
 
-    private static boolean hasLocation(DBObject dbObject) {
-        return dbObject.containsField("server")
-                && dbObject.containsField("world")
-                && dbObject.containsField("loc_X")
-                && dbObject.containsField("loc_Y")
-                && dbObject.containsField("loc_Z")
-                && dbObject.containsField("yaw")
-                && dbObject.containsField("pitch");
+    private static boolean hasLocation(Document dbObject) {
+        return dbObject.containsKey("server")
+                && dbObject.containsKey("world")
+                && dbObject.containsKey("loc_X")
+                && dbObject.containsKey("loc_Y")
+                && dbObject.containsKey("loc_Z")
+                && dbObject.containsKey("yaw")
+                && dbObject.containsKey("pitch");
     }
 }

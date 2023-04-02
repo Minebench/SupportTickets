@@ -1,12 +1,16 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Database.Connector;
 
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.ConnectionString;
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoException;
+import com.mongodb.ServerApi;
+import com.mongodb.ServerApiVersion;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
-import io.github.apfelcreme.SupportTickets.Bungee.SupportTicketsConfig;
-
-import java.net.UnknownHostException;
+import org.bson.Document;
 
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
@@ -40,12 +44,22 @@ public class MongoConnector {
      * returns the mongo collection
      * @return a DBCollection
      */
-    public DBCollection getCollection() {
-        try {
-            mongoClient = new MongoClient(plugin.getConfig().getMongoHost(), plugin.getConfig().getMongoPort());
-            DB database = mongoClient.getDB(plugin.getConfig().getMongoDatabase());
-            return database.getCollection(plugin.getConfig().getMongoCollection());
-        } catch (UnknownHostException e) {
+    public MongoCollection<Document> getCollection() {
+        ServerApi serverApi = ServerApi.builder()
+                .version(ServerApiVersion.V1)
+                .build();
+
+        MongoClientSettings settings = MongoClientSettings.builder()
+                .applyConnectionString(new ConnectionString("mongodb://" + plugin.getConfig().getMongoUser() + ":" + plugin.getConfig().getMongoPass() + "@" + plugin.getConfig().getMongoHost() + ":" + plugin.getConfig().getMongoPort() + "/"))
+                .serverApi(serverApi)
+                .build();
+
+        try (MongoClient mongo = MongoClients.create(settings)) {
+            this.mongoClient = mongo;
+            // get collection
+            MongoDatabase db = mongo.getDatabase(plugin.getConfig().getMongoDatabase());
+            return db.getCollection(plugin.getConfig().getMongoCollection());
+        } catch (MongoException e) {
             e.printStackTrace();
         }
         return null;
