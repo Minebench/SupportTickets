@@ -1,8 +1,6 @@
 package io.github.apfelcreme.SupportTickets.Bungee.Database.Controller;
 
-import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Connector.MongoConnector;
@@ -188,7 +186,7 @@ public class MongoController implements DatabaseController {
         List<Ticket> tickets = new ArrayList<>();
         MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
-        BasicDBList or = new BasicDBList();
+        List<BasicDBObject> or = new ArrayList<>();
         for (Ticket.TicketStatus status : ticketStatus) {
             or.add(new BasicDBObject("status", status.toInt()));
         }
@@ -253,7 +251,7 @@ public class MongoController implements DatabaseController {
         MongoCollection<Document> collection = connector.getCollection();
         BasicDBObject query = new BasicDBObject();
         query.put("sender", uuid.toString());
-        BasicDBList or = new BasicDBList();
+        List<BasicDBObject> or = new ArrayList<>();
         for (Ticket.TicketStatus status : ticketStatus) {
             or.add(new BasicDBObject("status", status.toInt()));
         }
@@ -301,9 +299,9 @@ public class MongoController implements DatabaseController {
         MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
             Document ticketObject = dbCursor.next();
-            BasicDBList comments = (BasicDBList) ticketObject.get("comments");
+            List<Object> comments = (List<Object>) ticketObject.get("comments");
             if (comments == null) {
-                comments = new BasicDBList();
+                comments = new ArrayList<>();
             }
             BasicDBObject commentObject = new BasicDBObject();
             commentObject.put("comment_id", comments.size());
@@ -342,14 +340,15 @@ public class MongoController implements DatabaseController {
         MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
             Document ticketObject = dbCursor.next();
-            BasicDBList comments = (BasicDBList) ticketObject.get("comments");
-            for (Object comment1 : comments) {
-                BasicDBObject commentObject = (BasicDBObject) comment1;
-                if (commentObject.getInt("comment_id") == comment.getCommentId()) {
-                    commentObject.put("sender_has_noticed", true);
+            if (ticketObject.get("comments") instanceof List) {
+                List<Document> comments = (List<Document>) ticketObject.get("comments");
+                for (Document commentObject : comments) {
+                    if (commentObject.getInteger("comment_id") == comment.getCommentId()) {
+                        commentObject.put("sender_has_noticed", true);
+                    }
                 }
-            }
             ticketObject.put("comments", comments);
+            }
             collection.updateOne(query, ticketObject);
         }
     }
@@ -398,10 +397,9 @@ public class MongoController implements DatabaseController {
         }
 
         // load all comments
-        BasicDBList comments = (BasicDBList) dbObject.get("comments");
-        if (comments != null) {
-            for (Object o : comments) {
-                BasicDBObject commentObject = (BasicDBObject) o;
+        if (dbObject.get("comments") instanceof List) {
+            List<Document> comments = (List<Document>) dbObject.get("comments");
+            for (Document commentObject : comments) {
                 Location location = null;
                 if (hasLocation(dbObject)) {
                     location = new Location(
@@ -415,7 +413,7 @@ public class MongoController implements DatabaseController {
                     );
                 }
                 Comment comment = new Comment(
-                        commentObject.getInt("comment_id"),
+                        commentObject.getInteger("comment_id"),
                         ticket.getTicketId(),
                         UUID.fromString(commentObject.getString("sender")),
                         commentObject.getString("comment"),
