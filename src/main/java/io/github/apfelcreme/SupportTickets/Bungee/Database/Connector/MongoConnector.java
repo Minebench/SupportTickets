@@ -60,13 +60,14 @@ public class MongoConnector {
             settings.credential(MongoCredential.createPlainCredential(plugin.getConfig().getMongoUser(), plugin.getConfig().getMongoAuthDb(), plugin.getConfig().getMongoPass().toCharArray()));
         }
 
-        try (MongoClient mongo = MongoClients.create(settings.build())) {
-            this.mongoClient = mongo;
+        try {
+            mongoClient = MongoClients.create(settings.build());
             // get collection
-            MongoDatabase db = mongo.getDatabase(plugin.getConfig().getMongoDatabase());
+            MongoDatabase db = mongoClient.getDatabase(plugin.getConfig().getMongoDatabase());
             return db.getCollection(plugin.getConfig().getMongoCollection());
         } catch (MongoException e) {
             e.printStackTrace();
+            close();
         }
         return null;
     }
