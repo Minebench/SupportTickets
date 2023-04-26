@@ -184,7 +184,7 @@ public class MongoController implements DatabaseController {
         Bson query = Filters.or(Arrays.stream(ticketStatus)
                 .map(s -> Filters.eq("status", s.toInt()))
                 .collect(Collectors.toList()));
-        MongoCursor<Document> dbCursor = collection.find(query).sort(Sorts.descending("ticket_id")).cursor();
+        MongoCursor<Document> dbCursor = collection.find(query).sort(Sorts.ascending("ticket_id")).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -203,7 +203,7 @@ public class MongoController implements DatabaseController {
         List<Ticket> tickets = new ArrayList<>();
         MongoCollection<Document> collection = connector.getCollection();
         MongoCursor<Document> dbCursor = collection.find(Filters.eq("closer", closer.toString()))
-                .sort(Sorts.descending("ticket_id")).cursor();
+                .sort(Sorts.ascending("ticket_id")).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -222,7 +222,7 @@ public class MongoController implements DatabaseController {
         List<Ticket> tickets = new ArrayList<>();
         MongoCollection<Document> collection = connector.getCollection();
         MongoCursor<Document> dbCursor = collection.find(Filters.eq("sender", opener.toString()))
-                .sort(Sorts.descending("ticket_id")).cursor();
+                .sort(Sorts.ascending("ticket_id")).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -246,7 +246,7 @@ public class MongoController implements DatabaseController {
                         .map(s -> Filters.eq("status", s.toInt()))
                         .collect(Collectors.toList()))
         );
-        MongoCursor<Document> dbCursor = collection.find(query).sort(Sorts.descending("ticket_id")).cursor();
+        MongoCursor<Document> dbCursor = collection.find(query).sort(Sorts.ascending("ticket_id")).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -267,7 +267,7 @@ public class MongoController implements DatabaseController {
                 Filters.gt("loc_Z", location.getLocationZ() - radius),
                 Filters.lt("loc_Z", location.getLocationZ() + radius)
         );
-        MongoCursor<Document> dbCursor = collection.find(query).sort(Sorts.descending("ticket_id")).cursor();
+        MongoCursor<Document> dbCursor = collection.find(query).sort(Sorts.ascending("ticket_id")).cursor();
         while (dbCursor.hasNext()) {
             tickets.add(buildTicket(dbCursor.next()));
         }
@@ -282,7 +282,7 @@ public class MongoController implements DatabaseController {
     @Override
     public void saveComment(Comment comment) {
         MongoCollection<Document> collection = connector.getCollection();
-        Bson query = Filters.eq("ticket_id", comment.getCommentId());
+        Bson query = Filters.eq("ticket_id", comment.getTicketId());
         MongoCursor<Document> dbCursor = collection.find(query).cursor();
         if (dbCursor.hasNext()) {
             Document ticketObject = dbCursor.next();
