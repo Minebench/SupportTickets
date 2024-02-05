@@ -8,6 +8,8 @@ import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * Copyright (C) 2016 Lord36 aka Apfelcreme
  * <p>
@@ -81,40 +83,42 @@ public class WarpCommand extends SubCommand {
 //      BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
         BukkitMessenger.warp(player.getUniqueId(), location);
 
-        plugin.sendMessage(player, "info.warp.warped",
-                "ticket", String.valueOf(ticket.getTicketId()),
-                "date", SupportTickets.formatDate(ticket.getDate()),
-                "new", "",
-                "sender", plugin.getNameByUUID(ticket.getSender()),
-                "message", ticket.getMessage(),
-                "comments", String.valueOf(ticket.getComments().size()));
+        plugin.getProxy().getScheduler().schedule(plugin, () -> {
+            plugin.sendMessage(player, "info.warp.warped",
+                    "ticket", String.valueOf(ticket.getTicketId()),
+                    "date", SupportTickets.formatDate(ticket.getDate()),
+                    "new", "",
+                    "sender", plugin.getNameByUUID(ticket.getSender()),
+                    "message", ticket.getMessage(),
+                    "comments", String.valueOf(ticket.getComments().size()));
 
-        plugin.sendMessage(sender, "info.view.comment",
-                "ticket", String.valueOf(ticket.getTicketId()),
-                "date", SupportTickets.formatDate(ticket.getDate()),
-                "new", "",
-                "sender", plugin.getNameByUUID(ticket.getSender()),
-                "message", ticket.getMessage(),
-                "number", "");
-
-        int i = 1;
-        for (Comment comment : ticket.getComments()) {
             plugin.sendMessage(sender, "info.view.comment",
                     "ticket", String.valueOf(ticket.getTicketId()),
-                   "date", SupportTickets.formatDate(comment.getDate()),
-                    "new", comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
-                    "sender", plugin.getNameByUUID(comment.getSender()),
-                    "message", comment.getComment(),
-                    "number", String.valueOf(i));
+                    "date", SupportTickets.formatDate(ticket.getDate()),
+                    "new", "",
+                    "sender", plugin.getNameByUUID(ticket.getSender()),
+                    "message", ticket.getMessage(),
+                    "number", "");
 
-            if (!comment.getSenderHasNoticed() && player.getUniqueId().equals(ticket.getSender())) {
-                plugin.getDatabaseController().setCommentRead(comment);
+            int i = 1;
+            for (Comment comment : ticket.getComments()) {
+                plugin.sendMessage(sender, "info.view.comment",
+                        "ticket", String.valueOf(ticket.getTicketId()),
+                        "date", SupportTickets.formatDate(comment.getDate()),
+                        "new", comment.getSenderHasNoticed() ? "" : plugin.getConfig().getText("info.view.new"),
+                        "sender", plugin.getNameByUUID(comment.getSender()),
+                        "message", comment.getComment(),
+                        "number", String.valueOf(i));
+
+                if (!comment.getSenderHasNoticed() && player.getUniqueId().equals(ticket.getSender())) {
+                    plugin.getDatabaseController().setCommentRead(comment);
+                }
+                i++;
             }
-            i++;
-        }
-        if (sender.hasPermission("SupportTickets.mod")) {
-            plugin.sendMessage(sender, "info.view.actions","ticket", String.valueOf(ticket.getTicketId()));
-        }
-        plugin.addShownTicket(sender, ticket.getTicketId());
+            if (sender.hasPermission("SupportTickets.mod")) {
+                plugin.sendMessage(sender, "info.view.actions","ticket", String.valueOf(ticket.getTicketId()));
+            }
+            plugin.addShownTicket(sender, ticket.getTicketId());
+        }, 1, TimeUnit.SECONDS);
     }
 }
