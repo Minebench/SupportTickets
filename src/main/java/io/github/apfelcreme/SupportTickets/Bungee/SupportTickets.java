@@ -26,7 +26,6 @@ import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -189,6 +188,33 @@ public class SupportTickets extends Plugin {
     }
 
     /**
+     * gets a message
+     *
+     * @param key      the language key of the message to get
+     * @param repl     an optional array of string to replace via their index
+     */
+    public BaseComponent[] getMessage(String key, String... repl) {
+        return getMessage(key, null, repl);
+    }
+
+    /**
+     * gets a message
+     *
+     * @param key      the language key of the message to get
+     * @param compRepl the base component replacements
+     * @param repl     an optional array of string to replace via their index
+     */
+    public BaseComponent[] getMessage(String key, Map<String, BaseComponent[]> compRepl, String... repl) {
+        return new MineDown(getConfig().getText(key))
+                .placeholderPrefix("{")
+                .placeholderSuffix("}")
+                .replace(compRepl)
+                .replace("prefix", getPrefix())
+                .replace(getReplacementsWithIndexes(repl))
+                .toComponent();
+    }
+
+    /**
      * sends a message to a player
      *
      * @param receiver the player
@@ -204,17 +230,12 @@ public class SupportTickets extends Plugin {
      *
      * @param receiver the player
      * @param key      the language key of the message to send
+     * @param compRepl the base component replacements
      * @param repl     an optional array of string to replace via their index
      */
     public void sendMessage(CommandSender receiver, String key, Map<String, BaseComponent[]> compRepl, String... repl) {
         if (receiver != null && key != null) {
-            receiver.sendMessage(new MineDown(getConfig().getText(key))
-                    .placeholderPrefix("{")
-                    .placeholderSuffix("}")
-                    .replace(compRepl)
-                    .replace("prefix", getPrefix())
-                    .replace(getReplacementsWithIndexes(repl))
-                    .toComponent());
+            receiver.sendMessage(getMessage(key, compRepl, repl));
         }
     }
 

@@ -5,6 +5,7 @@ import de.themoep.minedown.MineDown;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Ticket;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 
 import java.util.Arrays;
@@ -101,6 +102,9 @@ public class ListCommand extends SubCommand {
         for (int i = page * pageSize; i < (page + 1) * pageSize && i < tickets.size(); i++) {
             Ticket ticket = tickets.get(i);
             plugin.sendMessage(sender, "info.list.element",
+                    ImmutableMap.of("actions", sender.hasPermission("SupportTickets.mod") ?
+                            plugin.getMessage("info.list.actions", "ticket", String.valueOf(ticket.getTicketId()))
+                    : new BaseComponent[0]),
                     "id", String.valueOf(ticket.getTicketId()),
                     "date", SupportTickets.formatDate(ticket.getDate()),
                     "online", plugin.isPlayerOnline(ticket.getSender())
