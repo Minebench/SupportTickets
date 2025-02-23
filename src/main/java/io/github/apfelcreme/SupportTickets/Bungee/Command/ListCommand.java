@@ -11,6 +11,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,11 +62,28 @@ public class ListCommand extends SubCommand {
         };
         if (args.length > 1 && !SupportTickets.isNumeric(args[1])) {
             try {
-                messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase());
+                messageStatus = Ticket.TicketStatus.valueOf(args[1].toUpperCase(Locale.ROOT));
             } catch (IllegalArgumentException e) {
                 plugin.sendMessage(sender, "error.wrongEnumArgument",
                         "input", args[1],
                         "available", Arrays.stream(Ticket.TicketStatus.values()).map(Enum::toString).collect(Collectors.joining(", "))
+                );
+                return;
+            }
+            statuses = new Ticket.TicketStatus[]{messageStatus};
+        }
+        Order messageOrder = Order.ASC;
+        if (args.length > 2 && !SupportTickets.isNumeric(args[2])) {
+            try {
+                messageOrder = switch (args[2].toUpperCase(Locale.ROOT)) {
+                    case "ASC", "ASCENDING" -> Order.ASC;
+                    case "DESC", "DESCENDING" -> Order.DESC;
+                    default -> throw new IllegalArgumentException();
+                };
+            } catch (IllegalArgumentException e) {
+                plugin.sendMessage(sender, "error.wrongEnumArgument",
+                        "input", args[1],
+                        "available", Arrays.stream(Order.values()).map(Enum::toString).collect(Collectors.joining(", "))
                 );
                 return;
             }
@@ -83,8 +101,10 @@ public class ListCommand extends SubCommand {
             tickets = plugin.getDatabaseController().getPlayerTickets(senderId, statuses);
         }
 
-        if (statuses.length == 1) {
-            tickets.sort(Comparator.reverseOrder());
+        if (messageOrder == Order.DESC) {
+            tickets.sort(Comparator.comparing(Ticket::getTicketId));
+        } else {
+            tickets.sort(Comparator.comparing(Ticket::getTicketId).reversed());
         }
 
         //display the results
@@ -119,7 +139,8 @@ public class ListCommand extends SubCommand {
 
         if (tickets.size() > pageSize) {
             String[] repl = {
-                    "status", messageStatus.toString(),
+                    "status", messageStatus.toString().toLowerCase(Locale.ROOT),
+                    "order", messageOrder.toString().toLowerCase(Locale.ROOT),
                     "previouspage", String.valueOf(page), // page is already human-page -1
                     "nextpage", String.valueOf(page + 2)
             };
@@ -136,5 +157,9 @@ public class ListCommand extends SubCommand {
     @Override
     public boolean validateInput(String[] strings) {
         return strings.length > 0;
+    }
+
+    public enum Order {
+        ASC, DESC
     }
 }

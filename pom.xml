@@ -102,7 +102,7 @@
     <repositories>
         <repository>
             <id>paper-repo</id>
-            <url>https://papermc.io/repo/</url>
+            <url>https://repo.papermc.io/repository/maven-public/</url>
         </repository>
         <repository>
             <id>bungee-repo</id>
@@ -110,7 +110,7 @@
         </repository>
         <repository>
             <id>minebench-repo</id>
-            <url>http://repo.minebench.de/</url>
+            <url>https://repo.minebench.de/</url>
         </repository>
     </repositories>
 
