@@ -2,6 +2,8 @@ package io.github.apfelcreme.SupportTickets.Bungee.Message;
 
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import de.themoep.connectorplugin.LocationInfo;
+import de.themoep.connectorplugin.bungee.BungeeConnectorPlugin;
 import io.github.apfelcreme.SupportTickets.Bungee.SupportTickets;
 import io.github.apfelcreme.SupportTickets.Bungee.Ticket.Location;
 import net.md_5.bungee.api.CommandSender;
@@ -36,7 +38,11 @@ import java.util.logging.Level;
  */
 public class BukkitMessenger {
 
-    private static Map<UUID, Consumer<Location>> queuedPositionRequests = new ConcurrentHashMap<>();
+    private static final BungeeConnectorPlugin connector;
+
+    static {
+        connector = (BungeeConnectorPlugin) SupportTickets.getInstance().getProxy().getPluginManager().getPlugin("ConnectorPlugin");
+    }
 
     /**
      * calls bukkit to fetch a sender's positon. the message is sent with it,
@@ -45,14 +51,19 @@ public class BukkitMessenger {
      * @param answer what to do when the answer arrives
      */
     public static void fetchPosition(CommandSender sender, Consumer<Location> answer) {
-        if (sender instanceof ProxiedPlayer) {
-            ProxiedPlayer player = (ProxiedPlayer) sender;
-            ServerInfo target = player.getServer().getInfo();
-            if (target != null) {
-                queuedPositionRequests.put(player.getUniqueId(), answer);
-                ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                out.writeUTF(player.getUniqueId().toString());
-                target.sendData("tickets:requestpos", out.toByteArray());
+        if (sender instanceof ProxiedPlayer player) {
+            if (player.getServer() != null) {
+                connector.getBridge().getLocation(player).thenAccept(location -> {
+                    answer.accept(new Location(
+                            location.getServer(),
+                            location.getWorld(),
+                            location.getX(),
+                            location.getY(),
+                            location.getZ(),
+                            location.getYaw(),
+                            location.getPitch()
+                    ));
+                });
             } else {
                 answer.accept(null);
             }
@@ -65,51 +76,18 @@ public class BukkitMessenger {
     /**
      * warps a player to a location
      *
-     * @param uuid     the players uuid
+     * @param player   the player
      * @param location the location
      */
-    public static void warp(UUID uuid, Location location) {
-        ProxiedPlayer player = ProxyServer.getInstance().getPlayer(uuid);
-        if (player != null) {
-            try {
-                ServerInfo serverInfo = SupportTickets.getServer(location.getServer());
-                if (serverInfo != null) {
-                    if (SupportTickets.getInstance().getServerClusters() != null) {
-                        SupportTickets.getInstance().getServerClusters().getTeleportUtils().teleportToLocation(
-                                player,
-                                serverInfo,
-                                location.getWorldName(),
-                                location.getLocationX(),
-                                location.getLocationY(),
-                                location.getLocationZ(),
-                                (float) location.getYaw(),
-                                (float) location.getPitch()
-                        );
-                    } else {
-                        if (!player.getServer().getInfo().equals(serverInfo) && serverInfo.getAddress().getAddress().isReachable(2000)) {
-                            player.connect(serverInfo);
-                        }
-
-                        ByteArrayDataOutput out = ByteStreams.newDataOutput();
-                        out.writeUTF(uuid.toString());
-                        out.writeUTF(location.getWorldName());
-                        out.writeDouble(location.getLocationX());
-                        out.writeDouble(location.getLocationY());
-                        out.writeDouble(location.getLocationZ());
-                        out.writeDouble(location.getYaw());
-                        out.writeDouble(location.getPitch());
-                        serverInfo.sendData("tickets:warp", out.toByteArray());
-                    }
-                } else {
-                    SupportTickets.getInstance().getLogger().log(Level.WARNING, "No server found for '" + location.getServer() + "'!");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    static Consumer<Location> getQueuedPositionAnswer(UUID uuid) {
-        return queuedPositionRequests.get(uuid);
+    public static void warp(ProxiedPlayer player, Location location) {
+        connector.getBridge().teleport(player, new LocationInfo(
+                location.getServer(),
+                location.getWorldName(),
+                location.getLocationX(),
+                location.getLocationY(),
+                location.getLocationZ(),
+                location.getYaw(),
+                location.getPitch()
+        ), player::sendMessage);
     }
 }

@@ -81,7 +81,7 @@ public class WarpCommand extends SubCommand {
         }
 
 //      BungeeMessenger.sendWarpMessage(player.getUniqueId(), ticket);
-        BukkitMessenger.warp(player.getUniqueId(), location);
+        BukkitMessenger.warp(player, location);
 
         plugin.getProxy().getScheduler().schedule(plugin, () -> {
             plugin.sendMessage(player, "info.warp.warped",

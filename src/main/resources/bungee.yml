@@ -2,3 +2,8 @@ name: SupportTickets
 version: '${minecraft.plugin.version}'
 main: io.github.apfelcreme.SupportTickets.Bungee.SupportTickets
 author: Lord36
+depends:
+  - ConnectorPlugin
+softDepends:
+  - UUIDDB
+  - ServerClusters

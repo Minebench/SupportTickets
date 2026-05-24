@@ -361,8 +361,8 @@ public class MongoController implements DatabaseController {
                         (double) dbObject.get("loc_X"),
                         (double) dbObject.get("loc_Y"),
                         (double) dbObject.get("loc_Z"),
-                        (double) dbObject.get("yaw"),
-                        (double) dbObject.get("pitch")
+                        (float) dbObject.get("yaw"),
+                        (float) dbObject.get("pitch")
                 ) : null,
                 Ticket.TicketStatus.fromInt((Integer) dbObject.get("status")));
         ticket.setTicketId((Integer) dbObject.get("ticket_id"));
@@ -392,8 +392,8 @@ public class MongoController implements DatabaseController {
                             (double) dbObject.get("loc_X"),
                             (double) dbObject.get("loc_Y"),
                             (double) dbObject.get("loc_Z"),
-                            (double) dbObject.get("yaw"),
-                            (double) dbObject.get("pitch")
+                            (float) dbObject.get("yaw"),
+                            (float) dbObject.get("pitch")
                     );
                 }
                 Comment comment = new Comment(

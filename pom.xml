@@ -6,7 +6,7 @@
 
     <groupId>io.github.apfelcreme</groupId>
     <artifactId>SupportTickets</artifactId>
-    <version>1.4.2-SNAPSHOT</version>
+    <version>1.4.3-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -101,10 +101,6 @@
 
     <repositories>
         <repository>
-            <id>paper-repo</id>
-            <url>https://repo.papermc.io/repository/maven-public/</url>
-        </repository>
-        <repository>
             <id>bungee-repo</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </repository>
@@ -115,13 +111,6 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>io.papermc.paper</groupId>
-            <artifactId>paper-api</artifactId>
-            <version>1.19-R0.1-SNAPSHOT</version>
-            <type>jar</type>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
@@ -162,6 +151,12 @@
             <groupId>de.themoep.serverclusters</groupId>
             <artifactId>bungee</artifactId>
             <version>0.4.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>de.themoep.connectorplugin</groupId>
+            <artifactId>bungee</artifactId>
+            <version>1.5.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

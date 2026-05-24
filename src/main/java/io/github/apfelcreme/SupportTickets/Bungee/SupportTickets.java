@@ -8,7 +8,6 @@ import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.DatabaseCo
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.MongoController;
 import io.github.apfelcreme.SupportTickets.Bungee.Database.Controller.SQLController;
 import io.github.apfelcreme.SupportTickets.Bungee.Listener.PlayerLoginListener;
-import io.github.apfelcreme.SupportTickets.Bungee.Message.BukkitMessageListener;
 import io.github.apfelcreme.SupportTickets.Bungee.Task.ReminderTask;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -150,11 +149,6 @@ public class SupportTickets extends Plugin {
 
         // register the command
         getProxy().getPluginManager().registerCommand(this, ticketCommand);
-
-        // register the Plugin channels for the bukkit <-> bungee communication
-        getProxy().registerChannel("tickets:requestpos");
-        getProxy().registerChannel("tickets:warp");
-        getProxy().getPluginManager().registerListener(this, new BukkitMessageListener(this));
 
         // register the listeners
         getProxy().getPluginManager().registerListener(this, new PlayerLoginListener(this));
