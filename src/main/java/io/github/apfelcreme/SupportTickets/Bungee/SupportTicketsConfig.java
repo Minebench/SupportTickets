@@ -50,7 +50,7 @@ public class SupportTicketsConfig {
      */
     public SupportTicketsConfig() {
 
-        File configurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/config.yml");
+        File configurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile(), "config.yml");
         try {
             if (!SupportTickets.getInstance().getDataFolder().exists()) {
                 SupportTickets.getInstance().getDataFolder().mkdir();
@@ -73,7 +73,7 @@ public class SupportTicketsConfig {
             e.printStackTrace();
         }
 
-        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/lang." + getLanguage() + ".yml");
+        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile(), "lang." + getLanguage() + ".yml");
         try {
             if (!languageConfigurationFile.exists()) {
                 createConfigFile("lang.de.yml", languageConfigurationFile);
@@ -89,8 +89,8 @@ public class SupportTicketsConfig {
      * saves both configs
      */
     public void save() {
-        File configurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/config.yml");
-        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile() + "/lang." + getLanguage() + ".yml");
+        File configurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile(), "config.yml");
+        File languageConfigurationFile = new File(SupportTickets.getInstance().getDataFolder().getAbsoluteFile(), "lang." + getLanguage() + ".yml");
         try {
             yamlProvider.save(configuration, configurationFile);
             yamlProvider.save(languageConfiguration, languageConfigurationFile);
@@ -281,24 +281,6 @@ public class SupportTicketsConfig {
      */
     public int getReminderTaskDelay() {
         return configuration.getInt("reminderTaskDelay");
-    }
-
-    /**
-     * returns the URL for API-Calls with the mojang API
-     *
-     * @return the URL for API-Calls with the mojang API
-     */
-    public String getAPINameUrl() {
-        return configuration.getString("apiUrlName");
-    }
-
-    /**
-     * returns the URL for API-Calls with the mojang API
-     *
-     * @return the URL for API-Calls with the mojang API
-     */
-    public String getAPIUUIDUrl() {
-        return configuration.getString("apiUrlUUID");
     }
 
     /**

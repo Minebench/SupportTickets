@@ -16,14 +16,8 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import net.zaiyers.UUIDDB.core.UUIDDBPlugin;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -336,29 +330,6 @@ public class SupportTickets extends Plugin {
                 }
             }
         }
-
-        if (name == null) {
-            //this should only occur if the player has never joined
-            try {
-                URL url = new URL(getConfig().getAPINameUrl().replace("{0}", uuid.toString().replace("-", "")));
-                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-                StringBuilder json = new StringBuilder();
-                int read;
-                while ((read = in.read()) != -1) {
-                    json.append((char) read);
-                }
-                Object obj = new JSONParser().parse(json.toString());
-                JSONArray jsonArray = (JSONArray) obj;
-                name = (String) ((JSONObject) jsonArray.get(jsonArray.size() - 1)).get("name");
-                if (uuidDb != null) {
-                    uuidDb.getStorage().insert(uuid, name);
-                } else {
-                    uuidCache.put(name, uuid);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         return name != null ? name : "Unknown Player";
     }
 
@@ -385,34 +356,6 @@ public class SupportTickets extends Plugin {
                     uuid = entry.getValue();
                     break;
                 }
-            }
-        }
-
-        if (uuid == null) {
-            try {
-                URL url = new URL(getConfig().getAPIUUIDUrl().replace("{0}", name));
-                BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-                StringBuilder json = new StringBuilder();
-                int read;
-                while ((read = in.read()) != -1) {
-                    json.append((char) read);
-                }
-                if (json.length() == 0) {
-                    return null;
-                }
-                JSONObject jsonObject = (JSONObject) (new JSONParser().parse(json.toString()));
-                // Get correct case of the inputted name
-                name = jsonObject.get("name").toString();
-                String id = jsonObject.get("id").toString();
-                uuid = UUID.fromString(id.replaceAll("(\\w{8})(\\w{4})(\\w{4})(\\w{4})(\\w{12})", "$1-$2-$3-$4-$5"));
-                if (uuidDb != null) {
-                    uuidDb.getStorage().insert(uuid, name);
-                } else {
-                    uuidCache.put(name, uuid);
-                }
-                return uuid;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
         return uuid;
