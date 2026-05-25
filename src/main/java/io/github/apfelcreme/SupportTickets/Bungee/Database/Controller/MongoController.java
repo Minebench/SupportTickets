@@ -361,8 +361,8 @@ public class MongoController implements DatabaseController {
                         (double) dbObject.get("loc_X"),
                         (double) dbObject.get("loc_Y"),
                         (double) dbObject.get("loc_Z"),
-                        (float) dbObject.get("yaw"),
-                        (float) dbObject.get("pitch")
+                        dbObject.get("yaw") instanceof Float ? dbObject.get("yaw", Float.class) : Float.parseFloat(dbObject.get("yaw").toString()),
+                        dbObject.get("pitch") instanceof Float ? dbObject.get("pitch", Float.class) : Float.parseFloat(dbObject.get("pitch").toString())
                 ) : null,
                 Ticket.TicketStatus.fromInt((Integer) dbObject.get("status")));
         ticket.setTicketId((Integer) dbObject.get("ticket_id"));
@@ -392,8 +392,8 @@ public class MongoController implements DatabaseController {
                             (double) dbObject.get("loc_X"),
                             (double) dbObject.get("loc_Y"),
                             (double) dbObject.get("loc_Z"),
-                            (float) dbObject.get("yaw"),
-                            (float) dbObject.get("pitch")
+                            dbObject.get("yaw") instanceof Float ? dbObject.get("yaw", Float.class) : Float.parseFloat(dbObject.get("yaw").toString()),
+                            dbObject.get("pitch") instanceof Float ? dbObject.get("pitch", Float.class) : Float.parseFloat(dbObject.get("pitch").toString())
                     );
                 }
                 Comment comment = new Comment(
