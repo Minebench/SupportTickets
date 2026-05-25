@@ -102,8 +102,8 @@ public class SQLController implements DatabaseController {
                 preparedStatement.setDouble(7, ticket.getLocation().getLocationX());
                 preparedStatement.setDouble(8, ticket.getLocation().getLocationY());
                 preparedStatement.setDouble(9, ticket.getLocation().getLocationZ());
-                preparedStatement.setDouble(10, ticket.getLocation().getYaw());
-                preparedStatement.setDouble(11, ticket.getLocation().getPitch());
+                preparedStatement.setFloat(10, ticket.getLocation().getYaw());
+                preparedStatement.setFloat(11, ticket.getLocation().getPitch());
             }
             preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -411,8 +411,8 @@ public class SQLController implements DatabaseController {
                     preparedStatement.setDouble(8, comment.getLocation().getLocationX());
                     preparedStatement.setDouble(9, comment.getLocation().getLocationY());
                     preparedStatement.setDouble(10, comment.getLocation().getLocationZ());
-                    preparedStatement.setDouble(11, comment.getLocation().getYaw());
-                    preparedStatement.setDouble(12, comment.getLocation().getPitch());
+                    preparedStatement.setFloat(11, comment.getLocation().getYaw());
+                    preparedStatement.setFloat(12, comment.getLocation().getPitch());
                 }
                 preparedStatement.executeUpdate();
             } catch (SQLException e) {
